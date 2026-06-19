@@ -1,0 +1,309 @@
+# Curated refactoring briefs, served by `moses prompt <N>`.
+# Each entry: name, summary, target_shape, violation_shape, anti_patterns, interactions.
+# Only the implemented Commandments are filled in; others fall back to the short hint.
+
+"1":
+  name: Deep modules
+  summary: >
+    A good module hides a lot of implementation behind a small interface.
+    Depth = implementation LOC / API surface. Shallow modules leak complexity
+    onto their callers.
+  target_shape: >
+    Few public functions/methods, each with few parameters, backed by
+    substantial, well-encapsulated implementation.
+  violation_shape: >
+    Many tiny public functions that merely expose internals, or wide signatures
+    that force callers to understand the implementation.
+  anti_patterns:
+    - Pass-through getters/setters that add no abstraction.
+    - Utility modules that are a flat list of unrelated public helpers.
+    - Public functions that take a dozen flags to steer behaviour.
+  interactions: >
+    Tightly linked to #3 (pass-through) and #13 (few parameters); fixing those
+    usually deepens modules.
+
+"2":
+  name: Loose coupling
+  summary: >
+    Minimise how many distinct external names a class depends on (a proxy for
+    Coupling Between Objects). Lower coupling means changes stay local.
+  target_shape: >
+    A class that talks to a handful of collaborators through narrow interfaces.
+  violation_shape: >
+    A class that references many imported modules/classes directly.
+  anti_patterns:
+    - Reaching into global singletons everywhere.
+    - Instantiating many concrete collaborators inside one class.
+  interactions: >
+    Works with #28 (program to interfaces) and #22 (Law of Demeter).
+
+"3":
+  name: No pass-through methods
+  summary: >
+    A pass-through method does nothing but forward its arguments to another
+    method with essentially the same signature. It adds indirection, not value.
+  target_shape: >
+    Methods either add real behaviour or are removed in favour of calling the
+    delegate directly.
+  violation_shape: >
+    `def f(self, x): return self.other(x)` or `def f(self, x): return obj.g(x)`.
+  anti_patterns:
+    - Wrapper classes that mirror another class method-for-method.
+    - Facades that forward every call unchanged.
+  interactions: >
+    Removing pass-throughs deepens modules (#1) and can reduce class complexity (#31).
+
+"5":
+  name: Pull complexity downward
+  summary: >
+    It is better for a module to absorb complexity than to expose it. Required
+    parameters with no sensible default push complexity onto every caller.
+  target_shape: >
+    Functions provide reasonable defaults; callers supply only what is unusual.
+  violation_shape: >
+    Functions with many required positional parameters and no defaults.
+  anti_patterns:
+    - Configuration that must be fully specified at every call site.
+  interactions: >
+    Closely tied to #13 (few parameters) and #1 (deep modules).
+
+"6":
+  name: Define errors out of existence
+  summary: >
+    The best error handling is an API shaped so the error cannot arise. Prefer
+    designs that make invalid states unrepresentable over defensive raising.
+  target_shape: >
+    Total functions; empty/None handled by returning a neutral value where it
+    is semantically correct.
+  violation_shape: >
+    A high density of `raise` statements relative to the code that could instead
+    have been designed to avoid the condition.
+  anti_patterns:
+    - Throwing on empty input where an empty result is the natural answer.
+  interactions: >
+    Balanced against #26 (validate at boundaries); validate at the edge, design
+    errors away on the inside.
+
+"11":
+  name: Small functions
+  summary: >
+    Functions should be short enough to hold in your head. The p95 length across
+    the codebase should stay modest.
+  target_shape: >
+    Most functions well under ~30 lines; the longest are still comprehensible.
+  violation_shape: >
+    Functions of 50+ non-blank lines doing several things.
+  anti_patterns:
+    - One mega-function with sequential phases that should be named helpers.
+  interactions: >
+    Splitting long functions usually lowers cognitive complexity (#12) and nesting (#14).
+
+"12":
+  name: Low cognitive complexity
+  summary: >
+    Cognitive complexity (SonarSource) and cyclomatic complexity both measure
+    how hard a function is to follow. Keep both low.
+  target_shape: >
+    Linear, flat control flow with early returns instead of deep branching.
+  violation_shape: >
+    Nested conditionals, loops with embedded branches, boolean thickets.
+  anti_patterns:
+    - Deeply nested if/else ladders.
+    - Long boolean expressions combining many conditions.
+  interactions: >
+    Improves with #14 (shallow nesting) and #11 (small functions).
+
+"13":
+  name: Few parameters
+  summary: >
+    Long parameter lists are hard to call correctly. Bundle related parameters
+    into a value object.
+  target_shape: >
+    Functions with roughly three or fewer parameters.
+  violation_shape: >
+    Signatures with five or more parameters.
+  anti_patterns:
+    - Passing a struct's fields individually instead of the struct.
+    - Boolean flag parameters that select behaviour.
+  interactions: >
+    Pairs with #27 (data over primitives) and #5 (pull complexity down).
+
+"14":
+  name: Shallow nesting
+  summary: >
+    Deeply indented code is hard to read. Keep nesting shallow with guard
+    clauses and early returns.
+  target_shape: >
+    Maximum block depth of about three.
+  violation_shape: >
+    Four-plus levels of nested if/for/while/with/try.
+  anti_patterns:
+    - Arrow-shaped code that marches to the right and back.
+  interactions: >
+    Directly lowers cognitive complexity (#12).
+
+"15":
+  name: Command-query separation
+  summary: >
+    A method should either change state (a command) or return a value (a query),
+    not both. Mixing the two hides side effects.
+  target_shape: >
+    Queries are pure; commands return None (or only a status).
+  violation_shape: >
+    A method that mutates `self`/arguments AND returns a meaningful value.
+  anti_patterns:
+    - A pop()-style method proliferating where purity is expected.
+  interactions: >
+    Supports immutability (#24) and testability (#20).
+
+"16":
+  name: DRY
+  summary: >
+    Duplicated logic is a maintenance hazard. Detect repeated token blocks and
+    extract them.
+  target_shape: >
+    Each non-trivial piece of logic exists in exactly one place.
+  violation_shape: >
+    Copy-pasted blocks differing only in a literal or a name.
+  anti_patterns:
+    - Two functions that are 90% identical.
+  interactions: >
+    Extraction often creates deep helpers (#1) and shrinks functions (#11).
+
+"17":
+  name: No commented-out code
+  summary: >
+    Commented-out code rots and confuses. Delete it; version control remembers.
+  target_shape: >
+    Comments explain intent, never preserve dead code.
+  violation_shape: >
+    Runs of comment lines that parse as Python.
+  anti_patterns:
+    - A '# old_value = compute(...)' line left behind after a change.
+  interactions: >
+    Independent; cheap to fix and always safe.
+
+"18":
+  name: No empty catch blocks
+  summary: >
+    Swallowing exceptions hides failures. Every handler should do something
+    meaningful.
+  target_shape: >
+    Handlers log, recover, or re-raise with context.
+  violation_shape: >
+    `except ...: pass` (or a bare `...`) with no handling.
+  anti_patterns:
+    - Broad `except Exception: pass` around large blocks.
+  interactions: >
+    Relates to #6 (define errors away) — prefer designs that avoid the throw.
+
+"20":
+  name: Mutation kill rate
+  summary: >
+    Mutation testing measures whether your tests actually catch injected bugs.
+    A high kill rate means strong assertions. Opt-in (slow); enable with --deep.
+  target_shape: >
+    Tests that fail when behaviour changes; few surviving mutants.
+  violation_shape: >
+    Mutants that survive because assertions are weak or missing.
+  anti_patterns:
+    - Tests that exercise code without asserting outcomes.
+  interactions: >
+    Reinforced by command-query separation (#15) and small functions (#11).
+
+"21":
+  name: Cohesive classes
+  summary: >
+    A cohesive class's methods share state. LCOM4 counts disconnected method
+    clusters; more than one suggests the class should split.
+  target_shape: >
+    Every method touches a common core of fields.
+  violation_shape: >
+    Method groups that use entirely separate fields (a god class).
+  anti_patterns:
+    - A "Manager"/"Utils" class bundling unrelated responsibilities.
+  interactions: >
+    Splitting raises composition (#29) and lowers class complexity (#31).
+
+"22":
+  name: Law of Demeter
+  summary: >
+    Talk only to immediate collaborators. Long attribute chains couple you to
+    the internals of distant objects.
+  target_shape: >
+    `a.do()` rather than `a.b.c.d.do()`.
+  violation_shape: >
+    Call sites reaching through two or more intermediate attributes.
+  anti_patterns:
+    - obj.engine.config.settings.flags.read()
+  interactions: >
+    Lowering chains reduces coupling (#2).
+
+"23":
+  name: Narrow variable scope
+  summary: >
+    Declare variables close to first use and keep their live range short, so the
+    reader holds less in mind.
+  target_shape: >
+    Locals introduced just before use; small span between first and last use.
+  violation_shape: >
+    Variables declared at the top of a long function, used much later.
+  anti_patterns:
+    - C-style "declare everything up front".
+  interactions: >
+    Improves with small functions (#11) and immutability (#24).
+
+"24":
+  name: Prefer immutability
+  summary: >
+    Immutable data is easier to reason about. Avoid reassigning locals and
+    mutating shared structures.
+  target_shape: >
+    Single-assignment locals; frozen value objects.
+  violation_shape: >
+    Locals reassigned many times; in-place mutation of arguments.
+  anti_patterns:
+    - Accumulator reassignment where a comprehension would do.
+  interactions: >
+    Supports command-query separation (#15).
+
+"25":
+  name: No magic numbers
+  summary: >
+    Unexplained numeric literals obscure intent. Name them.
+  target_shape: >
+    Named constants with meaningful names; 0 and 1 are exempt.
+  violation_shape: >
+    Bare literals like 86400, 7777, 0.7 sprinkled through logic.
+  anti_patterns:
+    - Repeated literals that should be one named constant.
+  interactions: >
+    Often co-occurs with DRY (#16).
+
+"29":
+  name: Composition over inheritance
+  summary: >
+    Deep inheritance hierarchies are rigid and fragile. Prefer composing
+    behaviour from collaborators.
+  target_shape: >
+    Shallow hierarchies (depth <= 2); behaviour injected, not inherited.
+  violation_shape: >
+    Chains like Base -> Middle -> Deep -> Deeper.
+  anti_patterns:
+    - Subclassing to reuse a method instead of delegating.
+  interactions: >
+    Pairs with #28 (program to interfaces) and #21 (cohesion).
+
+"31":
+  name: Contain class complexity
+  summary: >
+    Weighted Methods per Class (sum of method complexities) should stay bounded;
+    a high WMC means the class does too much.
+  target_shape: >
+    Classes with a modest number of simple methods.
+  violation_shape: >
+    A class whose methods are individually and collectively complex.
+  anti_patterns:
+    - God classes accreting responsibilities over time.
+  interactions: >
+    Lowered by extracting collaborators (#29) and improving cohesion (#21).

@@ -1,0 +1,42 @@
+[project]
+name = "moses"
+version = "0.1.0"
+description = "A code quality oracle for Python, judged against 31 Commandments."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+    { name = "Tomasz Szymaniec", email = "tomek.szymaniec@gmail.com" }
+]
+dependencies = [
+    "radon>=6.0.1",
+    "rich>=13.9.0",
+    "click>=8.1.7",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dup = ["pygount"]
+mutation = ["mutmut"]
+dev = ["pytest", "pytest-cov"]
+
+[project.scripts]
+moses = "moses.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/moses"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/moses/loop_template" = "moses/loop_template"
+"src/moses/data" = "moses/data"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"
+
+[dependency-groups]
+dev = ["pytest", "pytest-cov"]
