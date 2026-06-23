@@ -30,7 +30,7 @@ Work directly on `main` (user preference — no feature branch). Run tests with 
 
 ---
 
-### Task 1: `corpus_score.py` — deterministic Moses scoring
+### Task 1: `corpus_score.py` — deterministic Moses scoring — ✅ COMPLETE (68c1e39)
 **Depends on:** none
 
 **Files:**
@@ -166,7 +166,7 @@ git commit -m "feat(corpus): deterministic Moses scoring of solution trees"
 
 ---
 
-### Task 2: `corpus_report.py` — merge + correlation + comparison.md
+### Task 2: `corpus_report.py` — merge + correlation + comparison.md — ✅ COMPLETE (c939cca)
 **Depends on:** Task 1 (consumes the `moses_scores.json` schema)
 
 **Files:**
@@ -392,7 +392,7 @@ git commit -m "feat(corpus): merge Moses+Judge into comparison.md with rank agre
 
 ---
 
-### Task 3: Gather pilot solutions (agentic — data, no unit tests)
+### Task 3: Gather pilot solutions (agentic — data, no unit tests) — ✅ COMPLETE (28ddc24)
 **Depends on:** none (independent of Tasks 1–2; needed before Task 4)
 
 For each pilot question **q4, q9, q16** create `evals/corpus/2024/qN/` containing:
@@ -413,7 +413,7 @@ git commit -m "data(corpus): gather pilot solutions for q4/q9/q16"
 
 ---
 
-### Task 4: Judge each solution (agentic — Moses-blind)
+### Task 4: Judge each solution (agentic — Moses-blind) — ✅ COMPLETE (b0a… judgements commit)
 **Depends on:** Task 3
 
 For each pilot question, dispatch a judge subagent that is given ONLY the question's `problem.md` and its solution `.py` files (NEVER any Moses score). It applies this fixed rubric and returns one holistic code-quality % (0–100) + a one-sentence justification per solution:
@@ -435,7 +435,7 @@ git commit -m "data(corpus): LLM-judge scores for pilot solutions"
 
 ---
 
-### Task 5: Run the pipeline end-to-end + review (integration)
+### Task 5: Run the pipeline end-to-end + review (integration) — ✅ COMPLETE
 **Depends on:** Tasks 1, 2, 3, 4
 
 **Steps:**
@@ -453,6 +453,14 @@ git commit -m "data(corpus): pilot comparison report for q4/q9/q16"
 ---
 
 ## Review
-- [ ] Code review requested (Tasks 1–2 deterministic code)
-- [ ] All feedback addressed
-- [ ] Final verification passed (`uv run pytest` green; `comparison.md` generated with all 3 pilot questions and rank-agreement summary)
+- [x] Code review requested (Tasks 1–2 deterministic code) — both reviewed, compliant, Spearman math traced correct
+- [x] All feedback addressed (no blocking issues; missing-year-dir guard accepted as Minor)
+- [x] Final verification passed (`uv run pytest` green; `comparison.md` generated with all 3 pilot questions + rank-agreement summary)
+
+## Pilot findings (Phase-1 result)
+
+- Judge validated: `synth_clean` > `synth_primitive` in all 3 questions (88>38, 90>28, 82>48).
+- **Moses is systematically too lenient** — nearly every Moses−Judge gap is positive (+0.8 to +64.8).
+- Rank agreement is weak: q4 ρ=0.657, q9 ρ=0.3, q16 ρ=0.0.
+- Largest divergences are the calibration goldmine: short/incomplete solutions score high on Moses (e.g. q16 `online_1` 51 LOC → Moses 92.8 vs Judge 28: Moses can't see "only Part 1" or copied-recipe over-engineering).
+- Single-file scoring inflates small files (few rules fire; DRY finds no dup). A known caveat now quantified.
