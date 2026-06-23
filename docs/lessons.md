@@ -19,6 +19,14 @@ non-obvious things worth remembering.
 
 ## Rule implementation
 
+- **[decision] Rules cannot read `Config`.** The engine calls
+  `cmd.evaluate(codebase)` flat (`engine.py:118`) — no config is passed. #20 even
+  uses `shutil.which("mutmut")` rather than `config.mutmut_path`, so
+  `mutmut_path`/`jscpd_path` are dead fields. A rule needing a tunable (e.g. C27's
+  target ratio) ships it as a module-level constant; per-project config awaits a
+  deliberate config-threading refactor of the rule protocol. Don't thread config
+  into one rule ad hoc.
+
 - **A pass-through (#3) must delegate to a *method* and forward its args.**
   `return sum(x for x in items)` is not a pass-through (it's a builtin call doing
   real work); `return self.add_item(value)` is. Gate on `ast.Attribute` call

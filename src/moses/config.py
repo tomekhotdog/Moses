@@ -46,7 +46,7 @@ assert sum(WEIGHTS.values()) == 100, f"Weights must sum to 100, got {sum(WEIGHTS
 
 # The MVP enabled-set. Mutation (#20) is in the set but only runs under --deep.
 MVP_COMMANDMENTS: set[int] = {
-    1, 2, 3, 5, 6, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 29, 31,
+    1, 2, 3, 5, 6, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 27, 29, 31,
 }
 
 

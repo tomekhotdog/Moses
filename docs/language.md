@@ -19,6 +19,10 @@ use them consistently in code, docs, and reports.
 | **Loop** | An autonomous improvement campaign (the RALPH harness). |
 | **Iteration** | One pass of the Loop: judge → improve → verify → commit → record. |
 | **Campaign** | The whole Loop run, recorded in `campaign.json`. |
+| **Concept** | A domain type — a class, `NewType`, `Enum`, dataclass/`NamedTuple`, or known value type (`datetime`, `Decimal`, `UUID`, `Path`) — as opposed to a raw primitive. C27 rewards expressing the public surface in Concepts. |
+| **Primitive** | A raw built-in scalar/container that carries no domain meaning: `str`/`int`/`float`/`bool`/`bytes`/`None`, `Any`, and unparameterized `dict`/`list`/`tuple`. |
+| **Slot** | An annotated point on the public type surface that C27 scores: a parameter, a return annotation, or a class attribute. |
+| **DomainSurfaceRatio** | C27's Metric: the mean domain-richness (`Concept` = 1, weak = 0.5, `Primitive` = 0) across qualifying Slots. |
 
 ## Status vocabulary
 
