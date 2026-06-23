@@ -1,0 +1,22 @@
+{
+  "synth_clean.py": {
+    "pct": 90,
+    "justification": "Clean per-block model with a FREE sentinel, small single-purpose functions each documented, full type hints, and a proper main guard make this the most readable and well-decomposed solution."
+  },
+  "online_2.py": {
+    "pct": 72,
+    "justification": "Idiomatic and well-typed with a tidy Item dataclass and expand/parse helpers, but the two separately-redefined Solution classes, duplicated imports, and subtle list insert/mutate logic in part 2 reduce clarity."
+  },
+  "online_1.py": {
+    "pct": 60,
+    "justification": "A reasonable Block abstraction with decent naming, but it conflates file lists, type flags, and space lengths into one struct and relies on try/except as control flow, making the stateful compaction hard to follow."
+  },
+  "tomek.py": {
+    "pct": 52,
+    "justification": "Helpful worked-example comments and an explicit FileBlock type, but redundant per-block file_length storage, tangled nested loops in compact_contiguous, and leftover debug prints undercut it."
+  },
+  "synth_primitive.py": {
+    "pct": 28,
+    "justification": "A single monolithic function with pervasive one-letter names (d, f, l, r, m, st, ln), no types, no docstrings, and inlined part1/part2 logic makes it correct but very hard to read or maintain."
+  }
+}

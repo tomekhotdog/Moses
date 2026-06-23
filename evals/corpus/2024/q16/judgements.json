@@ -1,0 +1,7 @@
+{
+  "online_1.py": {"pct": 28, "justification": "Wholesale copies the heapq-docs lazy-deletion PQ recipe it never needs, uses single-letter state, deeply nested inline conditionals with repeated index arithmetic and magic 1000000, and only solves Part 1."},
+  "online_2.py": {"pct": 58, "justification": "Readable with named constants and a direction model, but duplicates two near-identical Dijkstras and pushes whole path-sets through the heap for Part 2, plus a hardcoded Windows input path."},
+  "synth_clean.py": {"pct": 82, "justification": "Strong domain modelling (Vec/State/Maze), type hints, docstrings, and a correct predecessor-DAG backtrack, marred only by a dead/confused best_cost_to_end helper and an awkward end-state reconstruction."},
+  "synth_primitive.py": {"pct": 48, "justification": "A correct, compact Dijkstra-plus-backtrack for both parts but with no structure, pervasive single-letter names, magic numbers, and redundant setdefault calls that hurt readability."},
+  "tomek.py": {"pct": 62, "justification": "Clear OO modelling and naming with good decomposition, but uses a FIFO list (pop(0)) rather than a priority queue and a hacky (start+end)%2 rotation-cost formula, making correctness fragile and over-modelled via the Step class."}
+}

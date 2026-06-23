@@ -1,0 +1,8 @@
+{
+  "synth_clean.py": {"pct": 88, "justification": "Clean domain modelling with Point/Grid abstractions, a generic spells_word helper, type hints and tidy part decomposition; only mildly over-engineered for the problem size."},
+  "synth_mid.py": {"pct": 82, "justification": "Idiomatic, simple and readable with well-named helpers (in_bounds, count_xmas/count_x_mas) and clear direction handling, hitting the sweet spot of clarity without ceremony."},
+  "online_2.py": {"pct": 70, "justification": "Sound diagonal-bucketing approach with helpful comments and a fine part2, but the verbose diagonal dict-building and the opaque _set name hold it back."},
+  "online_1.py": {"pct": 64, "justification": "Compact and clever numpy/regex solution with rare file-error handling, but inconsistent 1/2-space indentation, terse lambdas and isSM naming make it cryptic to read."},
+  "synth_primitive.py": {"pct": 38, "justification": "Functionally correct but a single monolithic solve() with module-level I/O, single-letter names and both parts crammed into one deeply nested loop, with no decomposition."},
+  "tomek.py": {"pct": 30, "justification": "Over-engineered yet incomplete: a confusing transpose/flip in read_grid inverts coordinate semantics, per-direction hardcoded offset lists duplicate heavily, it imports from a nonexistent module, and main runs only part2 leaving part1 dead."}
+}
