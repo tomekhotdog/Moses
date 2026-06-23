@@ -115,3 +115,41 @@ def test_domain_vocab_density_reported():
     # One class (Order) + one NewType (UserId) = 2 domain-type definitions.
     assert result.detail["domain_vocab_density"] > 0
     assert "domain_vocab_density" in result.detail
+
+
+def test_none_return_is_exempt_and_not_worst_type():
+    # `-> None` is the correct type for a command/procedure, not primitive obsession.
+    text = "def create(self, name: str) -> None: ...\n"
+    result = DataOverPrimitives().evaluate(_codebase(text))
+    # Only the `name: str` param is scored; the `-> None` return is exempt.
+    assert result.detail["slot_count"] == 1
+    assert result.metric == 0.0
+    # The violation must blame the str param, never `None`.
+    assert result.violations
+    assert "None" not in (result.violations[0]["worst_type"] or "")
+    assert result.violations[0]["worst_type"] == "str"
+
+
+def test_varargs_and_kwargs_annotations_are_scored():
+    text = "def handle(self, *items: 'Order', **opts: str) -> None: ...\n"
+    result = DataOverPrimitives().evaluate(_codebase(text))
+    # *items: Order -> 1.0 (concept), **opts: str -> 0.0 (primitive). Both counted.
+    assert result.detail["slot_count"] == 2
+    assert result.metric == 0.5
+
+
+def test_vocab_density_denominator_excludes_test_files():
+    from pathlib import Path
+    from moses.models import Codebase, SourceFile
+
+    src = SourceFile(path=Path("m.py"), relpath="m.py", text="class Order:\n    x: int\n")
+    test = SourceFile(
+        path=Path("tests/test_m.py"),
+        relpath="tests/test_m.py",
+        text="def test_a():\n    assert True\n" * 50,
+    )
+    cb = Codebase(root=Path("."), files=[src, test])
+    result = DataOverPrimitives().evaluate(cb)
+    # Density must be computed over source-only LOC; the big test file must not dilute it.
+    # Order class over ~2 non-blank source LOC -> density ~ 500 (defs per kLOC), well above 1.
+    assert result.detail["domain_vocab_density"] > 100

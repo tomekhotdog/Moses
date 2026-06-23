@@ -12,6 +12,9 @@ from __future__ import annotations
 
 import ast
 
+from ..models import CommandmentResult
+from ._ast_helpers import clamp, is_dunder, is_private, iter_classes, iter_functions, mean, parse_file
+
 NUMBER = 27
 NAME = "Data over primitives"
 
@@ -123,16 +126,13 @@ def classify_annotation(node: ast.expr | None) -> float:
     return 1.0
 
 
-from ..models import CommandmentResult  # noqa: E402  (kept near rule for locality)
-from ._ast_helpers import clamp, is_dunder, is_private, iter_classes, iter_functions, mean, parse_file  # noqa: E402
-
 TARGET_RATIO = 0.6  # DSR earning full marks (opinionated, calibration-pending)
 VIOLATION_THRESHOLD = 0.5  # functions whose mean slot score is below this are flagged
 PREDICATE_PREFIXES = ("is_", "has_", "can_", "should_", "was_", "are_")
 COUNT_NAMES = frozenset({"count", "size", "length", "len", "index", "n", "num", "total"})
 
 
-def _is_property_or_setter(node) -> bool:
+def _is_property_or_setter(node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
     for dec in node.decorator_list:
         if isinstance(dec, ast.Name) and dec.id == "property":
             return True
@@ -141,21 +141,34 @@ def _is_property_or_setter(node) -> bool:
     return False
 
 
-def _param_annotations(node) -> list:
+def _param_annotations(node: ast.FunctionDef | ast.AsyncFunctionDef) -> list[ast.expr | None]:
     args = node.args
     all_args = list(args.posonlyargs) + list(args.args) + list(args.kwonlyargs)
     if all_args and all_args[0].arg in ("self", "cls"):
         all_args = all_args[1:]
+    if args.vararg:
+        all_args.append(args.vararg)
+    if args.kwarg:
+        all_args.append(args.kwarg)
     return [a.annotation for a in all_args]
 
 
-def _exempt_return(name: str, ret) -> bool:
-    if not isinstance(ret, ast.Name):
+def _exempt_return(name: str, ret: ast.expr | None) -> bool:
+    # An unannotated return still counts toward coverage surface (handled by caller),
+    # so it is NOT exempt here.
+    if ret is None:
         return False
-    if ret.id == "bool" and name.startswith(PREDICATE_PREFIXES):
+    # `-> None` is the correct type for a command/procedure, not primitive obsession.
+    if isinstance(ret, ast.Constant) and ret.value is None:
         return True
-    if ret.id == "int" and (name in COUNT_NAMES or name.startswith(("count_", "num_"))):
+    if isinstance(ret, ast.Name) and ret.id == "None":
         return True
+    if isinstance(ret, ast.Name):
+        # Predicate bools and count ints are legitimately primitive.
+        if ret.id == "bool" and name.startswith(PREDICATE_PREFIXES):
+            return True
+        if ret.id == "int" and (name in COUNT_NAMES or name.startswith(("count_", "num_"))):
+            return True
     return False
 
 
@@ -175,7 +188,7 @@ def _domain_vocab_density(codebase) -> float:
                 fn_name = fn.id if isinstance(fn, ast.Name) else getattr(fn, "attr", "")
                 if fn_name in ("NewType", "NamedTuple"):
                     defs += 1
-    nbloc = codebase.non_blank_loc
+    nbloc = sum(f.non_blank_loc for f in codebase.files if not f.is_test)
     return round(defs / (nbloc / 1000.0), 2) if nbloc else 0.0
 
 
@@ -213,8 +226,6 @@ class DataOverPrimitives:
                 if s < worst_score:
                     worst_score, worst_ann = s, ann
             ret = f.node.returns
-            # On ties the return slot wins: it is the most informative signal of a
-            # primitive-leaking surface ("what does this hand back?").
             if not _exempt_return(f.name, ret):
                 total_surface += 1
                 if ret is not None:
@@ -222,6 +233,9 @@ class DataOverPrimitives:
                     s = classify_annotation(ret)
                     slot_scores.append(s)
                     fn_scores.append(s)
+                    # `<=` (not `<` as in the param loop) is intentional: on a tie the
+                    # return type wins, since it is the more informative signal of a
+                    # primitive-leaking surface ("what does this hand back?").
                     if s <= worst_score:
                         worst_score, worst_ann = s, ret
             if fn_scores:
@@ -256,6 +270,8 @@ class DataOverPrimitives:
         score = clamp(100.0 * dsr / TARGET_RATIO)
         coverage = annotated / total_surface if total_surface else 0.0
         violations.sort(key=lambda v: v["domain_score"])
+        # Second pass over the codebase: density is a separate corpus-level signal.
+        vocab_density = _domain_vocab_density(codebase)
 
         return CommandmentResult(
             number=NUMBER,
@@ -268,7 +284,7 @@ class DataOverPrimitives:
                 "domain_surface_ratio": round(dsr, 3),
                 "slot_count": len(slot_scores),
                 "annotation_coverage": round(coverage, 3),
-                "domain_vocab_density": _domain_vocab_density(codebase),
+                "domain_vocab_density": vocab_density,
                 "target_ratio": TARGET_RATIO,
             },
             violations=violations[:50],
