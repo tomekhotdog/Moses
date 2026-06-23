@@ -177,9 +177,16 @@ Ranked worst-offenders with `file:line`:
   classification complexity stays inside.
 - **New AST helpers** likely added to `_ast_helpers.py`: an annotation-node
   classifier and a "domain type definition" detector, reused by future C28.
-- **Config:** add `c27_target_ratio: float = 0.6` and
-  `c27_exclude_paths: list[str]` to `Config`, threaded through `from_file` and
-  `with_overrides`. Keeps C27 tunable per project without code changes.
+- **Config (deferred — see decision below):** rules' `evaluate(codebase)` receive
+  no `Config` today (the engine calls `cmd.evaluate(codebase)` flat at
+  `engine.py:118`; even #20 reads `shutil.which` rather than `config.mutmut_path`,
+  so `mutmut_path`/`jscpd_path` are dead fields). Threading config into every rule
+  is out of proportion to C27. **Decision:** ship `TARGET_RATIO = 0.6` as a
+  module-level constant in `c27_data_over_primitives.py`, and rely on the existing
+  global `excludes` (whole-codebase) plus C27's built-in slot exemptions
+  (predicates, counts, dunders, privates, tests, properties) for false-positive
+  control. No per-C27 path-exclude in v1. Per-project knobs become a separate
+  future task once a config-threading mechanism exists.
 - **No name resolution** in v1 (accepted false negative on plain aliases).
 - **Determinism preserved:** pure stdlib AST, no network, no LLM — Moses's
   load-bearing invariant holds.
@@ -207,6 +214,9 @@ Ranked worst-offenders with `file:line`:
 - **C28 Program to interfaces** and the naming rules (C9/C10) — future iterations.
 - **Intra-module type-alias resolution** (`UserId = int`) — deferred; corpus will
   decide if needed.
+- **Per-project C27 config** (`c27_target_ratio`, `c27_exclude_paths`) — deferred;
+  needs a config-threading mechanism that does not exist yet. v1 uses a module
+  constant.
 - **The Advent-of-Code training/test/validation corpus** — its own effort. It is
   the *validation* mechanism that calibrates `TARGET` and, later, regression-tests
   every rule against labelled good/bad examples. Designed separately.
