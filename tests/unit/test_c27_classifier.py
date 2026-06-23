@@ -52,6 +52,22 @@ def _ann(src: str) -> ast.expr:
         # typing-cased aliases
         ("List[Order]", 1.0),
         ("Dict[str, int]", 0.0),
+        # transparent wrappers score by their inner type
+        ("Annotated[int, 'meta']", 0.0),
+        ("Annotated[Order, 'meta']", 1.0),
+        ("ClassVar[str]", 0.0),
+        ("Final[Order]", 1.0),
+        # Callable scores by its return type
+        ("Callable[[int], str]", 0.0),
+        ("Callable[[int], Order]", 1.0),
+        # bare protocol containers are erased -> 0 (consistent with bare list/dict)
+        ("Iterable", 0.0),
+        ("Sequence", 0.0),
+        ("Mapping", 0.0),
+        # mixed union takes the min
+        ("Order | str", 0.0),
+        ("Union[Order, None]", 1.0),
+        ("Union[Order, str]", 0.0),
     ],
 )
 def test_classify_annotation(src, expected):

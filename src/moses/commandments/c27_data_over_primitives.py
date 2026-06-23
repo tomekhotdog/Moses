@@ -29,6 +29,9 @@ MAPPING_CONTAINERS = frozenset(
     {"dict", "Mapping", "MutableMapping", "DefaultDict", "OrderedDict", "Dict"}
 )
 TUPLE_CONTAINERS = frozenset({"tuple", "Tuple"})
+TRANSPARENT_WRAPPERS = frozenset(
+    {"Annotated", "Final", "ClassVar", "Required", "NotRequired", "ReadOnly"}
+)
 
 
 def _is_none(node: ast.expr) -> bool:
@@ -66,6 +69,12 @@ def _classify_subscript(node: ast.Subscript) -> float:
     if name == "Union":
         members = [a for a in args if not _is_none(a)]
         return min((classify_annotation(m) for m in members), default=0.0)
+    if name in TRANSPARENT_WRAPPERS:
+        # Annotated[T, ...]/Final[T]/ClassVar[T] are transparent: score by T.
+        return classify_annotation(args[0]) if args else 0.0
+    if name == "Callable":
+        # Score a callable by its return type (last arg); params are contravariant.
+        return classify_annotation(args[-1]) if args else 1.0
     if name == "Literal":
         return 0.5
     if name in SEQUENCE_CONTAINERS:
@@ -90,10 +99,18 @@ def classify_annotation(node: ast.expr | None) -> float:
         if node.value is None:
             return 0.0
         if isinstance(node.value, str):  # forward ref, e.g. x: "Order"
-            return 0.0 if node.value in PRIMITIVE_NAMES else 1.0
+            if node.value in PRIMITIVE_NAMES or node.value in BARE_CONTAINER_NAMES:
+                return 0.0
+            return 1.0
         return 0.0
     if isinstance(node, ast.Name):
-        if node.id in PRIMITIVE_NAMES or node.id in BARE_CONTAINER_NAMES:
+        if (
+            node.id in PRIMITIVE_NAMES
+            or node.id in BARE_CONTAINER_NAMES
+            or node.id in SEQUENCE_CONTAINERS
+            or node.id in MAPPING_CONTAINERS
+            or node.id in TUPLE_CONTAINERS
+        ):
             return 0.0
         return 1.0
     if isinstance(node, ast.Attribute):
