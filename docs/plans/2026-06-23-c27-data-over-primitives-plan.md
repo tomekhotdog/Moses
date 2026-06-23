@@ -11,7 +11,7 @@ Run tests with `python -m pytest` (pythonpath is set to `src` via `pyproject.tom
 
 ---
 
-### Task 1: Annotation classifier (the pure core)
+### Task 1: Annotation classifier (the pure core) — ✅ COMPLETE (128cd34, fixes 7545e8a)
 **Depends on:** none
 
 **Files:**
@@ -217,7 +217,7 @@ git commit -m "feat(c27): annotation classifier with container recursion"
 
 ---
 
-### Task 2: The DataOverPrimitives rule + registration
+### Task 2: The DataOverPrimitives rule + registration — ✅ COMPLETE (9b69c14, fixes c6ad1d9, 5b44b0d)
 **Depends on:** Task 1
 
 **Files:**
@@ -482,7 +482,7 @@ git commit -m "feat(c27): DataOverPrimitives rule + registration"
 
 ---
 
-### Task 3: Fixtures + end-to-end engine integration
+### Task 3: Fixtures + end-to-end engine integration — ✅ COMPLETE (ec21319)
 **Depends on:** Task 2
 
 **Files:**
@@ -613,6 +613,6 @@ git commit -m "test(c27): fixtures + end-to-end engine integration"
 ---
 
 ## Review
-- [ ] Code review requested (five-axis)
-- [ ] All feedback addressed
-- [ ] Final verification passed (`python -m pytest -q` green; `moses judge .` self-host still ≥ B)
+- [x] Code review requested (five-axis) — per-task spec+quality reviews + final holistic review
+- [x] All feedback addressed (classifier: transparent wrappers/Callable/bare protocols; rule: -> None exempt, *args/**kwargs scored, source-only vocab density; polish: bare Callable erased)
+- [x] Final verification passed (`uv run pytest` → 128 passed/1 skipped; `moses judge .` self-host Grade B, exit 0; C27 measured)
