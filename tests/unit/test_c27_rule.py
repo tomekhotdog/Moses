@@ -72,3 +72,46 @@ def test_coverage_reported():
     result = DataOverPrimitives().evaluate(_codebase(text))
     assert result.detail["annotation_coverage"] < 1.0
     assert result.detail["target_ratio"] == 0.6
+
+
+def test_property_and_setter_excluded():
+    text = (
+        "class C:\n"
+        "    @property\n"
+        "    def name(self) -> str: ...\n"
+        "    @name.setter\n"
+        "    def name(self, v: str) -> None: ...\n"
+        "    def total(self, x: int) -> str: ...\n"
+    )
+    result = DataOverPrimitives().evaluate(_codebase(text))
+    # The property getter and its setter must not be scored; only `total` contributes.
+    # `total` has param x:int (0) and return str (0) -> 2 primitive slots.
+    assert result.detail["slot_count"] == 2
+
+
+def test_predicate_bool_and_count_int_returns_exempt():
+    text = (
+        "def is_ready(self, order: 'Order') -> bool: ...\n"
+        "def count(self, rows: 'Order') -> int: ...\n"
+    )
+    result = DataOverPrimitives().evaluate(_codebase(text))
+    # Both functions take one concept param (Order -> 1.0); their bool/int returns
+    # are exempt, so they are NOT counted as primitive return slots.
+    assert result.detail["slot_count"] == 2
+    assert result.metric == 1.0
+
+
+def test_domain_vocab_density_reported():
+    text = (
+        "from typing import NewType\n"
+        "from dataclasses import dataclass\n"
+        "UserId = NewType('UserId', int)\n"
+        "@dataclass\n"
+        "class Order:\n"
+        "    id: UserId\n"
+        "    def lookup(self, uid: UserId) -> 'Order': ...\n"
+    )
+    result = DataOverPrimitives().evaluate(_codebase(text))
+    # One class (Order) + one NewType (UserId) = 2 domain-type definitions.
+    assert result.detail["domain_vocab_density"] > 0
+    assert "domain_vocab_density" in result.detail
