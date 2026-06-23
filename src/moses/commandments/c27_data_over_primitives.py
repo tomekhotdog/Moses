@@ -32,6 +32,11 @@ MAPPING_CONTAINERS = frozenset(
     {"dict", "Mapping", "MutableMapping", "DefaultDict", "OrderedDict", "Dict"}
 )
 TUPLE_CONTAINERS = frozenset({"tuple", "Tuple"})
+# A bare (unparameterised) name in any of these sets is type-erased -> 0.0.
+ERASED_NAMES = (
+    PRIMITIVE_NAMES | BARE_CONTAINER_NAMES | SEQUENCE_CONTAINERS
+    | MAPPING_CONTAINERS | TUPLE_CONTAINERS | frozenset({"Callable"})
+)
 TRANSPARENT_WRAPPERS = frozenset(
     {"Annotated", "Final", "ClassVar", "Required", "NotRequired", "ReadOnly"}
 )
@@ -107,15 +112,7 @@ def classify_annotation(node: ast.expr | None) -> float:
             return 1.0
         return 0.0
     if isinstance(node, ast.Name):
-        if (
-            node.id in PRIMITIVE_NAMES
-            or node.id in BARE_CONTAINER_NAMES
-            or node.id in SEQUENCE_CONTAINERS
-            or node.id in MAPPING_CONTAINERS
-            or node.id in TUPLE_CONTAINERS
-        ):
-            return 0.0
-        return 1.0
+        return 0.0 if node.id in ERASED_NAMES else 1.0
     if isinstance(node, ast.Attribute):
         return 0.0 if node.attr in PRIMITIVE_NAMES else 1.0
     if isinstance(node, ast.BinOp) and isinstance(node.op, ast.BitOr):
@@ -161,7 +158,11 @@ def _exempt_return(name: str, ret: ast.expr | None) -> bool:
     # `-> None` is the correct type for a command/procedure, not primitive obsession.
     if isinstance(ret, ast.Constant) and ret.value is None:
         return True
+    if isinstance(ret, ast.Constant) and ret.value == "None":
+        # A quoted forward ref `-> "None"` is still a None-returning procedure.
+        return True
     if isinstance(ret, ast.Name) and ret.id == "None":
+        # Pre-3.8 NameConstant compatibility (dead on 3.8+ but kept defensively).
         return True
     if isinstance(ret, ast.Name):
         # Predicate bools and count ints are legitimately primitive.

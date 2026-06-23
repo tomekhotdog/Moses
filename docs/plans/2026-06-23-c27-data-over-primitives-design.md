@@ -102,6 +102,13 @@ padded to 100; excluded from the Score).
 | `Literal[...]`, `TypedDict`, `IntEnum` | **0.5** |
 | `str`/`int`/`float`/`bool`/`bytes`/`complex`/`None`, `Any`, bare `dict`/`list`/`tuple` | **0.0** |
 
+> **Implementation policy note.** Of the 0.5 "weak" row, only `Literal[...]` is
+> detectably weak from the annotation node alone, so only it is scored 0.5 in
+> code. `TypedDict`/`IntEnum` are referenced by a user-defined name and are
+> indistinguishable from any other user type by name alone; under the
+> "unknown name = concept" policy they are scored **1.0** (concept). This is
+> deliberate impl-vs-design intent, not an oversight.
+
 **Containers score by their type arguments** (the key nuance):
 - `list[X]` / `set[X]` / `frozenset[X]` / `Sequence[X]` / `Iterable[X]` → `score(X)`
   — a collection *of a concept* is free; one level of structural nesting costs

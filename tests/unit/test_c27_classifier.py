@@ -60,6 +60,8 @@ def _ann(src: str) -> ast.expr:
         # Callable scores by its return type
         ("Callable[[int], str]", 0.0),
         ("Callable[[int], Order]", 1.0),
+        # bare Callable is type-erased -> 0 (no return type to score)
+        ("Callable", 0.0),
         # bare protocol containers are erased -> 0 (consistent with bare list/dict)
         ("Iterable", 0.0),
         ("Sequence", 0.0),
