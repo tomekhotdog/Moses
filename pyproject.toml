@@ -35,7 +35,7 @@ packages = ["src/moses"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 addopts = "-q"
 
 [dependency-groups]
