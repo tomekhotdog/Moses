@@ -178,6 +178,10 @@ Ranked worst-offenders with `file:line`:
 - **New module** `commandments/c27_data_over_primitives.py`, class
   `DataOverPrimitives`, registered in `commandments/__init__.py`'s
   `ALL_COMMANDMENTS`.
+- **Enabled by default:** `27` is added to `MVP_COMMANDMENTS`, so C27 counts in
+  the default Score (decided during build). Moses self-grades B (79.1, DSR 0.33)
+  rather than A — accepted as honest, even though `TARGET_RATIO` is not yet
+  corpus-calibrated.
 - **Deep module (Ousterhout):** the whole annotation taxonomy + container
   recursion + exclusion logic hides behind a single `score_annotation(node) ->
   float` interface plus the `evaluate` entry point. Callers see a ratio; the AST
