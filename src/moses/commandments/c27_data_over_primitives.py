@@ -121,3 +121,155 @@ def classify_annotation(node: ast.expr | None) -> float:
     if isinstance(node, ast.Subscript):
         return _classify_subscript(node)
     return 1.0
+
+
+from ..models import CommandmentResult  # noqa: E402  (kept near rule for locality)
+from ._ast_helpers import clamp, is_dunder, is_private, iter_classes, iter_functions, mean, parse_file  # noqa: E402
+
+TARGET_RATIO = 0.6  # DSR earning full marks (opinionated, calibration-pending)
+VIOLATION_THRESHOLD = 0.5  # functions whose mean slot score is below this are flagged
+PREDICATE_PREFIXES = ("is_", "has_", "can_", "should_", "was_", "are_")
+COUNT_NAMES = frozenset({"count", "size", "length", "len", "index", "n", "num", "total"})
+
+
+def _is_property_or_setter(node) -> bool:
+    for dec in node.decorator_list:
+        if isinstance(dec, ast.Name) and dec.id == "property":
+            return True
+        if isinstance(dec, ast.Attribute) and dec.attr in ("setter", "getter", "deleter"):
+            return True
+    return False
+
+
+def _param_annotations(node) -> list:
+    args = node.args
+    all_args = list(args.posonlyargs) + list(args.args) + list(args.kwonlyargs)
+    if all_args and all_args[0].arg in ("self", "cls"):
+        all_args = all_args[1:]
+    return [a.annotation for a in all_args]
+
+
+def _exempt_return(name: str, ret) -> bool:
+    if not isinstance(ret, ast.Name):
+        return False
+    if ret.id == "bool" and name.startswith(PREDICATE_PREFIXES):
+        return True
+    if ret.id == "int" and (name in COUNT_NAMES or name.startswith(("count_", "num_"))):
+        return True
+    return False
+
+
+def _domain_vocab_density(codebase) -> float:
+    defs = 0
+    for source in codebase.files:
+        if source.is_test:
+            continue
+        tree = parse_file(source)
+        if tree is None:
+            continue
+        for n in ast.walk(tree):
+            if isinstance(n, ast.ClassDef):
+                defs += 1
+            elif isinstance(n, ast.Assign) and isinstance(n.value, ast.Call):
+                fn = n.value.func
+                fn_name = fn.id if isinstance(fn, ast.Name) else getattr(fn, "attr", "")
+                if fn_name in ("NewType", "NamedTuple"):
+                    defs += 1
+    nbloc = codebase.non_blank_loc
+    return round(defs / (nbloc / 1000.0), 2) if nbloc else 0.0
+
+
+class DataOverPrimitives:
+    number = NUMBER
+    name = NAME
+
+    @property
+    def weight(self) -> int:
+        from ..config import WEIGHTS
+
+        return WEIGHTS[NUMBER]
+
+    def evaluate(self, codebase) -> CommandmentResult:
+        slot_scores: list[float] = []
+        annotated = 0
+        total_surface = 0
+        violations: list[dict] = []
+
+        for f in iter_functions(codebase):
+            if f.file.is_test or is_dunder(f.name) or is_private(f.name):
+                continue
+            if _is_property_or_setter(f.node):
+                continue
+            fn_scores: list[float] = []
+            worst_ann, worst_score = None, 2.0
+            for ann in _param_annotations(f.node):
+                total_surface += 1
+                if ann is None:
+                    continue
+                annotated += 1
+                s = classify_annotation(ann)
+                slot_scores.append(s)
+                fn_scores.append(s)
+                if s < worst_score:
+                    worst_score, worst_ann = s, ann
+            ret = f.node.returns
+            # On ties the return slot wins: it is the most informative signal of a
+            # primitive-leaking surface ("what does this hand back?").
+            if not _exempt_return(f.name, ret):
+                total_surface += 1
+                if ret is not None:
+                    annotated += 1
+                    s = classify_annotation(ret)
+                    slot_scores.append(s)
+                    fn_scores.append(s)
+                    if s <= worst_score:
+                        worst_score, worst_ann = s, ret
+            if fn_scores:
+                fm = mean(fn_scores)
+                if fm < VIOLATION_THRESHOLD:
+                    violations.append(
+                        {
+                            "file": f.file.relpath,
+                            "line": f.lineno,
+                            "function": f.qualname or f.name,
+                            "domain_score": round(fm, 2),
+                            "worst_type": ast.unparse(worst_ann) if worst_ann is not None else None,
+                        }
+                    )
+
+        for source, cls in iter_classes(codebase):
+            if source.is_test or is_private(cls.name):
+                continue
+            for stmt in cls.body:
+                if isinstance(stmt, ast.AnnAssign) and isinstance(stmt.target, ast.Name):
+                    target = stmt.target.id
+                    if is_private(target) or is_dunder(target):
+                        continue
+                    annotated += 1
+                    total_surface += 1
+                    slot_scores.append(classify_annotation(stmt.annotation))
+
+        if not slot_scores:
+            return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
+
+        dsr = mean(slot_scores)
+        score = clamp(100.0 * dsr / TARGET_RATIO)
+        coverage = annotated / total_surface if total_surface else 0.0
+        violations.sort(key=lambda v: v["domain_score"])
+
+        return CommandmentResult(
+            number=NUMBER,
+            name=NAME,
+            weight=self.weight,
+            metric=round(dsr, 3),
+            score_contribution=score,
+            status="measured",
+            detail={
+                "domain_surface_ratio": round(dsr, 3),
+                "slot_count": len(slot_scores),
+                "annotation_coverage": round(coverage, 3),
+                "domain_vocab_density": _domain_vocab_density(codebase),
+                "target_ratio": TARGET_RATIO,
+            },
+            violations=violations[:50],
+        )
