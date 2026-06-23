@@ -120,6 +120,22 @@ iteration records the commit, Score before/after, and violation delta. Moses
 guarantees **honest, monotonic improvement** — the harness reverts any change
 that regresses the Score or increases violations rather than recording it.
 
+## Calibration corpus (evals/)
+
+Moses' rule parameters are hand-set. The **calibration corpus** exists to ground
+them in evidence. It collects varied-quality Python solutions to the same
+Advent-of-Code problems (`evals/corpus/`; 2024 trains, 2022/23 tests) and scores
+each solution two independent ways: the deterministic **Moses Score**, and an
+**LLM-as-judge** holistic code-quality % (the "Truth" proxy). Both land in one
+`comparison.md` (backed by `comparison.json`) that surfaces where the oracle and
+the judge diverge.
+
+The split is deliberate: judging is agentic and independent of Moses output;
+scoring (`evals/corpus_score.py`) and reporting (`evals/corpus_report.py`) are
+deterministic scripts over JSON, so the corpus re-runs with one command. A later
+phase tunes rule parameters until the Moses Score tracks the Judge across the
+corpus — which requires a parameter-override mechanism Moses does not yet have.
+
 ## Design invariants (must always hold)
 
 1. The scorer is pure stdlib + radon; deterministic; no network.

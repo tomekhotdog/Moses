@@ -24,6 +24,15 @@ use them consistently in code, docs, and reports.
 | **Slot** | An annotated point on the public type surface that C27 scores: a parameter, a return annotation, or a class attribute. |
 | **DomainSurfaceRatio** | C27's Metric: the mean domain-richness (`Concept` = 1, weak = 0.5, `Primitive` = 0) across qualifying Slots. |
 
+## Calibration vocabulary
+
+| Term | Meaning |
+|------|---------|
+| **Corpus** | The labelled set of Advent-of-Code solutions used to calibrate rules. Lives under `evals/corpus/`; 2024 trains, 2022/23 tests. |
+| **Judge** | The LLM-as-judge: a holistic code-quality % (0–100) with justification, assigned independently of Moses. The proxy for "the Truth". |
+| **Comparison** | The single file (`evals/corpus/comparison.md`, backed by `comparison.json`) laying each solution's Moses Score beside its Judge score. |
+| **Calibration** | Tuning rule parameters (weights, curves, thresholds) until the Moses Score tracks the Judge score across the Corpus. (Phase 2.) |
+
 ## Status vocabulary
 
 A `CommandmentResult.status` is exactly one of: `measured`, `not_measured`,
