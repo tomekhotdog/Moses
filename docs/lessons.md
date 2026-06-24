@@ -19,13 +19,16 @@ non-obvious things worth remembering.
 
 ## Rule implementation
 
-- **[decision] Rules cannot read `Config`.** The engine calls
-  `cmd.evaluate(codebase)` flat (`engine.py:118`) — no config is passed. #20 even
-  uses `shutil.which("mutmut")` rather than `config.mutmut_path`, so
-  `mutmut_path`/`jscpd_path` are dead fields. A rule needing a tunable (e.g. C27's
-  target ratio) ships it as a module-level constant; per-project config awaits a
-  deliberate config-threading refactor of the rule protocol. Don't thread config
-  into one rule ad hoc.
+- **[decision] Rule tunables are explicit `Params` threaded into `evaluate`.**
+  (Supersedes the earlier "rules cannot read Config" decision.) Each rule module
+  defines a frozen `Params` dataclass holding all its knobs (budgets, thresholds,
+  curve slopes — including ones formerly hardcoded inline); `evaluate(self,
+  codebase, params)` requires it. `default_rule_params()` in
+  `commandments/__init__.py` builds the defaults; `Config.rule_params` carries them
+  and the engine threads `config.rule_params[number]` in. Defaults equal the old
+  constant values (behaviour-preserving). Weights stay separate (aggregation knob,
+  not used in rule eval). This was built to enable calibration against the AoC
+  corpus — see [[aoc-calibration-corpus]].
 
 - **A pass-through (#3) must delegate to a *method* and forward its args.**
   `return sum(x for x in items)` is not a pass-through (it's a builtin call doing

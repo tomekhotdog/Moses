@@ -29,9 +29,11 @@ Verdict(score, grade, commandments[], hotspots[], overview, meta)
 
 ## Scoring
 
-Each Commandment produces a `CommandmentResult` with a `score_contribution`
-in [0, 100] and a `status`. The overall Score is a weighted mean over the rules
-that are **both enabled and measured**:
+Each Commandment maps its Metric to a `score_contribution` in [0, 100] via a
+tunable curve whose knobs (budgets, thresholds, slopes) live in an explicit frozen
+**RuleParams** dataclass on the rule, threaded into `evaluate(codebase, params)`
+from `Config.rule_params` (defaults via `default_rule_params()`). The overall Score
+is a weighted mean over the rules that are **both enabled and measured**:
 
 ```
 Q = Σ (wᵢ · Sᵢ) / Σ wᵢ      for i in enabled, measured

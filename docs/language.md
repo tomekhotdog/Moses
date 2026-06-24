@@ -32,6 +32,7 @@ use them consistently in code, docs, and reports.
 | **Judge** | The LLM-as-judge: a holistic code-quality % (0–100) with justification, assigned independently of Moses. The proxy for "the Truth". |
 | **Comparison** | The single file (`evals/corpus/comparison.md`, backed by `comparison.json`) laying each solution's Moses Score beside its Judge score. |
 | **Calibration** | Tuning rule parameters (weights, curves, thresholds) until the Moses Score tracks the Judge score across the Corpus. (Phase 2.) |
+| **RuleParams** | A rule's tunable knobs (budgets, thresholds, curve slopes) as an explicit frozen dataclass, passed into its `evaluate`. Defaults live with the rule; `Config.rule_params` carries the (overridable) set. |
 
 ## Status vocabulary
 
