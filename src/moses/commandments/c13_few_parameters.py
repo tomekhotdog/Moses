@@ -1,23 +1,31 @@
 """Commandment 13 — Few parameters.
 
 Metric: mean param count across all functions, excluding self/cls and dunders.
-Curve:  100 − 25·max(0, M − 2).
+Curve:  100 − slope·max(0, M − param_budget).
 """
 
 from __future__ import annotations
+
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, is_dunder, iter_functions, mean, param_names
 
 NUMBER = 13
 NAME = "Few parameters"
-PARAM_BUDGET = 2
-VIOLATION_THRESHOLD = 4
+
+
+@dataclass(frozen=True)
+class Params:
+    param_budget: int = 2
+    slope: float = 25.0
+    violation_threshold: int = 4
 
 
 class FewParameters:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -25,7 +33,8 @@ class FewParameters:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         counts = []
         violations = []
         for f in iter_functions(codebase):
@@ -33,7 +42,7 @@ class FewParameters:
                 continue
             n = len(param_names(f.node, skip_self=True))
             counts.append(n)
-            if n >= VIOLATION_THRESHOLD:
+            if n >= params.violation_threshold:
                 violations.append(
                     {
                         "file": f.file.relpath,
@@ -47,7 +56,7 @@ class FewParameters:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(counts)
-        score = clamp(100 - 25 * max(0, m - PARAM_BUDGET))
+        score = clamp(100 - params.slope * max(0, m - params.param_budget))
         violations.sort(key=lambda v: v["params"], reverse=True)
 
         return CommandmentResult(
