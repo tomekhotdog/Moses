@@ -53,3 +53,8 @@ ALL_COMMANDMENTS: list = [
     Composition(),
     ClassComplexity(),
 ]
+
+
+def default_rule_params() -> dict:
+    """Map each implemented rule number to a fresh default Params instance."""
+    return {cmd.number: cmd.Params() for cmd in ALL_COMMANDMENTS}

@@ -114,8 +114,9 @@ def run(root, config: Config | None = None) -> Verdict:
         if cmd is None:
             results.append(not_measured(number, name))
             continue
+        params = config.rule_params.get(number)
         try:
-            result = cmd.evaluate(codebase)
+            result = cmd.evaluate(codebase, params)
         except Exception as exc:  # noqa: BLE001 - deliberately broad; one bad rule must not crash the run
             result = CommandmentResult(
                 number=number,

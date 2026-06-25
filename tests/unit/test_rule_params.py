@@ -73,3 +73,26 @@ def test_c27_lower_target_ratio_is_more_lenient():
     lenient = DataOverPrimitives().evaluate(codebase, DataParams(target_ratio=0.3))
     strict = DataOverPrimitives().evaluate(codebase, DataParams(target_ratio=0.9))
     assert lenient.score_contribution >= strict.score_contribution
+
+
+def test_default_rule_params_covers_all_implemented():
+    from moses.commandments import ALL_COMMANDMENTS, default_rule_params
+
+    params = default_rule_params()
+    for cmd in ALL_COMMANDMENTS:
+        assert cmd.number in params  # every implemented rule has default Params
+
+
+def test_engine_threads_overridden_params(fixtures_dir):
+    from moses.commandments.c13_few_parameters import Params
+    from moses.config import Config
+    from moses.engine import run
+
+    base = run(fixtures_dir / "bad_example", Config(enabled={13}))
+    strict = Config(enabled={13})
+    strict.rule_params[13] = Params(param_budget=0, slope=99.0)
+    tuned = run(fixtures_dir / "bad_example", strict)
+
+    c13_base = next(c for c in base.commandments if c.number == 13)
+    c13_tuned = next(c for c in tuned.commandments if c.number == 13)
+    assert c13_tuned.score_contribution <= c13_base.score_contribution

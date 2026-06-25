@@ -53,7 +53,7 @@ def test_error_rule_does_not_crash(monkeypatch, fixtures_dir):
         name = "boom"
         weight = 2
 
-        def evaluate(self, codebase):
+        def evaluate(self, codebase, params=None):
             raise RuntimeError("kaboom")
 
     monkeypatch.setattr(engine_mod, "ALL_COMMANDMENTS", [Exploding()])
