@@ -8,12 +8,19 @@ Skip module imports, pathlib idioms, and fluent builders
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, mean, parse_file
 
 NUMBER = 22
 NAME = "Law of Demeter"
+
+
+@dataclass(frozen=True)
+class Params:
+    budget: float = 1.0
+    slope: float = 50.0
 
 _FLUENT_PREFIXES = ("with_", "set_", "add_")
 _FLUENT_NAMES = {"build", "configure", "copy", "clone"}
@@ -70,6 +77,7 @@ def _collect_imports(tree: ast.Module) -> set[str]:
 class LawOfDemeter:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -77,7 +85,8 @@ class LawOfDemeter:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         depths = []
         violations = []
         for source in codebase.files:
@@ -105,7 +114,7 @@ class LawOfDemeter:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(depths)
-        score = clamp(100 - 50 * max(0, m - 1))
+        score = clamp(100 - params.slope * max(0, m - params.budget))
         violations.sort(key=lambda v: v["depth"], reverse=True)
 
         return CommandmentResult(

@@ -6,18 +6,26 @@ Curve:  100 − 2·max(0, p95 − 50).
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, iter_functions, percentile
 
 NUMBER = 11
 NAME = "Small functions"
-LOC_BUDGET = 50
-VIOLATION_THRESHOLD = 50
+
+
+@dataclass(frozen=True)
+class Params:
+    loc_budget: int = 50
+    slope: float = 2.0
+    violation_threshold: int = 50
 
 
 class SmallFunctions:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -25,14 +33,15 @@ class SmallFunctions:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         funcs = list(iter_functions(codebase))
         if not funcs:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         locs = [f.non_blank_loc for f in funcs]
         p95 = percentile(locs, 95)
-        score = clamp(100 - 2 * max(0, p95 - LOC_BUDGET))
+        score = clamp(100 - params.slope * max(0, p95 - params.loc_budget))
 
         violations = sorted(
             (
@@ -43,7 +52,7 @@ class SmallFunctions:
                     "loc": f.non_blank_loc,
                 }
                 for f in funcs
-                if f.non_blank_loc > VIOLATION_THRESHOLD
+                if f.non_blank_loc > params.violation_threshold
             ),
             key=lambda v: v["loc"],
             reverse=True,

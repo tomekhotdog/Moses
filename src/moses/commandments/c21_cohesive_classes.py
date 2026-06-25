@@ -8,12 +8,19 @@ components. Mean across classes. Curve: 100 − 50·max(0, M − 1).
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, is_dunder, iter_classes, mean, methods_of
 
 NUMBER = 21
 NAME = "Cohesive classes"
+
+
+@dataclass(frozen=True)
+class Params:
+    budget: float = 1.0
+    slope: float = 50.0
 
 
 def _self_attrs(method) -> set[str]:
@@ -85,6 +92,7 @@ def lcom4(cls: ast.ClassDef) -> int:
 class CohesiveClasses:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -92,7 +100,8 @@ class CohesiveClasses:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         values = []
         violations = []
         for source, cls in iter_classes(codebase):
@@ -114,7 +123,7 @@ class CohesiveClasses:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(values)
-        score = clamp(100 - 50 * max(0, m - 1))
+        score = clamp(100 - params.slope * max(0, m - params.budget))
         violations.sort(key=lambda v: v["lcom4"], reverse=True)
 
         return CommandmentResult(

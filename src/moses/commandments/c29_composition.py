@@ -7,12 +7,19 @@ whose name isn't defined in this codebase). Curve: 100 − 50·max(0, M − 1).
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, iter_classes, mean
 
 NUMBER = 29
 NAME = "Composition over inheritance"
+
+
+@dataclass(frozen=True)
+class Params:
+    budget: float = 1.0
+    slope: float = 50.0
 
 
 def _base_names(cls: ast.ClassDef) -> list[str]:
@@ -28,6 +35,7 @@ def _base_names(cls: ast.ClassDef) -> list[str]:
 class Composition:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -35,7 +43,8 @@ class Composition:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         classes: dict[str, ast.ClassDef] = {}
         located: dict[str, str] = {}
         for source, cls in iter_classes(codebase):
@@ -77,7 +86,7 @@ class Composition:
                 )
 
         m = mean(values)
-        score = clamp(100 - 50 * max(0, m - 1))
+        score = clamp(100 - params.slope * max(0, m - params.budget))
         violations.sort(key=lambda v: v["depth"], reverse=True)
 
         return CommandmentResult(

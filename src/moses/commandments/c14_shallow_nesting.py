@@ -8,14 +8,21 @@ Curve:  100 − 25·max(0, p95 − 2).
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, iter_functions, percentile
 
 NUMBER = 14
 NAME = "Shallow nesting"
-DEPTH_BUDGET = 2
-VIOLATION_THRESHOLD = 3
+
+
+@dataclass(frozen=True)
+class Params:
+    depth_budget: int = 2
+    slope: float = 25.0
+    violation_threshold: int = 3
+
 
 _NESTING = (
     ast.If,
@@ -41,6 +48,7 @@ def _max_depth(node: ast.AST, depth: int = 0) -> int:
 class ShallowNesting:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -48,13 +56,14 @@ class ShallowNesting:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         depths = []
         violations = []
         for f in iter_functions(codebase):
             d = _max_depth(f.node)
             depths.append(d)
-            if d >= VIOLATION_THRESHOLD:
+            if d >= params.violation_threshold:
                 violations.append(
                     {
                         "file": f.file.relpath,
@@ -68,7 +77,7 @@ class ShallowNesting:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         p95 = percentile([float(d) for d in depths], 95)
-        score = clamp(100 - 25 * max(0, p95 - DEPTH_BUDGET))
+        score = clamp(100 - params.slope * max(0, p95 - params.depth_budget))
         violations.sort(key=lambda v: v["depth"], reverse=True)
 
         return CommandmentResult(

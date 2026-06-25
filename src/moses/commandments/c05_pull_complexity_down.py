@@ -7,6 +7,7 @@ function. Curve: 100 − 20·max(0, M − 1).
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, is_private, mean, parse_file, required_param_count
@@ -15,9 +16,16 @@ NUMBER = 5
 NAME = "Pull complexity downward"
 
 
+@dataclass(frozen=True)
+class Params:
+    budget: float = 1.0
+    slope: float = 20.0
+
+
 class PullComplexityDown:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -25,7 +33,8 @@ class PullComplexityDown:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         counts = []
         violations = []
         for source in codebase.files:
@@ -52,7 +61,7 @@ class PullComplexityDown:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(counts)
-        score = clamp(100 - 20 * max(0, m - 1))
+        score = clamp(100 - params.slope * max(0, m - params.budget))
         violations.sort(key=lambda v: v["required_params"], reverse=True)
 
         return CommandmentResult(

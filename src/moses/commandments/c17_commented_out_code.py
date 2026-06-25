@@ -7,21 +7,27 @@ Python via ast.parse. Metric: such runs per 1000 LOC. Curve: 100 − 20·M.
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp
 
 NUMBER = 17
 NAME = "No commented-out code"
-MIN_RUN = 2
 
 
-def _comment_runs(text: str) -> list[tuple[int, str]]:
-    """Yield (start_line, joined_code) for runs of ≥2 comment lines that parse.
+@dataclass(frozen=True)
+class Params:
+    min_run: int = 2
+    slope: float = 20.0
+
+
+def _comment_runs(text: str, min_run: int) -> list[tuple[int, str]]:
+    """Yield (start_line, joined_code) for runs of ≥min_run comment lines that parse.
 
     A run is a block of consecutive `#`-comment lines. Prose headers often
     precede the dead code (and break a whole-block parse), so within each run we
-    look for the largest contiguous sub-block of ≥MIN_RUN lines that parses as
+    look for the largest contiguous sub-block of ≥min_run lines that parses as
     Python.
     """
     lines = text.splitlines()
@@ -38,7 +44,7 @@ def _comment_runs(text: str) -> list[tuple[int, str]]:
                     content = content[1:]
                 block_lines.append(content)
                 i += 1
-            found = _largest_code_subrun(block_lines)
+            found = _largest_code_subrun(block_lines, min_run)
             if found is not None:
                 offset, code = found
                 runs.append((start + offset + 1, code))
@@ -47,13 +53,13 @@ def _comment_runs(text: str) -> list[tuple[int, str]]:
     return runs
 
 
-def _largest_code_subrun(block_lines: list[str]) -> tuple[int, str] | None:
+def _largest_code_subrun(block_lines: list[str], min_run: int) -> tuple[int, str] | None:
     """Return (offset, code) of the largest contiguous parseable sub-block.
 
     Tries the widest windows first so a leading prose header is skipped.
     """
     n = len(block_lines)
-    for width in range(n, MIN_RUN - 1, -1):
+    for width in range(n, min_run - 1, -1):
         for offset in range(0, n - width + 1):
             window = block_lines[offset : offset + width]
             code = "\n".join(window)
@@ -80,6 +86,7 @@ def _parses_as_code(code: str) -> bool:
 class NoCommentedOutCode:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -87,12 +94,13 @@ class NoCommentedOutCode:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         total_loc = 0
         violations = []
         for source in codebase.files:
             total_loc += source.non_blank_loc
-            for start, code in _comment_runs(source.text):
+            for start, code in _comment_runs(source.text, params.min_run):
                 violations.append(
                     {
                         "file": source.relpath,
@@ -106,7 +114,7 @@ class NoCommentedOutCode:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         per_kloc = len(violations) / (total_loc / 1000.0)
-        score = clamp(100 - 20 * per_kloc)
+        score = clamp(100 - params.slope * per_kloc)
 
         return CommandmentResult(
             number=NUMBER,

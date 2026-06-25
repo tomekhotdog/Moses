@@ -7,13 +7,19 @@ Curve: 100 − 200·max(0, M − 0.3).
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, iter_functions, mean
 
 NUMBER = 23
 NAME = "Narrow variable scope"
-SCOPE_BUDGET = 0.3
+
+
+@dataclass(frozen=True)
+class Params:
+    scope_budget: float = 0.3
+    slope: float = 200.0
 
 
 def _local_live_ranges(node) -> dict[str, tuple[int, int]]:
@@ -43,6 +49,7 @@ def _local_live_ranges(node) -> dict[str, tuple[int, int]]:
 class NarrowScope:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -50,7 +57,8 @@ class NarrowScope:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         ratios = []
         violations = []
         for f in iter_functions(codebase):
@@ -74,7 +82,7 @@ class NarrowScope:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(ratios)
-        score = clamp(100 - 200 * max(0, m - SCOPE_BUDGET))
+        score = clamp(100 - params.slope * max(0, m - params.scope_budget))
         violations.sort(key=lambda v: v["scope_ratio"], reverse=True)
 
         return CommandmentResult(

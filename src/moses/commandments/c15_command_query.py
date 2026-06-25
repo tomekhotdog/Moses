@@ -8,12 +8,18 @@ Metric: violators / total. Curve: 100 − 500·M.
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, iter_functions
 
 NUMBER = 15
 NAME = "Command-query separation"
+
+
+@dataclass(frozen=True)
+class Params:
+    slope: float = 500.0
 
 
 def _returns_value(node) -> bool:
@@ -41,6 +47,7 @@ def _mutates_nonlocal_state(node) -> bool:
 class CommandQuery:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -48,7 +55,8 @@ class CommandQuery:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         total = 0
         violations = []
         for f in iter_functions(codebase):
@@ -66,7 +74,7 @@ class CommandQuery:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = len(violations) / total
-        score = clamp(100 - 500 * m)
+        score = clamp(100 - params.slope * m)
 
         return CommandmentResult(
             number=NUMBER,

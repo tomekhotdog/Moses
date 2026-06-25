@@ -7,12 +7,18 @@ Curve:  100 − 100·M.
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, parse_file
 
 NUMBER = 18
 NAME = "No empty catch blocks"
+
+
+@dataclass(frozen=True)
+class Params:
+    slope: float = 100.0
 
 
 def _is_empty_handler(handler: ast.ExceptHandler) -> bool:
@@ -30,6 +36,7 @@ def _is_empty_handler(handler: ast.ExceptHandler) -> bool:
 class NoEmptyCatch:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -37,7 +44,8 @@ class NoEmptyCatch:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         total_loc = 0
         violations = []
         for source in codebase.files:
@@ -59,7 +67,7 @@ class NoEmptyCatch:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         per_kloc = len(violations) / (total_loc / 1000.0)
-        score = clamp(100 - 100 * per_kloc)
+        score = clamp(100 - params.slope * per_kloc)
 
         return CommandmentResult(
             number=NUMBER,

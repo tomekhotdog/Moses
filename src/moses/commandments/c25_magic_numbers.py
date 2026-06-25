@@ -7,26 +7,33 @@ Curve:  100 − 2·M.
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, parse_file
 
 NUMBER = 25
 NAME = "No magic numbers"
-ALLOWED = {0, 1, -1}
 
 
-def _is_magic(node: ast.AST) -> bool:
+@dataclass(frozen=True)
+class Params:
+    allowed: frozenset[int] = frozenset({0, 1, -1})
+    slope: float = 2.0
+
+
+def _is_magic(node: ast.AST, allowed: frozenset[int]) -> bool:
     if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)) and not isinstance(
         node.value, bool
     ):
-        return node.value not in ALLOWED
+        return node.value not in allowed
     return False
 
 
 class NoMagicNumbers:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -34,7 +41,8 @@ class NoMagicNumbers:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         total_loc = 0
         violations = []
         for source in codebase.files:
@@ -46,7 +54,7 @@ class NoMagicNumbers:
             total_loc += source.non_blank_loc
             for node in ast.walk(tree):
                 # Skip negative-literal UnaryOp wrappers: handled via the inner Constant.
-                if _is_magic(node):
+                if _is_magic(node, params.allowed):
                     # Skip -1 expressed as UnaryOp(USub, Constant(1)).
                     violations.append(
                         {
@@ -61,7 +69,7 @@ class NoMagicNumbers:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         per_kloc = len(violations) / (total_loc / 1000.0)
-        score = clamp(100 - 2 * per_kloc)
+        score = clamp(100 - params.slope * per_kloc)
 
         return CommandmentResult(
             number=NUMBER,

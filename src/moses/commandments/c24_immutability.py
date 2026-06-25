@@ -7,12 +7,18 @@ augmented-assign-only cases via simple dataflow). Curve: 100 − 200·M.
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, iter_functions
 
 NUMBER = 24
 NAME = "Prefer immutability"
+
+
+@dataclass(frozen=True)
+class Params:
+    slope: float = 200.0
 
 
 def _reassignment_stats(node) -> tuple[int, int, list[str]]:
@@ -51,6 +57,7 @@ def _names_in_target(tgt: ast.AST) -> list[str]:
 class Immutability:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -58,7 +65,8 @@ class Immutability:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         total_locals = 0
         total_reassigned = 0
         violations = []
@@ -81,7 +89,7 @@ class Immutability:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = total_reassigned / total_locals
-        score = clamp(100 - 200 * m)
+        score = clamp(100 - params.slope * m)
         violations.sort(key=lambda v: v["count"], reverse=True)
 
         return CommandmentResult(

@@ -8,12 +8,18 @@ Curve: 100 − 50·M (0 at ≥ 2).
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, is_private, iter_functions, mean
 
 NUMBER = 6
 NAME = "Define errors out of existence"
+
+
+@dataclass(frozen=True)
+class Params:
+    slope: float = 50.0
 
 
 def _raised_types(node) -> set[str]:
@@ -45,6 +51,7 @@ def _has_nullable_return_mix(node) -> bool:
 class DefineErrorsOut:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -52,7 +59,8 @@ class DefineErrorsOut:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         scores = []
         violations = []
         for f in iter_functions(codebase):
@@ -76,7 +84,7 @@ class DefineErrorsOut:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(scores)
-        score = clamp(100 - 50 * m)
+        score = clamp(100 - params.slope * m)
         violations.sort(key=lambda v: v["failure_modes"], reverse=True)
 
         return CommandmentResult(
