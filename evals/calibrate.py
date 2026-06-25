@@ -4,7 +4,9 @@ The optimiser is intentionally a stub for now: it returns the default
 CommandmentsConfig unchanged. The real search over CommandmentsConfig (rule
 configs + weights) lands once the corpus is scaled beyond the 3-question pilot.
 
-Usage: uv run python evals/calibrate.py --corpus evals/corpus --year 2024
+Usage: uv run python -m evals.calibrate --corpus evals/corpus --year 2024
+(run via -m: this module imports the sibling evals.corpus_report package, which
+the path form `python evals/calibrate.py` cannot resolve.)
 """
 
 from __future__ import annotations
