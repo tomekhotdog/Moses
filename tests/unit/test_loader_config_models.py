@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from moses.commandments import ALL_COMMANDMENTS
 from moses.config import Config, MVP_COMMANDMENTS, WEIGHTS
 from moses.loader import load_codebase
 from moses.models import SourceFile
@@ -62,3 +63,4 @@ def test_config_from_file(tmp_path: Path):
     assert not cfg.is_enabled(11)
     assert "*.gen.py" in cfg.excludes
     assert cfg.deep
+    assert len(cfg.rule_params) == len(ALL_COMMANDMENTS)

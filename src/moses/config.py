@@ -52,6 +52,7 @@ def _default_rule_params() -> dict:
 
     return default_rule_params()
 
+
 # The MVP enabled-set. Mutation (#20) is in the set but only runs under --deep.
 MVP_COMMANDMENTS: set[int] = {
     1, 2, 3, 5, 6, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 27, 29, 31,
@@ -67,7 +68,8 @@ class Config:
     deep: bool = False  # enables opt-in #20 mutation
     jscpd_path: str | None = None  # external duplication tool for #16
     mutmut_path: str | None = None  # override binary for #20
-    rule_params: dict = field(default_factory=_default_rule_params)
+    # number -> that rule's frozen Params (calibration override surface)
+    rule_params: dict[int, object] = field(default_factory=_default_rule_params)
 
     def is_enabled(self, number: int) -> bool:
         if number not in self.enabled:
