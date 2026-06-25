@@ -8,12 +8,18 @@ Curve: 100 − 1000·M (0 at ≥ 10%).
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, iter_functions, param_names
 
 NUMBER = 3
 NAME = "No pass-through methods"
+
+
+@dataclass(frozen=True)
+class Params:
+    slope: float = 1000.0
 
 
 def _is_pass_through(node) -> bool:
@@ -63,6 +69,7 @@ def _is_pass_through(node) -> bool:
 class PassThrough:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -70,7 +77,8 @@ class PassThrough:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         total = 0
         violations = []
         for f in iter_functions(codebase):
@@ -88,7 +96,7 @@ class PassThrough:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = len(violations) / total
-        score = clamp(100 - 1000 * m)
+        score = clamp(100 - params.slope * m)
 
         return CommandmentResult(
             number=NUMBER,

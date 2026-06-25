@@ -6,10 +6,18 @@ from moses.commandments.c06_define_errors_out import (
     DefineErrorsOut,
     Params as ErrorsParams,
 )
+from moses.commandments.c02_loose_coupling import (
+    LooseCoupling,
+    Params as LooseCouplingParams,
+)
 from moses.commandments.c13_few_parameters import FewParameters, Params
 from moses.commandments.c21_cohesive_classes import (
     CohesiveClasses,
     Params as CohesionParams,
+)
+from moses.commandments.c27_data_over_primitives import (
+    DataOverPrimitives,
+    Params as DataParams,
 )
 
 
@@ -41,4 +49,27 @@ def test_c06_steeper_slope_does_not_raise_score(bad_codebase):
 def test_c21_larger_budget_does_not_lower_score(bad_codebase):
     lenient = CohesiveClasses().evaluate(bad_codebase, CohesionParams(budget=10.0))
     strict = CohesiveClasses().evaluate(bad_codebase, CohesionParams(budget=0.0))
+    assert lenient.score_contribution >= strict.score_contribution
+
+
+def test_c02_tighter_ramp_does_not_raise_score(bad_codebase):
+    default = LooseCoupling().evaluate(bad_codebase)
+    tight = LooseCoupling().evaluate(bad_codebase, LooseCouplingParams(floor=0.0, ceil=1.0))
+    assert tight.score_contribution <= default.score_contribution
+
+
+def test_c27_lower_target_ratio_is_more_lenient():
+    from pathlib import Path
+
+    from moses.models import Codebase, SourceFile
+
+    text = (
+        "class Repo:\n"
+        "    cache: dict[str, int]\n"
+        "    def find(self, uid: str) -> dict[str, int]: ...\n"
+    )
+    sf = SourceFile(path=Path("m.py"), relpath="m.py", text=text)
+    codebase = Codebase(root=Path("."), files=[sf])
+    lenient = DataOverPrimitives().evaluate(codebase, DataParams(target_ratio=0.3))
+    strict = DataOverPrimitives().evaluate(codebase, DataParams(target_ratio=0.9))
     assert lenient.score_contribution >= strict.score_contribution

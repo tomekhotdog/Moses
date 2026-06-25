@@ -7,14 +7,19 @@ Mean across classes. Curve: 100 at M ≤ 14, → 0 at M ≥ 20 (linear between).
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, iter_classes, mean, parse_file
 
 NUMBER = 2
 NAME = "Loose coupling"
-CBO_FLOOR = 14
-CBO_CEIL = 20
+
+
+@dataclass(frozen=True)
+class Params:
+    floor: float = 14.0
+    ceil: float = 20.0
 
 
 def _imported_names(tree: ast.Module) -> set[str]:
@@ -43,6 +48,7 @@ def _referenced_imports(cls: ast.ClassDef, imports: set[str]) -> set[str]:
 class LooseCoupling:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -50,7 +56,8 @@ class LooseCoupling:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         cbos = []
         violations = []
         imports_by_file: dict[str, set[str]] = {}
@@ -64,7 +71,7 @@ class LooseCoupling:
             imports = imports_by_file.get(source.relpath, set())
             cbo = len(_referenced_imports(cls, imports))
             cbos.append(cbo)
-            if cbo > CBO_FLOOR:
+            if cbo > params.floor:
                 violations.append(
                     {
                         "file": source.relpath,
@@ -78,12 +85,12 @@ class LooseCoupling:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(cbos)
-        if m <= CBO_FLOOR:
+        if m <= params.floor:
             score = 100.0
-        elif m >= CBO_CEIL:
+        elif m >= params.ceil:
             score = 0.0
         else:
-            score = 100.0 * (CBO_CEIL - m) / (CBO_CEIL - CBO_FLOOR)
+            score = 100.0 * (params.ceil - m) / (params.ceil - params.floor)
         score = clamp(score)
         violations.sort(key=lambda v: v["cbo"], reverse=True)
 

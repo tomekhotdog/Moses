@@ -7,6 +7,7 @@ Mean across classes. Curve: 100 at ≤20, → 0 at ≥60 (linear between).
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from radon.complexity import cc_visit
 
@@ -15,8 +16,12 @@ from ._ast_helpers import clamp, iter_classes, mean, methods_of
 
 NUMBER = 31
 NAME = "Contain class complexity"
-WMC_FLOOR = 20
-WMC_CEIL = 60
+
+
+@dataclass(frozen=True)
+class Params:
+    floor: float = 20.0
+    ceil: float = 60.0
 
 
 def _cc_by_class(source_text: str) -> dict[str, dict[str, int]]:
@@ -37,6 +42,7 @@ def _cc_by_class(source_text: str) -> dict[str, dict[str, int]]:
 class ClassComplexity:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -44,7 +50,8 @@ class ClassComplexity:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         values = []
         violations = []
         for source, cls in iter_classes(codebase):
@@ -54,7 +61,7 @@ class ClassComplexity:
             cc_map = _cc_by_class(source.text).get(cls.name, {})
             wmc = sum(cc_map.get(m.name, 1) for m in methods)
             values.append(wmc)
-            if wmc > WMC_FLOOR:
+            if wmc > params.floor:
                 violations.append(
                     {
                         "file": source.relpath,
@@ -68,12 +75,12 @@ class ClassComplexity:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(values)
-        if m <= WMC_FLOOR:
+        if m <= params.floor:
             score = 100.0
-        elif m >= WMC_CEIL:
+        elif m >= params.ceil:
             score = 0.0
         else:
-            score = 100.0 * (WMC_CEIL - m) / (WMC_CEIL - WMC_FLOOR)
+            score = 100.0 * (params.ceil - m) / (params.ceil - params.floor)
         score = clamp(score)
         violations.sort(key=lambda v: v["wmc"], reverse=True)
 

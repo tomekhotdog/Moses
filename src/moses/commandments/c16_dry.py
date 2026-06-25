@@ -10,13 +10,19 @@ from __future__ import annotations
 import io
 import keyword
 import tokenize
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp
 
 NUMBER = 16
 NAME = "DRY"
-MIN_BLOCK_TOKENS = 50
+
+
+@dataclass(frozen=True)
+class Params:
+    min_block_tokens: int = 50
+    slope: float = 1000.0
 
 
 def _tokenise(text: str) -> list[tuple[str, str, int]]:
@@ -57,9 +63,9 @@ def _is_keyword(s: str) -> bool:
     return keyword.iskeyword(s)
 
 
-def _duplicate_fraction(per_file_tokens: dict[str, list[tuple[str, str, int]]]):
-    """Hash sliding windows of MIN_BLOCK_TOKENS; count tokens in repeated windows."""
-    window = MIN_BLOCK_TOKENS
+def _duplicate_fraction(per_file_tokens: dict[str, list[tuple[str, str, int]]], min_block_tokens: int):
+    """Hash sliding windows of min_block_tokens; count tokens in repeated windows."""
+    window = min_block_tokens
     seen: dict[int, tuple[str, int]] = {}
     duplicated_lines: dict[str, set[int]] = {}
     total_tokens = 0
@@ -107,6 +113,7 @@ def _duplicate_fraction(per_file_tokens: dict[str, list[tuple[str, str, int]]]):
 class DRY:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -114,7 +121,8 @@ class DRY:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         per_file = {}
         for source in codebase.files:
             toks = _tokenise(source.text)
@@ -124,8 +132,8 @@ class DRY:
         if not per_file:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
-        fraction, dup_lines = _duplicate_fraction(per_file)
-        score = clamp(100 - 1000 * fraction)
+        fraction, dup_lines = _duplicate_fraction(per_file, params.min_block_tokens)
+        score = clamp(100 - params.slope * fraction)
 
         violations = []
         for relpath, lines in dup_lines.items():

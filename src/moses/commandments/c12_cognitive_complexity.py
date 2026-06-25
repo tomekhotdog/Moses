@@ -8,6 +8,7 @@ Cyclomatic = radon. Each curve: 100 − 10·max(0, mean − 5).
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from radon.complexity import cc_visit
 
@@ -16,10 +17,15 @@ from ._ast_helpers import clamp, iter_functions, mean
 
 NUMBER = 12
 NAME = "Low cognitive complexity"
-COMPLEXITY_BUDGET = 5
-COG_WEIGHT = 0.7
-CYC_WEIGHT = 0.3
-VIOLATION_THRESHOLD = 10
+
+
+@dataclass(frozen=True)
+class Params:
+    complexity_budget: int = 5
+    slope: float = 10.0
+    cog_weight: float = 0.7
+    cyc_weight: float = 0.3
+    violation_threshold: int = 10
 
 _NESTING_STATEMENTS = (
     ast.If,
@@ -104,6 +110,7 @@ def _cyclomatic_by_name(source_text: str) -> dict[str, int]:
 class LowCognitiveComplexity:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -111,7 +118,8 @@ class LowCognitiveComplexity:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         cog_values: list[int] = []
         cyc_values: list[int] = []
         violations = []
@@ -127,7 +135,7 @@ class LowCognitiveComplexity:
             cyc = cyc_map.get(f.qualname) or cyc_map.get(f.name) or 1
             cyc_values.append(cyc)
 
-            if cog >= VIOLATION_THRESHOLD or cyc >= VIOLATION_THRESHOLD:
+            if cog >= params.violation_threshold or cyc >= params.violation_threshold:
                 violations.append(
                     {
                         "file": f.file.relpath,
@@ -143,9 +151,9 @@ class LowCognitiveComplexity:
 
         mean_cog = mean(cog_values)
         mean_cyc = mean(cyc_values)
-        s_cog = clamp(100 - 10 * max(0, mean_cog - COMPLEXITY_BUDGET))
-        s_cyc = clamp(100 - 10 * max(0, mean_cyc - COMPLEXITY_BUDGET))
-        score = clamp(COG_WEIGHT * s_cog + CYC_WEIGHT * s_cyc)
+        s_cog = clamp(100 - params.slope * max(0, mean_cog - params.complexity_budget))
+        s_cyc = clamp(100 - params.slope * max(0, mean_cyc - params.complexity_budget))
+        score = clamp(params.cog_weight * s_cog + params.cyc_weight * s_cyc)
 
         violations.sort(key=lambda v: v["cognitive"] + v["cyclomatic"], reverse=True)
 

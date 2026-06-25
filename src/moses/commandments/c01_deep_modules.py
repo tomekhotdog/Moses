@@ -8,13 +8,18 @@ Average across files. Curve: 10·M, saturates at 10 (i.e. score 100 at M ≥ 10)
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, is_private, mean, param_names, parse_file
 
 NUMBER = 1
 NAME = "Deep modules"
-DEPTH_MULTIPLIER = 10
+
+
+@dataclass(frozen=True)
+class Params:
+    multiplier: float = 10.0
 
 
 def _api_surface_and_impl(tree: ast.Module, source) -> tuple[float, int]:
@@ -32,6 +37,7 @@ def _api_surface_and_impl(tree: ast.Module, source) -> tuple[float, int]:
 class DeepModules:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -39,7 +45,8 @@ class DeepModules:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         depths = []
         violations = []
         for source in codebase.files:
@@ -65,7 +72,7 @@ class DeepModules:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(depths)
-        score = clamp(DEPTH_MULTIPLIER * m)
+        score = clamp(params.multiplier * m)
         violations.sort(key=lambda v: v["depth"])
 
         return CommandmentResult(

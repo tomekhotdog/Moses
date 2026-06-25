@@ -11,12 +11,19 @@ qualifying slots — the Domain Surface Ratio. Curve: 100 * DSR / TARGET_RATIO.
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 
 from ..models import CommandmentResult
 from ._ast_helpers import clamp, is_dunder, is_private, iter_classes, iter_functions, mean, parse_file
 
 NUMBER = 27
 NAME = "Data over primitives"
+
+
+@dataclass(frozen=True)
+class Params:
+    target_ratio: float = 0.6  # DSR earning full marks (opinionated, calibration-pending)
+    violation_threshold: float = 0.5  # functions whose mean slot score is below this are flagged
 
 PRIMITIVE_NAMES = frozenset(
     {"str", "int", "float", "bool", "bytes", "complex", "bytearray", "object", "Any", "None", "NoneType"}
@@ -123,8 +130,6 @@ def classify_annotation(node: ast.expr | None) -> float:
     return 1.0
 
 
-TARGET_RATIO = 0.6  # DSR earning full marks (opinionated, calibration-pending)
-VIOLATION_THRESHOLD = 0.5  # functions whose mean slot score is below this are flagged
 PREDICATE_PREFIXES = ("is_", "has_", "can_", "should_", "was_", "are_")
 COUNT_NAMES = frozenset({"count", "size", "length", "len", "index", "n", "num", "total"})
 
@@ -196,6 +201,7 @@ def _domain_vocab_density(codebase) -> float:
 class DataOverPrimitives:
     number = NUMBER
     name = NAME
+    Params = Params
 
     @property
     def weight(self) -> int:
@@ -203,7 +209,8 @@ class DataOverPrimitives:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase) -> CommandmentResult:
+    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
+        params = params if params is not None else Params()
         slot_scores: list[float] = []
         annotated = 0
         total_surface = 0
@@ -241,7 +248,7 @@ class DataOverPrimitives:
                         worst_score, worst_ann = s, ret
             if fn_scores:
                 fm = mean(fn_scores)
-                if fm < VIOLATION_THRESHOLD:
+                if fm < params.violation_threshold:
                     violations.append(
                         {
                             "file": f.file.relpath,
@@ -268,7 +275,7 @@ class DataOverPrimitives:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         dsr = mean(slot_scores)
-        score = clamp(100.0 * dsr / TARGET_RATIO)
+        score = clamp(100.0 * dsr / params.target_ratio)
         coverage = annotated / total_surface if total_surface else 0.0
         violations.sort(key=lambda v: v["domain_score"])
         # Second pass over the codebase: density is a separate corpus-level signal.
@@ -286,7 +293,7 @@ class DataOverPrimitives:
                 "slot_count": len(slot_scores),
                 "annotation_coverage": round(coverage, 3),
                 "domain_vocab_density": vocab_density,
-                "target_ratio": TARGET_RATIO,
+                "target_ratio": params.target_ratio,
             },
             violations=violations[:50],
         )
