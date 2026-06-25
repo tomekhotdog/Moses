@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 import yaml
@@ -59,6 +59,52 @@ MVP_COMMANDMENTS: set[int] = {
 }
 
 
+@dataclass(frozen=True)
+class CommandmentsConfig:
+    """Master scoring config: every rule's RuleConfig plus the Weights."""
+
+    configs: dict  # number -> that rule's RuleConfig
+    weights: dict  # number -> relative importance (int)
+
+    @classmethod
+    def default(cls) -> "CommandmentsConfig":
+        return cls(configs=_default_rule_configs(), weights=dict(WEIGHTS))
+
+    def config_for(self, number: int):
+        return self.configs.get(number)
+
+    def weight_for(self, number: int) -> int:
+        return self.weights.get(number, 0)
+
+    def with_config(self, number: int, rule_config) -> "CommandmentsConfig":
+        configs = dict(self.configs)
+        configs[number] = rule_config
+        return CommandmentsConfig(configs=configs, weights=dict(self.weights))
+
+    def with_weight(self, number: int, weight: int) -> "CommandmentsConfig":
+        weights = dict(self.weights)
+        weights[number] = weight
+        return CommandmentsConfig(configs=dict(self.configs), weights=weights)
+
+    def to_dict(self) -> dict:
+        return {
+            "weights": dict(self.weights),
+            "configs": {n: asdict(rc) for n, rc in self.configs.items()},
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "CommandmentsConfig":
+        defaults = _default_rule_configs()
+        configs = {}
+        for n, fields in data.get("configs", {}).items():
+            n = int(n)
+            configs[n] = type(defaults[n])(**fields)
+        for n, rc in defaults.items():
+            configs.setdefault(n, rc)
+        weights = {int(k): int(v) for k, v in data.get("weights", WEIGHTS).items()}
+        return cls(configs=configs, weights=weights)
+
+
 @dataclass
 class Config:
     """Runtime configuration for a Moses run."""
@@ -68,8 +114,8 @@ class Config:
     deep: bool = False  # enables opt-in #20 mutation
     jscpd_path: str | None = None  # external duplication tool for #16
     mutmut_path: str | None = None  # override binary for #20
-    # number -> that rule's frozen RuleConfig (calibration override surface)
-    rule_params: dict[int, object] = field(default_factory=_default_rule_configs)
+    # Master scoring config: per-rule RuleConfig + weights (calibration surface)
+    commandments: CommandmentsConfig = field(default_factory=CommandmentsConfig.default)
 
     def is_enabled(self, number: int) -> bool:
         if number not in self.enabled:
@@ -114,5 +160,5 @@ class Config:
             deep=self.deep if deep is None else deep,
             jscpd_path=self.jscpd_path,
             mutmut_path=self.mutmut_path,
-            rule_params=self.rule_params,
+            commandments=self.commandments,
         )

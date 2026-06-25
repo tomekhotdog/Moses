@@ -48,8 +48,9 @@ def _weighted_score(results: list[CommandmentResult], config: Config) -> float:
             continue
         if not config.is_enabled(r.number):
             continue
-        num += r.weight * r.score_contribution
-        den += r.weight
+        w = config.commandments.weight_for(r.number)
+        num += w * r.score_contribution
+        den += w
     if den == 0:
         return 100.0
     return num / den
@@ -114,11 +115,11 @@ def run(root, config: Config | None = None) -> Verdict:
         if cmd is None:
             results.append(not_measured(number, name))
             continue
-        params = config.rule_params.get(number)
-        if params is None:
-            params = cmd.RuleConfig()
+        rule_config = config.commandments.config_for(number)
+        if rule_config is None:
+            rule_config = cmd.RuleConfig()
         try:
-            result = cmd.evaluate(codebase, params)
+            result = cmd.evaluate(codebase, rule_config)
         except Exception as exc:  # noqa: BLE001 - deliberately broad; one bad rule must not crash the run
             result = CommandmentResult(
                 number=number,

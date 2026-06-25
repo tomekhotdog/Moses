@@ -65,8 +65,11 @@ def test_error_rule_does_not_crash(monkeypatch, fixtures_dir):
 
 
 def test_engine_fallback_when_rule_params_missing(fixtures_dir):
+    from moses.config import CommandmentsConfig, WEIGHTS
+
     cfg = Config(enabled={13})
-    cfg.rule_params = {}  # empty -> engine must fall back to cmd.RuleConfig()
+    # empty configs map -> engine must fall back to cmd.RuleConfig()
+    cfg.commandments = CommandmentsConfig(configs={}, weights=dict(WEIGHTS))
     verdict = run(fixtures_dir / "good_example", cfg)
     c13 = next(c for c in verdict.commandments if c.number == 13)
     assert c13.status == "measured"  # fallback supplied default RuleConfig, rule ran

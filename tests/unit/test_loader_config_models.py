@@ -63,4 +63,4 @@ def test_config_from_file(tmp_path: Path):
     assert not cfg.is_enabled(11)
     assert "*.gen.py" in cfg.excludes
     assert cfg.deep
-    assert len(cfg.rule_params) == len(ALL_COMMANDMENTS)
+    assert len(cfg.commandments.configs) == len(ALL_COMMANDMENTS)

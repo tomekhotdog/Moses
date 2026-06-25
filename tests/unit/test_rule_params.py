@@ -88,7 +88,9 @@ def test_engine_threads_overridden_params(fixtures_dir):
 
     base = run(fixtures_dir / "bad_example", Config(enabled={13}))
     strict = Config(enabled={13})
-    strict.rule_params[13] = RuleConfig(param_budget=0, slope=99.0)
+    strict.commandments = strict.commandments.with_config(
+        13, RuleConfig(param_budget=0, slope=99.0)
+    )
     tuned = run(fixtures_dir / "bad_example", strict)
 
     c13_base = next(c for c in base.commandments if c.number == 13)
