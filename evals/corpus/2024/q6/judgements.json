@@ -1,0 +1,22 @@
+{
+  "synth_clean.py": {
+    "pct": 92,
+    "justification": "Idiomatic frozen-dataclass domain model with elegant rotation math, clear docstrings, proper ValueError, and clean part1/part2/main decomposition; only minor blemishes are a bare open() and the unused open_cells method."
+  },
+  "tomek.py": {
+    "pct": 80,
+    "justification": "Rich, well-named domain model (Direction/Coordinates/Guard/Lab) with full dunder methods and good readability, but verges on over-engineered with an if/elif direction chain instead of deltas, confusing width/height naming, and generic Exception usage."
+  },
+  "online_1.py": {
+    "pct": 78,
+    "justification": "Compact and elegant, leveraging shared grid utilities and a cycle-based offset trick with a clean single track_guard function, though the empty-set loop sentinel is slightly awkward and it leans heavily on external framework scaffolding."
+  },
+  "online_2.py": {
+    "pct": 60,
+    "justification": "Sensibly decomposed into methods with a clever (if hacky) json round-trip copy, but terse names (_map, n, d, vi/vj), the subtle entry-point loop-detection logic, and falsy default-arg handling for idx hurt clarity."
+  },
+  "synth_primitive.py": {
+    "pct": 18,
+    "justification": "Single-letter naming throughout, one monolithic function with the entire walk loop duplicated between parts, zero abstraction, comments, or error handling — minimally readable and unmaintainable."
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "synth_clean.py": {
+    "justification": "Clear module docstring, a focused frozen Gate dataclass with intention-revealing helper methods, well-decomposed pure functions, and explicit cycle-detection error handling make this the most readable and maintainable solution; the part-2 structural rules are documented inline.",
+    "pct": 90
+  },
+  "online_1.py": {
+    "justification": "Strong, precise type aliases and well-documented helpers show real domain modelling, but the recursive Wiring abstraction in part 2 is dense and hard to follow, and the local import plus deque bookkeeping add friction that pushes it below the cleaner dataclass approach.",
+    "pct": 78
+  },
+  "tomek.py": {
+    "justification": "A genuine Wire/Gate/Circuit object model with an explanatory ASCII-diagram docstring and readable structural checks, undercut by terse single-letter parsing in go(), an external main import dependency, exception-based control flow, and hardcoded bit-range loops with acknowledged unhandled edge cases.",
+    "pct": 70
+  },
+  "online_2.py": {
+    "justification": "Reasonably named functions and clean parsing, but part 2 is not a real solver (hardcoded input-specific swaps with a TODO) and modify_operations mutates loop variables and reuses names confusingly, hurting both correctness-of-intent clarity and structure.",
+    "pct": 55
+  },
+  "synth_primitive.py": {
+    "justification": "Solves only part 1 with cryptic one-letter names (d, w, g, l, x, p), no functions or abstraction beyond a single monolithic go(), magic done flags, and zero error handling or documentation.",
+    "pct": 22
+  }
+}

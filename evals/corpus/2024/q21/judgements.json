@@ -1,0 +1,26 @@
+{
+  "synth_clean.py": {
+    "justification": "Exemplary readability with type aliases, docstrings, and named pure functions; elegant two-candidate path generation avoids brute force, clean memoized recursion, and both parts handled via a proper main().",
+    "pct": 93
+  },
+  "tomek.py": {
+    "justification": "Strong domain modelling with a PadType enum, descriptive names, an explanatory docstring, and scalable iterative memoization, marred only by some repetition, a hard external dependency, and generic Exception use.",
+    "pct": 82
+  },
+  "online_2.py": {
+    "justification": "Clean memoized class-based solution with reasonable naming, but reinvents itertools.product, uses a mutable default arg, duplicates setup across part1/part2 via side-effecting instance attributes, and packs dense gap logic into parse_moves.",
+    "pct": 74
+  },
+  "synth_mid.py": {
+    "justification": "Readable, well-commented, and well-named, but relies on permutation brute force and hardcodes three expansion levels with no memoization, so it only handles Part 1 and would not scale.",
+    "pct": 68
+  },
+  "synth_primitive.py": {
+    "justification": "Cryptic single-letter names, no whitespace, a fragile order-picking heuristic, a gap check that fails to break, and Part-1-only scope with no memoization make it dense and hard to follow.",
+    "pct": 28
+  },
+  "online_1.py": {
+    "justification": "Severely over-engineered: hundreds of lines of unrelated animation/rendering code wrap a solver built on global mutable state and a confusing dual-mode (length-vs-string) design with near-duplicate functions and cryptic names.",
+    "pct": 35
+  }
+}

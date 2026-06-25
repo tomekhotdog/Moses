@@ -1,0 +1,26 @@
+{
+  "synth_clean.py": {
+    "justification": "Excellent domain modelling with Point/Grid dataclasses and operator-based vector arithmetic, a clean strategy-function abstraction unifying both parts, full type hints and clear docstrings, with only mild risk of being slightly heavier than the task strictly needs.",
+    "pct": 92
+  },
+  "synth_mid.py": {
+    "justification": "Highly readable procedural solution with clear naming, a single cohesive solve that computes both parts via combinations and a small in_bounds helper, and good comments, lacking only explicit domain types.",
+    "pct": 84
+  },
+  "online_2.py": {
+    "justification": "Clean vector-arithmetic approach with defaultdict and combinations, but part1/part2 fully duplicate parsing and setup and the underscore-prefixed local names (_map, _idx, _dir) are unidiomatic.",
+    "pct": 76
+  },
+  "synth_primitive.py": {
+    "justification": "Correct and compact logic but crippled by single-letter naming throughout (g, h, w, d, s1, s2) and a redundant ordered-pair double loop with an i==j skip, hurting readability and clarity.",
+    "pct": 52
+  },
+  "tomek.py": {
+    "justification": "Has real domain types (Coordinates/Antenna) yet suffers from confusing resonance stepping recomputed from the origin, module-level execution side effects, an external read_input dependency, and an over-strict exception on single-antenna frequencies.",
+    "pct": 48
+  },
+  "online_1.py": {
+    "justification": "Severely over-engineered with massive duplicated four-way directional branching, pervasive blank-line noise and typos, side-effecting map mutation, a single bound used for both dimensions, and a bare except that silently swallows errors.",
+    "pct": 28
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "synth_clean.py": {
+    "justification": "Named opcode constants, typed frozen dataclasses, clear docstrings, and an elegant comprehension-based quine search make this the most readable and well-modelled solution, with only mild over-engineering from per-instruction immutable replacement.",
+    "pct": 90
+  },
+  "synth_mid.py": {
+    "justification": "A clean, well-decomposed simulator with sensible naming and explicit error handling for the reserved combo operand, plain but solid throughout.",
+    "pct": 82
+  },
+  "online_1.py": {
+    "justification": "A clear opcode-dispatch interpreter with helpful comments, but coupled to an external framework, a missing combo case 7, and a dense Part 2 documented via triple-quoted-string pseudo-comments hurt clarity.",
+    "pct": 74
+  },
+  "tomek.py": {
+    "justification": "Ambitious OOP modelling (Registers/Operand/Instruction/Program) but over-engineered and burdened by smells: float-based integer division, a recursive search mutating a shared set, module-level side effects, and an external dependency.",
+    "pct": 64
+  },
+  "online_2.py": {
+    "justification": "Clever but brittle: it hardcodes a transpiled version of the author's specific input rather than a general VM, shadows the builtin next, and only parses register A, making it fragile and poorly generalised despite a tidy reconstruction loop.",
+    "pct": 52
+  },
+  "synth_primitive.py": {
+    "justification": "Functionally correct and compact but with cryptic single-letter names (go, p2, x, y, v, o), no documentation, and crammed formatting that severely undermine readability.",
+    "pct": 40
+  }
+}

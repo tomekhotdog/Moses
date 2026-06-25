@@ -1,0 +1,22 @@
+{
+  "synth_clean.py": {
+    "justification": "Exemplary: module docstring, a frozen Machine dataclass for clean domain modelling, named constants, integer-only Cramer's rule with divisibility checks avoiding float pitfalls, Optional return signalling unwinnable, and tidy decomposition into parse/solve/total/main.",
+    "pct": 93
+  },
+  "online_2.py": {
+    "justification": "Clear functional decomposition with a single regex parser and an adjustment-parameterized solver plus self-tests, but uses float division with int-equality checks instead of exact integer math and hardcodes a brittle Windows-style input path.",
+    "pct": 74
+  },
+  "tomek.py": {
+    "justification": "Genuine domain modelling via a documented Machine class with well-named methods, but relies on float arithmetic with round-then-verify (fragile at part-2 magnitudes), opaque p1..p4 field names, and an awkward int(len/4)+1 loop bound.",
+    "pct": 66
+  },
+  "online_1.py": {
+    "justification": "Functions correctly within its framework but suffers cryptic naming, float division with is_integer checks, large blocks of dead commented-out z3 code, magic literals, and parse logic duplicated verbatim across part1 and part2.",
+    "pct": 48
+  },
+  "synth_primitive.py": {
+    "justification": "Algorithmically sound integer Cramer's rule, but deliberately golfed into single-character names, one-space indentation, semicolons, inline magic numbers, and no functions, docstrings, or abstraction whatsoever.",
+    "pct": 30
+  }
+}

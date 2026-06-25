@@ -1,0 +1,22 @@
+{
+  "synth_clean.py": {
+    "justification": "Cleanly decomposed with type aliases, an explanatory docstring of the key insight, named constants, deque BFS, boundary error handling, and a proper main guard with CLI args.",
+    "pct": 91
+  },
+  "tomek.py": {
+    "justification": "Strong domain modelling via a RaceTrack class with helpers and explicit parse-error raising, slightly weakened by an awkwardly placed HTML-tagged comment, reliance on dict insertion order, and a convoluted min-over-neighbours BFS.",
+    "pct": 74
+  },
+  "online_1.py": {
+    "justification": "Readable names and a sensible offset-precompute approach, but cluttered by a dead/commented-out duplicate method, O(n) list-pop BFS, and fragile magic boundary checks.",
+    "pct": 62
+  },
+  "online_2.py": {
+    "justification": "Good direction/constant naming and a tidy generator, but over-engineered with unnecessary Dijkstra (two passes), a hardcoded Windows path, work running at import time with no main guard.",
+    "pct": 55
+  },
+  "synth_primitive.py": {
+    "justification": "Functionally minimal with single-letter names, no abstraction, copy-pasted part1/part2 loops, and O(n) list-pop BFS, offering almost no readability or structure.",
+    "pct": 34
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "synth_clean.py": {
+    "justification": "Cleanest structure overall: named constants, full type hints with a Sequence alias, focused single-purpose functions, docstrings, and proper parse/main separation, marred only slightly by a clumsy type:ignore comment.",
+    "pct": 92
+  },
+  "online_1.py": {
+    "justification": "Idiomatic and well-typed with strong domain naming, an elegant deque(maxlen=4) sliding window, and clean setdefault first-occurrence logic, though it embeds magic numbers and lacks an entrypoint.",
+    "pct": 88
+  },
+  "tomek.py": {
+    "justification": "Good domain modelling via explicit mix/prune/next_secret_number and descriptive names, but suffers from redundant intermediate variables, an awkward dict-of-sets keyed by index, hardcoded filenames, and module-level print side effects.",
+    "pct": 76
+  },
+  "online_2.py": {
+    "justification": "Reasonable logic but carries a large block of dead commented-out code, no type hints, duplicated evolution logic across both parts, and an untyped data parameter coupled to an external base class.",
+    "pct": 58
+  },
+  "synth_primitive.py": {
+    "justification": "Functionally direct but offers no abstraction, single-letter names throughout, duplicated inline evolution code, and zero error handling or structure.",
+    "pct": 32
+  }
+}

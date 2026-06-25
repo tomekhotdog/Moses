@@ -1,0 +1,26 @@
+{
+  "synth_clean.py": {
+    "justification": "Exemplary domain modelling with a deep Warehouse dataclass, named constants, type aliases, and a single unified push-cluster BFS that elegantly handles horizontal and vertical wide-box fan-out without branch duplication.",
+    "pct": 92
+  },
+  "tomek.py": {
+    "justification": "Clear naming and a clean recursive can_move/move separation with explanatory comments, but parallel box sets and symmetric left/right branches add incidental state, plus top-level execution and an external dependency reduce self-containment.",
+    "pct": 78
+  },
+  "online_2.py": {
+    "justification": "Readable, well-organized procedural solution with a deltas dict, sensible BFS cluster gathering, and a proper main guard, though part1/part2 share little and the grid gets no abstraction.",
+    "pct": 72
+  },
+  "synth_mid.py": {
+    "justification": "Tidy procedural solution with clean parsing and a clear vertical-push BFS, but it duplicates push logic across parts and leans on raw grid mutation with no domain modelling.",
+    "pct": 70
+  },
+  "online_1.py": {
+    "justification": "Functional and broadly readable, but heavy pt1/pt2 duplication, a tangled part2 loop that conflates partner discovery with move-checking, a brittle multi-key sort hack, and a hardcoded input path drag it down.",
+    "pct": 57
+  },
+  "synth_primitive.py": {
+    "justification": "Correct but minimal: a flat top-level script with single-letter names throughout, near-duplicated part1/part2 blocks, dead variables, and no functions or abstraction whatsoever.",
+    "pct": 31
+  }
+}
