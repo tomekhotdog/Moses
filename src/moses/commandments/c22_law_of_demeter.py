@@ -18,7 +18,7 @@ NAME = "Law of Demeter"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     budget: float = 1.0
     slope: float = 50.0
 
@@ -77,7 +77,7 @@ def _collect_imports(tree: ast.Module) -> set[str]:
 class LawOfDemeter:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -85,7 +85,7 @@ class LawOfDemeter:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         depths = []
         violations = []
         for source in codebase.files:
@@ -113,7 +113,7 @@ class LawOfDemeter:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(depths)
-        score = clamp(100 - params.slope * max(0, m - params.budget))
+        score = clamp(100 - config.slope * max(0, m - config.budget))
         violations.sort(key=lambda v: v["depth"], reverse=True)
 
         return CommandmentResult(

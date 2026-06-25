@@ -18,14 +18,14 @@ NAME = "Mutation kill rate"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     pass
 
 
 class MutationKillRate:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -33,7 +33,7 @@ class MutationKillRate:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         binary = shutil.which("mutmut")
         if binary is None:
             return CommandmentResult(

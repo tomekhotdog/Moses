@@ -17,7 +17,7 @@ NAME = "Prefer immutability"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     slope: float = 200.0
 
 
@@ -57,7 +57,7 @@ def _names_in_target(tgt: ast.AST) -> list[str]:
 class Immutability:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -65,7 +65,7 @@ class Immutability:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         total_locals = 0
         total_reassigned = 0
         violations = []
@@ -88,7 +88,7 @@ class Immutability:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = total_reassigned / total_locals
-        score = clamp(100 - params.slope * m)
+        score = clamp(100 - config.slope * m)
         violations.sort(key=lambda v: v["count"], reverse=True)
 
         return CommandmentResult(

@@ -15,47 +15,47 @@ CHEAP_RULES = [SmallFunctions, ShallowNesting, NoEmptyCatch, NoMagicNumbers]
 
 @pytest.mark.parametrize("rule_cls", CHEAP_RULES)
 def test_bad_scores_worse_than_good(rule_cls, bad_codebase, good_codebase):
-    bad = rule_cls().evaluate(bad_codebase, rule_cls.Params())
-    good = rule_cls().evaluate(good_codebase, rule_cls.Params())
+    bad = rule_cls().evaluate(bad_codebase, rule_cls.RuleConfig())
+    good = rule_cls().evaluate(good_codebase, rule_cls.RuleConfig())
     assert bad.score_contribution <= good.score_contribution
 
 
 def test_empty_catch_fires_on_bad(bad_codebase):
-    result = NoEmptyCatch().evaluate(bad_codebase, NoEmptyCatch.Params())
+    result = NoEmptyCatch().evaluate(bad_codebase, NoEmptyCatch.RuleConfig())
     assert result.status == "measured"
     assert len(result.violations) >= 2
     assert result.score_contribution < 100
 
 
 def test_empty_catch_clean_on_good(good_codebase):
-    result = NoEmptyCatch().evaluate(good_codebase, NoEmptyCatch.Params())
+    result = NoEmptyCatch().evaluate(good_codebase, NoEmptyCatch.RuleConfig())
     assert result.violations == []
     assert result.score_contribution == 100.0
 
 
 def test_magic_numbers_fire_on_bad(bad_codebase):
-    result = NoMagicNumbers().evaluate(bad_codebase, NoMagicNumbers.Params())
+    result = NoMagicNumbers().evaluate(bad_codebase, NoMagicNumbers.RuleConfig())
     assert result.metric > 0
     assert len(result.violations) > 0
 
 
 def test_magic_numbers_excludes_allowed(good_codebase, bad_codebase):
-    good = NoMagicNumbers().evaluate(good_codebase, NoMagicNumbers.Params())
-    bad = NoMagicNumbers().evaluate(bad_codebase, NoMagicNumbers.Params())
+    good = NoMagicNumbers().evaluate(good_codebase, NoMagicNumbers.RuleConfig())
+    bad = NoMagicNumbers().evaluate(bad_codebase, NoMagicNumbers.RuleConfig())
     # 0 and 1 are never magic; good.py has far fewer magic literals per kLOC.
     assert good.metric < bad.metric
 
 
 def test_small_functions_flags_long(bad_codebase):
-    result = SmallFunctions().evaluate(bad_codebase, SmallFunctions.Params())
+    result = SmallFunctions().evaluate(bad_codebase, SmallFunctions.RuleConfig())
     assert any(v["loc"] > 50 for v in result.violations)
 
 
 def test_few_parameters_flags_wide(bad_codebase):
-    result = FewParameters().evaluate(bad_codebase, FewParameters.Params())
+    result = FewParameters().evaluate(bad_codebase, FewParameters.RuleConfig())
     assert any(v["params"] >= 4 for v in result.violations)
 
 
 def test_shallow_nesting_flags_deep(bad_codebase):
-    result = ShallowNesting().evaluate(bad_codebase, ShallowNesting.Params())
+    result = ShallowNesting().evaluate(bad_codebase, ShallowNesting.RuleConfig())
     assert any(v["depth"] >= 3 for v in result.violations)

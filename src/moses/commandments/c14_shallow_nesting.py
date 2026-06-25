@@ -18,7 +18,7 @@ NAME = "Shallow nesting"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     depth_budget: int = 2
     slope: float = 25.0
     violation_threshold: int = 3
@@ -48,7 +48,7 @@ def _max_depth(node: ast.AST, depth: int = 0) -> int:
 class ShallowNesting:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -56,13 +56,13 @@ class ShallowNesting:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         depths = []
         violations = []
         for f in iter_functions(codebase):
             d = _max_depth(f.node)
             depths.append(d)
-            if d >= params.violation_threshold:
+            if d >= config.violation_threshold:
                 violations.append(
                     {
                         "file": f.file.relpath,
@@ -76,7 +76,7 @@ class ShallowNesting:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         p95 = percentile([float(d) for d in depths], 95)
-        score = clamp(100 - params.slope * max(0, p95 - params.depth_budget))
+        score = clamp(100 - config.slope * max(0, p95 - config.depth_budget))
         violations.sort(key=lambda v: v["depth"], reverse=True)
 
         return CommandmentResult(

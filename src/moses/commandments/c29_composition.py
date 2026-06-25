@@ -17,7 +17,7 @@ NAME = "Composition over inheritance"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     budget: float = 1.0
     slope: float = 50.0
 
@@ -35,7 +35,7 @@ def _base_names(cls: ast.ClassDef) -> list[str]:
 class Composition:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -43,7 +43,7 @@ class Composition:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         classes: dict[str, ast.ClassDef] = {}
         located: dict[str, str] = {}
         for source, cls in iter_classes(codebase):
@@ -85,7 +85,7 @@ class Composition:
                 )
 
         m = mean(values)
-        score = clamp(100 - params.slope * max(0, m - params.budget))
+        score = clamp(100 - config.slope * max(0, m - config.budget))
         violations.sort(key=lambda v: v["depth"], reverse=True)
 
         return CommandmentResult(

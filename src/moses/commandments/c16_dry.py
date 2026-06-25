@@ -20,7 +20,7 @@ NAME = "DRY"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     min_block_tokens: int = 50
     slope: float = 1000.0
 
@@ -113,7 +113,7 @@ def _duplicate_fraction(per_file_tokens: dict[str, list[tuple[str, str, int]]], 
 class DRY:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -121,7 +121,7 @@ class DRY:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         per_file = {}
         for source in codebase.files:
             toks = _tokenise(source.text)
@@ -131,8 +131,8 @@ class DRY:
         if not per_file:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
-        fraction, dup_lines = _duplicate_fraction(per_file, params.min_block_tokens)
-        score = clamp(100 - params.slope * fraction)
+        fraction, dup_lines = _duplicate_fraction(per_file, config.min_block_tokens)
+        score = clamp(100 - config.slope * fraction)
 
         violations = []
         for relpath, lines in dup_lines.items():

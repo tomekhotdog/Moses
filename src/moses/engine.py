@@ -116,7 +116,7 @@ def run(root, config: Config | None = None) -> Verdict:
             continue
         params = config.rule_params.get(number)
         if params is None:
-            params = cmd.Params()
+            params = cmd.RuleConfig()
         try:
             result = cmd.evaluate(codebase, params)
         except Exception as exc:  # noqa: BLE001 - deliberately broad; one bad rule must not crash the run

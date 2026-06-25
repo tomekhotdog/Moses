@@ -18,7 +18,7 @@ NAME = "No pass-through methods"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     slope: float = 1000.0
 
 
@@ -69,7 +69,7 @@ def _is_pass_through(node) -> bool:
 class PassThrough:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -77,7 +77,7 @@ class PassThrough:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         total = 0
         violations = []
         for f in iter_functions(codebase):
@@ -95,7 +95,7 @@ class PassThrough:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = len(violations) / total
-        score = clamp(100 - params.slope * m)
+        score = clamp(100 - config.slope * m)
 
         return CommandmentResult(
             number=NUMBER,

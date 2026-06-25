@@ -17,7 +17,7 @@ NAME = "Narrow variable scope"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     scope_budget: float = 0.3
     slope: float = 200.0
 
@@ -49,7 +49,7 @@ def _local_live_ranges(node) -> dict[str, tuple[int, int]]:
 class NarrowScope:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -57,7 +57,7 @@ class NarrowScope:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         ratios = []
         violations = []
         for f in iter_functions(codebase):
@@ -81,7 +81,7 @@ class NarrowScope:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(ratios)
-        score = clamp(100 - params.slope * max(0, m - params.scope_budget))
+        score = clamp(100 - config.slope * max(0, m - config.scope_budget))
         violations.sort(key=lambda v: v["scope_ratio"], reverse=True)
 
         return CommandmentResult(

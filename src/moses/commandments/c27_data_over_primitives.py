@@ -21,7 +21,7 @@ NAME = "Data over primitives"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     target_ratio: float = 0.6  # DSR earning full marks (opinionated, calibration-pending)
     violation_threshold: float = 0.5  # functions whose mean slot score is below this are flagged
 
@@ -201,7 +201,7 @@ def _domain_vocab_density(codebase) -> float:
 class DataOverPrimitives:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -209,7 +209,7 @@ class DataOverPrimitives:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         slot_scores: list[float] = []
         annotated = 0
         total_surface = 0
@@ -247,7 +247,7 @@ class DataOverPrimitives:
                         worst_score, worst_ann = s, ret
             if fn_scores:
                 fm = mean(fn_scores)
-                if fm < params.violation_threshold:
+                if fm < config.violation_threshold:
                     violations.append(
                         {
                             "file": f.file.relpath,
@@ -274,7 +274,7 @@ class DataOverPrimitives:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         dsr = mean(slot_scores)
-        score = clamp(100.0 * dsr / params.target_ratio)
+        score = clamp(100.0 * dsr / config.target_ratio)
         coverage = annotated / total_surface if total_surface else 0.0
         violations.sort(key=lambda v: v["domain_score"])
         # Second pass over the codebase: density is a separate corpus-level signal.
@@ -292,7 +292,7 @@ class DataOverPrimitives:
                 "slot_count": len(slot_scores),
                 "annotation_coverage": round(coverage, 3),
                 "domain_vocab_density": vocab_density,
-                "target_ratio": params.target_ratio,
+                "target_ratio": config.target_ratio,
             },
             violations=violations[:50],
         )

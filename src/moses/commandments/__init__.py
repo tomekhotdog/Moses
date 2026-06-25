@@ -55,6 +55,6 @@ ALL_COMMANDMENTS: list = [
 ]
 
 
-def default_rule_params() -> dict:
-    """Map each implemented rule number to a fresh default Params instance."""
-    return {cmd.number: cmd.Params() for cmd in ALL_COMMANDMENTS}
+def default_rule_configs() -> dict:
+    """Map each implemented rule number to a fresh default RuleConfig instance."""
+    return {cmd.number: cmd.RuleConfig() for cmd in ALL_COMMANDMENTS}

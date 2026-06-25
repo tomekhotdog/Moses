@@ -18,7 +18,7 @@ NAME = "Command-query separation"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     slope: float = 500.0
 
 
@@ -47,7 +47,7 @@ def _mutates_nonlocal_state(node) -> bool:
 class CommandQuery:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -55,7 +55,7 @@ class CommandQuery:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         total = 0
         violations = []
         for f in iter_functions(codebase):
@@ -73,7 +73,7 @@ class CommandQuery:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = len(violations) / total
-        score = clamp(100 - params.slope * m)
+        score = clamp(100 - config.slope * m)
 
         return CommandmentResult(
             number=NUMBER,

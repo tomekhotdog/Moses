@@ -17,7 +17,7 @@ NAME = "Pull complexity downward"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     budget: float = 1.0
     slope: float = 20.0
 
@@ -25,7 +25,7 @@ class Params:
 class PullComplexityDown:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -33,7 +33,7 @@ class PullComplexityDown:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         counts = []
         violations = []
         for source in codebase.files:
@@ -60,7 +60,7 @@ class PullComplexityDown:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(counts)
-        score = clamp(100 - params.slope * max(0, m - params.budget))
+        score = clamp(100 - config.slope * max(0, m - config.budget))
         violations.sort(key=lambda v: v["required_params"], reverse=True)
 
         return CommandmentResult(

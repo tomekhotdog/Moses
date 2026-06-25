@@ -16,7 +16,7 @@ NAME = "Few parameters"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     param_budget: int = 2
     slope: float = 25.0
     violation_threshold: int = 4
@@ -25,7 +25,7 @@ class Params:
 class FewParameters:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -33,7 +33,7 @@ class FewParameters:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         counts = []
         violations = []
         for f in iter_functions(codebase):
@@ -41,7 +41,7 @@ class FewParameters:
                 continue
             n = len(param_names(f.node, skip_self=True))
             counts.append(n)
-            if n >= params.violation_threshold:
+            if n >= config.violation_threshold:
                 violations.append(
                     {
                         "file": f.file.relpath,
@@ -55,7 +55,7 @@ class FewParameters:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(counts)
-        score = clamp(100 - params.slope * max(0, m - params.param_budget))
+        score = clamp(100 - config.slope * max(0, m - config.param_budget))
         violations.sort(key=lambda v: v["params"], reverse=True)
 
         return CommandmentResult(

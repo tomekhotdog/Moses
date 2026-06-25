@@ -1,40 +1,40 @@
-"""Rule Params: explicit, typed knobs threaded into evaluate (behaviour-preserving)."""
+"""Rule RuleConfig: explicit, typed knobs threaded into evaluate (behaviour-preserving)."""
 
 from __future__ import annotations
 
 from moses.commandments.c06_define_errors_out import (
     DefineErrorsOut,
-    Params as ErrorsParams,
+    RuleConfig as ErrorsParams,
 )
 from moses.commandments.c02_loose_coupling import (
     LooseCoupling,
-    Params as LooseCouplingParams,
+    RuleConfig as LooseCouplingParams,
 )
-from moses.commandments.c13_few_parameters import FewParameters, Params
+from moses.commandments.c13_few_parameters import FewParameters, RuleConfig
 from moses.commandments.c21_cohesive_classes import (
     CohesiveClasses,
-    Params as CohesionParams,
+    RuleConfig as CohesionParams,
 )
 from moses.commandments.c27_data_over_primitives import (
     DataOverPrimitives,
-    Params as DataParams,
+    RuleConfig as DataParams,
 )
 
 
 def test_c13_default_params_unchanged(bad_codebase):
-    result = FewParameters().evaluate(bad_codebase, Params())
+    result = FewParameters().evaluate(bad_codebase, RuleConfig())
     assert result.status == "measured"
 
 
 def test_c13_override_param_budget_changes_score(bad_codebase):
-    strict = FewParameters().evaluate(bad_codebase, Params(param_budget=0))
-    lenient = FewParameters().evaluate(bad_codebase, Params(param_budget=10))
+    strict = FewParameters().evaluate(bad_codebase, RuleConfig(param_budget=0))
+    lenient = FewParameters().evaluate(bad_codebase, RuleConfig(param_budget=10))
     assert lenient.score_contribution >= strict.score_contribution
 
 
 def test_c13_override_slope_changes_score(bad_codebase):
-    gentle = FewParameters().evaluate(bad_codebase, Params(slope=1.0))
-    harsh = FewParameters().evaluate(bad_codebase, Params(slope=99.0))
+    gentle = FewParameters().evaluate(bad_codebase, RuleConfig(slope=1.0))
+    harsh = FewParameters().evaluate(bad_codebase, RuleConfig(slope=99.0))
     assert gentle.score_contribution >= harsh.score_contribution
 
 
@@ -74,21 +74,21 @@ def test_c27_lower_target_ratio_is_more_lenient():
 
 
 def test_default_rule_params_covers_all_implemented():
-    from moses.commandments import ALL_COMMANDMENTS, default_rule_params
+    from moses.commandments import ALL_COMMANDMENTS, default_rule_configs
 
-    params = default_rule_params()
+    params = default_rule_configs()
     for cmd in ALL_COMMANDMENTS:
-        assert cmd.number in params  # every implemented rule has default Params
+        assert cmd.number in params  # every implemented rule has default RuleConfig
 
 
 def test_engine_threads_overridden_params(fixtures_dir):
-    from moses.commandments.c13_few_parameters import Params
+    from moses.commandments.c13_few_parameters import RuleConfig
     from moses.config import Config
     from moses.engine import run
 
     base = run(fixtures_dir / "bad_example", Config(enabled={13}))
     strict = Config(enabled={13})
-    strict.rule_params[13] = Params(param_budget=0, slope=99.0)
+    strict.rule_params[13] = RuleConfig(param_budget=0, slope=99.0)
     tuned = run(fixtures_dir / "bad_example", strict)
 
     c13_base = next(c for c in base.commandments if c.number == 13)

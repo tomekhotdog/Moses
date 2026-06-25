@@ -45,12 +45,12 @@ WEIGHTS: dict[int, int] = {
 assert sum(WEIGHTS.values()) == 100, f"Weights must sum to 100, got {sum(WEIGHTS.values())}"
 
 
-def _default_rule_params() -> dict:
+def _default_rule_configs() -> dict:
     # Lazy import: commandments import config, so importing at module level
     # would create a cycle.
-    from .commandments import default_rule_params
+    from .commandments import default_rule_configs
 
-    return default_rule_params()
+    return default_rule_configs()
 
 
 # The MVP enabled-set. Mutation (#20) is in the set but only runs under --deep.
@@ -68,8 +68,8 @@ class Config:
     deep: bool = False  # enables opt-in #20 mutation
     jscpd_path: str | None = None  # external duplication tool for #16
     mutmut_path: str | None = None  # override binary for #20
-    # number -> that rule's frozen Params (calibration override surface)
-    rule_params: dict[int, object] = field(default_factory=_default_rule_params)
+    # number -> that rule's frozen RuleConfig (calibration override surface)
+    rule_params: dict[int, object] = field(default_factory=_default_rule_configs)
 
     def is_enabled(self, number: int) -> bool:
         if number not in self.enabled:

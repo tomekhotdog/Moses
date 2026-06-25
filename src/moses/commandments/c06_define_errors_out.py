@@ -18,7 +18,7 @@ NAME = "Define errors out of existence"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     slope: float = 50.0
 
 
@@ -51,7 +51,7 @@ def _has_nullable_return_mix(node) -> bool:
 class DefineErrorsOut:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -59,7 +59,7 @@ class DefineErrorsOut:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         scores = []
         violations = []
         for f in iter_functions(codebase):
@@ -83,7 +83,7 @@ class DefineErrorsOut:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(scores)
-        score = clamp(100 - params.slope * m)
+        score = clamp(100 - config.slope * m)
         violations.sort(key=lambda v: v["failure_modes"], reverse=True)
 
         return CommandmentResult(

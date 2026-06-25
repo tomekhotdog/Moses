@@ -17,7 +17,7 @@ NAME = "No magic numbers"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     allowed: frozenset[int] = frozenset({0, 1, -1})
     slope: float = 2.0
 
@@ -33,7 +33,7 @@ def _is_magic(node: ast.AST, allowed: frozenset[int]) -> bool:
 class NoMagicNumbers:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -41,7 +41,7 @@ class NoMagicNumbers:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         total_loc = 0
         violations = []
         for source in codebase.files:
@@ -53,7 +53,7 @@ class NoMagicNumbers:
             total_loc += source.non_blank_loc
             for node in ast.walk(tree):
                 # Skip negative-literal UnaryOp wrappers: handled via the inner Constant.
-                if _is_magic(node, params.allowed):
+                if _is_magic(node, config.allowed):
                     # Skip -1 expressed as UnaryOp(USub, Constant(1)).
                     violations.append(
                         {
@@ -68,7 +68,7 @@ class NoMagicNumbers:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         per_kloc = len(violations) / (total_loc / 1000.0)
-        score = clamp(100 - params.slope * per_kloc)
+        score = clamp(100 - config.slope * per_kloc)
 
         return CommandmentResult(
             number=NUMBER,

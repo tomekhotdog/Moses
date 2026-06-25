@@ -17,7 +17,7 @@ NAME = "Loose coupling"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     floor: float = 14.0
     ceil: float = 20.0
 
@@ -48,7 +48,7 @@ def _referenced_imports(cls: ast.ClassDef, imports: set[str]) -> set[str]:
 class LooseCoupling:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -56,7 +56,7 @@ class LooseCoupling:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         cbos = []
         violations = []
         imports_by_file: dict[str, set[str]] = {}
@@ -70,7 +70,7 @@ class LooseCoupling:
             imports = imports_by_file.get(source.relpath, set())
             cbo = len(_referenced_imports(cls, imports))
             cbos.append(cbo)
-            if cbo > params.floor:
+            if cbo > config.floor:
                 violations.append(
                     {
                         "file": source.relpath,
@@ -84,12 +84,12 @@ class LooseCoupling:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(cbos)
-        if m <= params.floor:
+        if m <= config.floor:
             score = 100.0
-        elif m >= params.ceil:
+        elif m >= config.ceil:
             score = 0.0
         else:
-            score = 100.0 * (params.ceil - m) / (params.ceil - params.floor)
+            score = 100.0 * (config.ceil - m) / (config.ceil - config.floor)
         score = clamp(score)
         violations.sort(key=lambda v: v["cbo"], reverse=True)
 

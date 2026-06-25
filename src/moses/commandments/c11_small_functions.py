@@ -16,7 +16,7 @@ NAME = "Small functions"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     loc_budget: int = 50
     slope: float = 2.0
     violation_threshold: int = 50
@@ -25,7 +25,7 @@ class Params:
 class SmallFunctions:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -33,14 +33,14 @@ class SmallFunctions:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         funcs = list(iter_functions(codebase))
         if not funcs:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         locs = [f.non_blank_loc for f in funcs]
         p95 = percentile(locs, 95)
-        score = clamp(100 - params.slope * max(0, p95 - params.loc_budget))
+        score = clamp(100 - config.slope * max(0, p95 - config.loc_budget))
 
         violations = sorted(
             (
@@ -51,7 +51,7 @@ class SmallFunctions:
                     "loc": f.non_blank_loc,
                 }
                 for f in funcs
-                if f.non_blank_loc > params.violation_threshold
+                if f.non_blank_loc > config.violation_threshold
             ),
             key=lambda v: v["loc"],
             reverse=True,

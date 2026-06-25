@@ -20,7 +20,7 @@ NAME = "Low cognitive complexity"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     complexity_budget: int = 5
     slope: float = 10.0
     cog_weight: float = 0.7
@@ -110,7 +110,7 @@ def _cyclomatic_by_name(source_text: str) -> dict[str, int]:
 class LowCognitiveComplexity:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -118,7 +118,7 @@ class LowCognitiveComplexity:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         cog_values: list[int] = []
         cyc_values: list[int] = []
         violations = []
@@ -134,7 +134,7 @@ class LowCognitiveComplexity:
             cyc = cyc_map.get(f.qualname) or cyc_map.get(f.name) or 1
             cyc_values.append(cyc)
 
-            if cog >= params.violation_threshold or cyc >= params.violation_threshold:
+            if cog >= config.violation_threshold or cyc >= config.violation_threshold:
                 violations.append(
                     {
                         "file": f.file.relpath,
@@ -150,9 +150,9 @@ class LowCognitiveComplexity:
 
         mean_cog = mean(cog_values)
         mean_cyc = mean(cyc_values)
-        s_cog = clamp(100 - params.slope * max(0, mean_cog - params.complexity_budget))
-        s_cyc = clamp(100 - params.slope * max(0, mean_cyc - params.complexity_budget))
-        score = clamp(params.cog_weight * s_cog + params.cyc_weight * s_cyc)
+        s_cog = clamp(100 - config.slope * max(0, mean_cog - config.complexity_budget))
+        s_cyc = clamp(100 - config.slope * max(0, mean_cyc - config.complexity_budget))
+        score = clamp(config.cog_weight * s_cog + config.cyc_weight * s_cyc)
 
         violations.sort(key=lambda v: v["cognitive"] + v["cyclomatic"], reverse=True)
 

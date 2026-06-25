@@ -17,7 +17,7 @@ NAME = "No empty catch blocks"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     slope: float = 100.0
 
 
@@ -36,7 +36,7 @@ def _is_empty_handler(handler: ast.ExceptHandler) -> bool:
 class NoEmptyCatch:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -44,7 +44,7 @@ class NoEmptyCatch:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         total_loc = 0
         violations = []
         for source in codebase.files:
@@ -66,7 +66,7 @@ class NoEmptyCatch:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         per_kloc = len(violations) / (total_loc / 1000.0)
-        score = clamp(100 - params.slope * per_kloc)
+        score = clamp(100 - config.slope * per_kloc)
 
         return CommandmentResult(
             number=NUMBER,

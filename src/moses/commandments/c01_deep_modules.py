@@ -18,7 +18,7 @@ NAME = "Deep modules"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     multiplier: float = 10.0
 
 
@@ -37,7 +37,7 @@ def _api_surface_and_impl(tree: ast.Module, source) -> tuple[float, int]:
 class DeepModules:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -45,7 +45,7 @@ class DeepModules:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         depths = []
         violations = []
         for source in codebase.files:
@@ -71,7 +71,7 @@ class DeepModules:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(depths)
-        score = clamp(params.multiplier * m)
+        score = clamp(config.multiplier * m)
         violations.sort(key=lambda v: v["depth"])
 
         return CommandmentResult(

@@ -17,7 +17,7 @@ NAME = "No commented-out code"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     min_run: int = 2
     slope: float = 20.0
 
@@ -86,7 +86,7 @@ def _parses_as_code(code: str) -> bool:
 class NoCommentedOutCode:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -94,12 +94,12 @@ class NoCommentedOutCode:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         total_loc = 0
         violations = []
         for source in codebase.files:
             total_loc += source.non_blank_loc
-            for start, code in _comment_runs(source.text, params.min_run):
+            for start, code in _comment_runs(source.text, config.min_run):
                 violations.append(
                     {
                         "file": source.relpath,
@@ -113,7 +113,7 @@ class NoCommentedOutCode:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         per_kloc = len(violations) / (total_loc / 1000.0)
-        score = clamp(100 - params.slope * per_kloc)
+        score = clamp(100 - config.slope * per_kloc)
 
         return CommandmentResult(
             number=NUMBER,

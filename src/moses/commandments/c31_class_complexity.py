@@ -19,7 +19,7 @@ NAME = "Contain class complexity"
 
 
 @dataclass(frozen=True)
-class Params:
+class RuleConfig:
     floor: float = 20.0
     ceil: float = 60.0
 
@@ -42,7 +42,7 @@ def _cc_by_class(source_text: str) -> dict[str, dict[str, int]]:
 class ClassComplexity:
     number = NUMBER
     name = NAME
-    Params = Params
+    RuleConfig = RuleConfig
 
     @property
     def weight(self) -> int:
@@ -50,7 +50,7 @@ class ClassComplexity:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params) -> CommandmentResult:
+    def evaluate(self, codebase, config: RuleConfig) -> CommandmentResult:
         values = []
         violations = []
         for source, cls in iter_classes(codebase):
@@ -60,7 +60,7 @@ class ClassComplexity:
             cc_map = _cc_by_class(source.text).get(cls.name, {})
             wmc = sum(cc_map.get(m.name, 1) for m in methods)
             values.append(wmc)
-            if wmc > params.floor:
+            if wmc > config.floor:
                 violations.append(
                     {
                         "file": source.relpath,
@@ -74,12 +74,12 @@ class ClassComplexity:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
 
         m = mean(values)
-        if m <= params.floor:
+        if m <= config.floor:
             score = 100.0
-        elif m >= params.ceil:
+        elif m >= config.ceil:
             score = 0.0
         else:
-            score = 100.0 * (params.ceil - m) / (params.ceil - params.floor)
+            score = 100.0 * (config.ceil - m) / (config.ceil - config.floor)
         score = clamp(score)
         violations.sort(key=lambda v: v["wmc"], reverse=True)
 
