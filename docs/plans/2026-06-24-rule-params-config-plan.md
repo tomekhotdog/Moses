@@ -55,7 +55,7 @@ If `moses_scores.json` changes, a default was not preserved — fix before commi
 
 ---
 
-### Task 1: Pattern tracer on C13 (optional param, engine unchanged)
+### Task 1: Pattern tracer on C13 (optional param, engine unchanged) — ✅ COMPLETE (b244e50)
 **Depends on:** none
 
 **Files:**
@@ -185,7 +185,7 @@ git commit -m "refactor(rules): C13 explicit Params (tracer, behaviour-preservin
 
 ---
 
-### Task 2: Migrate the linear-penalty + simple rules
+### Task 2: Migrate the linear-penalty + simple rules — ✅ COMPLETE (103a741)
 **Depends on:** Task 1
 
 Apply the SAME pattern (add frozen `Params`, `Params = Params` class attr, `evaluate(self, codebase, params=None)` with internal default, formula reads `params.*`) to these rules, using the knob table above:
@@ -206,7 +206,7 @@ git commit -m "refactor(rules): explicit Params for linear-penalty + simple rule
 
 ---
 
-### Task 3: Migrate the remaining curve archetypes
+### Task 3: Migrate the remaining curve archetypes — ✅ COMPLETE (291a2dd)
 **Depends on:** Task 2
 
 Apply the pattern to the structurally different rules using the table:
@@ -227,7 +227,7 @@ git commit -m "refactor(rules): explicit Params for ramp/composite/ratio rules"
 
 ---
 
-### Task 4: Registry + Config.rule_params + engine threading
+### Task 4: Registry + Config.rule_params + engine threading — ✅ COMPLETE (97af7f9)
 **Depends on:** Task 3 (all rules now accept a param)
 
 **Files:**
@@ -304,7 +304,7 @@ git commit -m "feat(config): thread rule_params through engine into evaluate"
 
 ---
 
-### Task 5: Tighten params to required
+### Task 5: Tighten params to required — ✅ COMPLETE (7cea1df)
 **Depends on:** Task 4
 
 Now the engine always supplies a `Params` (override or, via `default_rule_params`, a default). Make the param **required** per the design: in every migrated rule change `def evaluate(self, codebase, params: Params | None = None)` → `def evaluate(self, codebase, params: Params)` and drop the `params = params if params is not None else Params()` line.
@@ -334,6 +334,6 @@ git commit -m "refactor(rules): make Params required at the evaluate boundary"
 ---
 
 ## Review
-- [ ] Code review requested (mechanism: registry/Config/engine; spot-check 3 rule migrations)
-- [ ] All feedback addressed
-- [ ] Final verification passed (`uv run pytest` green; `moses_scores.json` byte-identical to pre-refactor; `moses judge .` grade unchanged)
+- [x] Code review requested — final holistic review (mechanism + spot-checked c01/c02/c12/c16/c27/c31 migrations); no Critical, "ready to merge"
+- [x] All feedback addressed (polish: typed rule_params, from_file population test, engine fallback test + self-sufficient mock)
+- [x] Final verification passed (`uv run pytest` → 144 passed/1 skipped; `moses_scores.json` byte-identical since plan commit d2bb4bb; `moses judge .` exit 0, Grade B). Self-host score moved 79.1→79.4 because Moses' own source changed (named Params replace inline magic numbers) — scoring logic unchanged, proven by the byte-identical corpus gate.
