@@ -59,6 +59,12 @@ MVP_COMMANDMENTS: set[int] = {
 }
 
 
+def _to_jsonable(value):
+    if isinstance(value, (set, frozenset)):
+        return sorted(value)
+    return value
+
+
 @dataclass(frozen=True)
 class CommandmentsConfig:
     """Master scoring config: every rule's RuleConfig plus the Weights."""
@@ -89,7 +95,10 @@ class CommandmentsConfig:
     def to_dict(self) -> dict:
         return {
             "weights": dict(self.weights),
-            "configs": {n: asdict(rc) for n, rc in self.configs.items()},
+            "configs": {
+                n: {k: _to_jsonable(v) for k, v in asdict(rc).items()}
+                for n, rc in self.configs.items()
+            },
         }
 
     @classmethod
@@ -98,10 +107,24 @@ class CommandmentsConfig:
         configs = {}
         for n, fields in data.get("configs", {}).items():
             n = int(n)
-            configs[n] = type(defaults[n])(**fields)
+            if n not in defaults:
+                continue  # unknown/stale rule number from another version
+            default_rc = defaults[n]
+            coerced = {}
+            for k, v in fields.items():
+                cur = getattr(default_rc, k, None)
+                if isinstance(cur, frozenset):
+                    coerced[k] = frozenset(v)
+                elif isinstance(cur, set):
+                    coerced[k] = set(v)
+                else:
+                    coerced[k] = v
+            configs[n] = type(default_rc)(**coerced)
         for n, rc in defaults.items():
             configs.setdefault(n, rc)
         weights = {int(k): int(v) for k, v in data.get("weights", WEIGHTS).items()}
+        if not weights:
+            weights = dict(WEIGHTS)
         return cls(configs=configs, weights=weights)
 
 

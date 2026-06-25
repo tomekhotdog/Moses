@@ -63,6 +63,8 @@ class CommandmentResult:
 
     number: int
     name: str
+    # The rule's default weight, kept for display/reporting only. The
+    # authoritative scoring weight comes from CommandmentsConfig.weight_for.
     weight: int
     metric: float | None = None
     score_contribution: float = 100.0

@@ -16,7 +16,7 @@ from . import __version__
 from .commandments import ALL_COMMANDMENTS
 from .commandments.base import not_measured
 from .commandments.descriptions import DESCRIPTIONS
-from .config import Config, WEIGHTS
+from .config import Config
 from .loader import load_codebase
 from .models import Codebase, CommandmentResult, Verdict, grade_for
 
@@ -56,7 +56,7 @@ def _weighted_score(results: list[CommandmentResult], config: Config) -> float:
     return num / den
 
 
-def _build_hotspots(results: list[CommandmentResult]) -> list[dict]:
+def _build_hotspots(results: list[CommandmentResult], config: Config) -> list[dict]:
     """Aggregate per-file Score-drag from violations, weighted by rule Weight.
 
     Severity for a file = Σ over rules of weight · (100 - score) · share_of_violations.
@@ -68,7 +68,7 @@ def _build_hotspots(results: list[CommandmentResult]) -> list[dict]:
         if r.status != "measured" or not r.violations:
             continue
         deficit = max(0.0, 100.0 - r.score_contribution)
-        per_v = (r.weight * deficit) / max(1, len(r.violations))
+        per_v = (config.commandments.weight_for(r.number) * deficit) / max(1, len(r.violations))
         for v in r.violations:
             f = v.get("file")
             if not f:
@@ -124,7 +124,7 @@ def run(root, config: Config | None = None) -> Verdict:
             result = CommandmentResult(
                 number=number,
                 name=name,
-                weight=WEIGHTS[number],
+                weight=config.commandments.weight_for(number),
                 metric=None,
                 score_contribution=100.0,
                 status="error",
@@ -135,7 +135,7 @@ def run(root, config: Config | None = None) -> Verdict:
 
     score = _weighted_score(results, config)
     grade = grade_for(score)
-    hotspots = _build_hotspots(results)
+    hotspots = _build_hotspots(results, config)
     overview = _overview(codebase)
     meta = {
         "tool_version": __version__,

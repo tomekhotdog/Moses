@@ -36,12 +36,29 @@ def test_with_weight_is_immutable_update():
 
 
 def test_to_from_dict_roundtrip():
+    import json
     cc = CommandmentsConfig.default().with_config(13, C13(slope=42.0)).with_weight(13, 7)
-    back = CommandmentsConfig.from_dict(cc.to_dict())
+    back = CommandmentsConfig.from_dict(json.loads(json.dumps(cc.to_dict())))
     assert back.config_for(13).slope == 42.0
     assert back.weight_for(13) == 7
-    assert back.configs == cc.configs
+    assert back.configs == cc.configs   # incl. c25's frozenset field surviving JSON
     assert back.weights == cc.weights
+
+
+def test_from_dict_skips_unknown_rule_numbers():
+    cc = CommandmentsConfig.default()
+    data = cc.to_dict()
+    data["configs"]["999"] = {"bogus": 1}
+    back = CommandmentsConfig.from_dict(data)
+    assert 999 not in back.configs
+
+
+def test_from_dict_empty_weights_falls_back():
+    from moses.config import WEIGHTS
+    data = CommandmentsConfig.default().to_dict()
+    data["weights"] = {}
+    back = CommandmentsConfig.from_dict(data)
+    assert back.weights == WEIGHTS
 
 
 def test_engine_threads_master_overrides(fixtures_dir):

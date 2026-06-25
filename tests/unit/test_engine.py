@@ -102,3 +102,13 @@ def test_grade_thresholds():
     assert grade_for(35) == "D"
     assert grade_for(20) == "E"
     assert grade_for(19.9) == "F"
+
+
+def test_weight_override_affects_hotspots(fixtures_dir):
+    # Rule 16 (DRY) fires heavily on bad_example; overriding its master weight
+    # must change hotspot severities, proving hotspots read the master weights.
+    cfg = Config()
+    cfg.commandments = cfg.commandments.with_weight(16, 99)
+    base = run(fixtures_dir / "bad_example")
+    tuned = run(fixtures_dir / "bad_example", cfg)
+    assert base.hotspots != tuned.hotspots
