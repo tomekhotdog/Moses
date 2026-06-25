@@ -33,8 +33,7 @@ class MutationKillRate:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
-        params = params if params is not None else Params()
+    def evaluate(self, codebase, params: Params) -> CommandmentResult:
         binary = shutil.which("mutmut")
         if binary is None:
             return CommandmentResult(

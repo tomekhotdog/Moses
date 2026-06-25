@@ -13,8 +13,8 @@ FIXTURES = Path(__file__).resolve().parents[1] / "fixtures"
 
 
 def test_fixture_ranking():
-    well = DataOverPrimitives().evaluate(load_codebase(FIXTURES / "well_modelled"))
-    prim = DataOverPrimitives().evaluate(load_codebase(FIXTURES / "primitive_heavy"))
+    well = DataOverPrimitives().evaluate(load_codebase(FIXTURES / "well_modelled"), DataOverPrimitives.Params())
+    prim = DataOverPrimitives().evaluate(load_codebase(FIXTURES / "primitive_heavy"), DataOverPrimitives.Params())
     assert well.status == prim.status == "measured"
     assert well.score_contribution > prim.score_contribution
 

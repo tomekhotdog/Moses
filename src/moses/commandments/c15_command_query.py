@@ -55,8 +55,7 @@ class CommandQuery:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
-        params = params if params is not None else Params()
+    def evaluate(self, codebase, params: Params) -> CommandmentResult:
         total = 0
         violations = []
         for f in iter_functions(codebase):

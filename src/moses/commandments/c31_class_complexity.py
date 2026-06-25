@@ -50,8 +50,7 @@ class ClassComplexity:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
-        params = params if params is not None else Params()
+    def evaluate(self, codebase, params: Params) -> CommandmentResult:
         values = []
         violations = []
         for source, cls in iter_classes(codebase):

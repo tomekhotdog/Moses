@@ -121,8 +121,7 @@ class DRY:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
-        params = params if params is not None else Params()
+    def evaluate(self, codebase, params: Params) -> CommandmentResult:
         per_file = {}
         for source in codebase.files:
             toks = _tokenise(source.text)

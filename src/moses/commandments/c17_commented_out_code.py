@@ -94,8 +94,7 @@ class NoCommentedOutCode:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
-        params = params if params is not None else Params()
+    def evaluate(self, codebase, params: Params) -> CommandmentResult:
         total_loc = 0
         violations = []
         for source in codebase.files:

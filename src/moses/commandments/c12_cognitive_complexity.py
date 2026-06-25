@@ -118,8 +118,7 @@ class LowCognitiveComplexity:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
-        params = params if params is not None else Params()
+    def evaluate(self, codebase, params: Params) -> CommandmentResult:
         cog_values: list[int] = []
         cyc_values: list[int] = []
         violations = []

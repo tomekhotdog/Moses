@@ -52,8 +52,8 @@ _MONOTONIC_RULES = [r for r in HEAVIER_RULES if r is not DeepModules]
 
 @pytest.mark.parametrize("rule_cls", _MONOTONIC_RULES)
 def test_bad_scores_no_better_than_good(rule_cls, bad_codebase, good_codebase):
-    bad = rule_cls().evaluate(bad_codebase)
-    good = rule_cls().evaluate(good_codebase)
+    bad = rule_cls().evaluate(bad_codebase, rule_cls.Params())
+    good = rule_cls().evaluate(good_codebase, rule_cls.Params())
     # Skip rules that genuinely cannot measure one of the fixtures.
     if bad.status != "measured" or good.status != "measured":
         pytest.skip(f"{rule_cls.__name__} not measured on a fixture")
@@ -62,44 +62,44 @@ def test_bad_scores_no_better_than_good(rule_cls, bad_codebase, good_codebase):
 
 @pytest.mark.parametrize("rule_cls", HEAVIER_RULES)
 def test_every_rule_sets_status(rule_cls, bad_codebase):
-    result = rule_cls().evaluate(bad_codebase)
+    result = rule_cls().evaluate(bad_codebase, rule_cls.Params())
     assert result.status in {"measured", "not_measured", "error", "skipped"}
     assert result.number == rule_cls().number
 
 
 def test_pass_through_fires(bad_codebase):
-    result = PassThrough().evaluate(bad_codebase)
+    result = PassThrough().evaluate(bad_codebase, PassThrough.Params())
     names = {v["function"] for v in result.violations}
     assert any("delegate" in n for n in names)
     assert any("forward" in n for n in names)
 
 
 def test_commented_out_code_fires(bad_codebase):
-    result = NoCommentedOutCode().evaluate(bad_codebase)
+    result = NoCommentedOutCode().evaluate(bad_codebase, NoCommentedOutCode.Params())
     assert result.metric > 0
     assert len(result.violations) >= 1
     assert result.score_contribution < 100
 
 
 def test_commented_out_code_clean_on_good(good_codebase):
-    result = NoCommentedOutCode().evaluate(good_codebase)
+    result = NoCommentedOutCode().evaluate(good_codebase, NoCommentedOutCode.Params())
     assert result.violations == []
     assert result.score_contribution == 100.0
 
 
 def test_dry_fires(bad_codebase):
-    result = DRY().evaluate(bad_codebase)
+    result = DRY().evaluate(bad_codebase, DRY.Params())
     assert result.status == "measured"
     assert result.score_contribution < 100
 
 
 def test_law_of_demeter_fires(bad_codebase):
-    result = LawOfDemeter().evaluate(bad_codebase)
+    result = LawOfDemeter().evaluate(bad_codebase, LawOfDemeter.Params())
     assert result.status == "measured"
     assert len(result.violations) >= 1
 
 
 def test_composition_flags_deep_inheritance(bad_codebase):
-    result = Composition().evaluate(bad_codebase)
+    result = Composition().evaluate(bad_codebase, Composition.Params())
     assert result.status == "measured"
     assert result.score_contribution < 100

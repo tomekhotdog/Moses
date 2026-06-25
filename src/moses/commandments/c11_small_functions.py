@@ -33,8 +33,7 @@ class SmallFunctions:
 
         return WEIGHTS[NUMBER]
 
-    def evaluate(self, codebase, params: Params | None = None) -> CommandmentResult:
-        params = params if params is not None else Params()
+    def evaluate(self, codebase, params: Params) -> CommandmentResult:
         funcs = list(iter_functions(codebase))
         if not funcs:
             return CommandmentResult(NUMBER, NAME, self.weight, status="not_measured")
