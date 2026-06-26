@@ -15,11 +15,11 @@ def _write(p: Path, text: str) -> None:
 
 def test_score_corpus_shape(tmp_path):
     root = tmp_path / "corpus"
-    _write(root / "2024" / "q1" / "a.py", "def add(x: int, y: int) -> int:\n    return x + y\n")
-    _write(root / "2024" / "q1" / "b.py", "x = 1\nclass C:\n    def m(self):\n        return x\n")
-    result = score_corpus(root, "2024")
-    assert result["year"] == "2024"
-    q1 = result["questions"]["q1"]
+    _write(root / "2024_q1" / "problem.md", "# Q1\n")
+    _write(root / "2024_q1" / "a.py", "def add(x: int, y: int) -> int:\n    return x + y\n")
+    _write(root / "2024_q1" / "b.py", "x = 1\nclass C:\n    def m(self):\n        return x\n")
+    result = score_corpus(root)
+    q1 = result["questions"]["2024_q1"]
     assert set(q1) == {"a.py", "b.py"}
     for entry in q1.values():
         assert isinstance(entry["moses_score"], float)
@@ -30,10 +30,11 @@ def test_score_corpus_shape(tmp_path):
 
 def test_score_corpus_writes_json(tmp_path):
     root = tmp_path / "corpus"
-    _write(root / "2024" / "q1" / "a.py", "def add(x: int, y: int) -> int:\n    return x + y\n")
+    _write(root / "2024_q1" / "problem.md", "# Q1\n")
+    _write(root / "2024_q1" / "a.py", "def add(x: int, y: int) -> int:\n    return x + y\n")
     from evals.corpus_score import main
 
-    rc = main(["--corpus", str(root), "--year", "2024"])
+    rc = main(["--corpus", str(root)])
     assert rc == 0
     data = json.loads((root / "moses_scores.json").read_text())
-    assert "q1" in data["questions"]
+    assert "2024_q1" in data["questions"]

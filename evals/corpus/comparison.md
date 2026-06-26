@@ -1,6 +1,6 @@
-# Calibration corpus — Moses vs Judge (2024)
+# Calibration corpus — Moses vs Judge
 
-## q10
+## 2024_q10
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -13,7 +13,7 @@
 
 Rank agreement (Spearman ρ, Moses vs Judge): **-0.143** (n=6)
 
-## q12
+## 2024_q12
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -25,7 +25,7 @@ Rank agreement (Spearman ρ, Moses vs Judge): **-0.143** (n=6)
 
 Rank agreement (Spearman ρ, Moses vs Judge): **0.0** (n=5)
 
-## q13
+## 2024_q13
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -37,7 +37,7 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.0** (n=5)
 
 Rank agreement (Spearman ρ, Moses vs Judge): **0.3** (n=5)
 
-## q14
+## 2024_q14
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -50,7 +50,7 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.3** (n=5)
 
 Rank agreement (Spearman ρ, Moses vs Judge): **0.143** (n=6)
 
-## q15
+## 2024_q15
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -63,7 +63,7 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.143** (n=6)
 
 Rank agreement (Spearman ρ, Moses vs Judge): **0.257** (n=6)
 
-## q16
+## 2024_q16
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -75,7 +75,7 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.257** (n=6)
 
 Rank agreement (Spearman ρ, Moses vs Judge): **0.0** (n=5)
 
-## q17
+## 2024_q17
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -88,7 +88,7 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.0** (n=5)
 
 Rank agreement (Spearman ρ, Moses vs Judge): **0.029** (n=6)
 
-## q20
+## 2024_q20
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -100,7 +100,7 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.029** (n=6)
 
 Rank agreement (Spearman ρ, Moses vs Judge): **0.9** (n=5)
 
-## q21
+## 2024_q21
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -113,7 +113,7 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.9** (n=5)
 
 Rank agreement (Spearman ρ, Moses vs Judge): **-0.029** (n=6)
 
-## q22
+## 2024_q22
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -125,7 +125,7 @@ Rank agreement (Spearman ρ, Moses vs Judge): **-0.029** (n=6)
 
 Rank agreement (Spearman ρ, Moses vs Judge): **-0.7** (n=5)
 
-## q24
+## 2024_q24
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -137,7 +137,7 @@ Rank agreement (Spearman ρ, Moses vs Judge): **-0.7** (n=5)
 
 Rank agreement (Spearman ρ, Moses vs Judge): **0.9** (n=5)
 
-## q4
+## 2024_q4
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -150,7 +150,7 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.9** (n=5)
 
 Rank agreement (Spearman ρ, Moses vs Judge): **0.657** (n=6)
 
-## q6
+## 2024_q6
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -162,7 +162,7 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.657** (n=6)
 
 Rank agreement (Spearman ρ, Moses vs Judge): **0.9** (n=5)
 
-## q8
+## 2024_q8
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -175,7 +175,7 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.9** (n=5)
 
 Rank agreement (Spearman ρ, Moses vs Judge): **0.371** (n=6)
 
-## q9
+## 2024_q9
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
@@ -191,18 +191,18 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.3** (n=5)
 
 | Question | Spearman ρ | n |
 |---|---|---|
-| q10 | -0.143 | 6 |
-| q12 | 0.0 | 5 |
-| q13 | 0.3 | 5 |
-| q14 | 0.143 | 6 |
-| q15 | 0.257 | 6 |
-| q16 | 0.0 | 5 |
-| q17 | 0.029 | 6 |
-| q20 | 0.9 | 5 |
-| q21 | -0.029 | 6 |
-| q22 | -0.7 | 5 |
-| q24 | 0.9 | 5 |
-| q4 | 0.657 | 6 |
-| q6 | 0.9 | 5 |
-| q8 | 0.371 | 6 |
-| q9 | 0.3 | 5 |
+| 2024_q10 | -0.143 | 6 |
+| 2024_q12 | 0.0 | 5 |
+| 2024_q13 | 0.3 | 5 |
+| 2024_q14 | 0.143 | 6 |
+| 2024_q15 | 0.257 | 6 |
+| 2024_q16 | 0.0 | 5 |
+| 2024_q17 | 0.029 | 6 |
+| 2024_q20 | 0.9 | 5 |
+| 2024_q21 | -0.029 | 6 |
+| 2024_q22 | -0.7 | 5 |
+| 2024_q24 | 0.9 | 5 |
+| 2024_q4 | 0.657 | 6 |
+| 2024_q6 | 0.9 | 5 |
+| 2024_q8 | 0.371 | 6 |
+| 2024_q9 | 0.3 | 5 |

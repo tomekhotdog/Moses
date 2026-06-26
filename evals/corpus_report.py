@@ -1,12 +1,12 @@
 """Merge Moses scores with LLM-judge scores into a comparison report.
 
 Reads ``<corpus>/moses_scores.json`` (from corpus_score.py) and each
-``<corpus>/<year>/<qN>/judgements.json`` (agentic LLM-judge output), and writes a
+``<corpus>/<qid>/judgements.json`` (agentic LLM-judge output), and writes a
 single ``comparison.md`` (plus merged ``comparison.json``) laying the deterministic
 Moses Score beside the holistic Judge score, with a per-question rank-agreement
 summary.
 
-Usage: uv run python evals/corpus_report.py --corpus evals/corpus --year 2024
+Usage: uv run python evals/corpus_report.py --corpus evals/corpus
 """
 
 from __future__ import annotations
@@ -54,13 +54,13 @@ def rank_agreement(pairs: list[tuple[float, float]]) -> dict:
     return {"spearman": round(rho, 3), "n": len(pairs)}
 
 
-def merge(corpus_root: Path, year: str) -> dict:
+def merge(corpus_root: Path) -> dict:
     """Merge Moses + judge data into one structure keyed by question/solution."""
     corpus_root = Path(corpus_root)
     moses = json.loads((corpus_root / "moses_scores.json").read_text(encoding="utf-8"))
-    merged: dict = {"year": year, "questions": {}}
+    merged: dict = {"questions": {}}
     for qname, sols in moses["questions"].items():
-        jpath = corpus_root / year / qname / "judgements.json"
+        jpath = corpus_root / qname / "judgements.json"
         judge = json.loads(jpath.read_text(encoding="utf-8")) if jpath.exists() else {}
         rows = {}
         for fname, m in sols.items():
@@ -83,10 +83,10 @@ def _weakest(commandments: dict, k: int = 3) -> str:
     return ", ".join(f"#{n}:{int(round(s))}" for n, s in items) if items else "—"
 
 
-def build_comparison(corpus_root: Path, year: str) -> str:
+def build_comparison(corpus_root: Path) -> str:
     """Render the merged corpus as a Markdown comparison report."""
-    data = merge(corpus_root, year)
-    lines = [f"# Calibration corpus — Moses vs Judge ({year})", ""]
+    data = merge(corpus_root)
+    lines = ["# Calibration corpus — Moses vs Judge", ""]
     summary: list[str] = []
     for qname, rows in data["questions"].items():
         lines.append(f"## {qname}")
@@ -124,13 +124,12 @@ def build_comparison(corpus_root: Path, year: str) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--corpus", default="evals/corpus")
-    parser.add_argument("--year", default="2024")
     args = parser.parse_args(argv)
 
     corpus_root = Path(args.corpus)
-    merged = merge(corpus_root, args.year)
+    merged = merge(corpus_root)
     (corpus_root / "comparison.json").write_text(json.dumps(merged, indent=2) + "\n", encoding="utf-8")
-    md = build_comparison(corpus_root, args.year)
+    md = build_comparison(corpus_root)
     (corpus_root / "comparison.md").write_text(md, encoding="utf-8")
     print(f"Wrote {corpus_root / 'comparison.md'}")
     return 0

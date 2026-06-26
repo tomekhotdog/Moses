@@ -24,11 +24,10 @@ def test_rank_agreement_too_few():
 
 def _corpus(tmp_path: Path) -> Path:
     root = tmp_path / "corpus"
-    (root / "2024" / "q1").mkdir(parents=True)
+    (root / "2024_q1").mkdir(parents=True)
     moses = {
-        "year": "2024",
         "questions": {
-            "q1": {
+            "2024_q1": {
                 "good.py": {"loc": 50, "moses_score": 85.0, "grade": "A", "commandments": {"27": 90.0}},
                 "bad.py": {"loc": 40, "moses_score": 40.0, "grade": "D", "commandments": {"27": 10.0, "16": 0.0}},
             }
@@ -39,14 +38,14 @@ def _corpus(tmp_path: Path) -> Path:
         "good.py": {"pct": 88, "justification": "Clean, well modelled."},
         "bad.py": {"pct": 30, "justification": "Stringly typed, duplicated."},
     }
-    (root / "2024" / "q1" / "judgements.json").write_text(json.dumps(judge), encoding="utf-8")
+    (root / "2024_q1" / "judgements.json").write_text(json.dumps(judge), encoding="utf-8")
     return root
 
 
 def test_build_comparison_contains_rows_and_correlation(tmp_path):
     root = _corpus(tmp_path)
-    md = build_comparison(root, "2024")
-    assert "q1" in md
+    md = build_comparison(root)
+    assert "2024_q1" in md
     assert "good.py" in md and "bad.py" in md
     assert "85.0" in md  # moses score present
     assert "88" in md     # judge pct present

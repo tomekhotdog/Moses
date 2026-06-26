@@ -4,7 +4,7 @@ The optimiser is intentionally a stub for now: it returns the default
 CommandmentsConfig unchanged. The real search over CommandmentsConfig (rule
 configs + weights) lands once the corpus is scaled beyond the 3-question pilot.
 
-Usage: uv run python -m evals.calibrate --corpus evals/corpus --year 2024
+Usage: uv run python -m evals.calibrate --corpus evals/corpus
 (run via -m: this module imports the sibling evals.corpus_report package, which
 the path form `python evals/calibrate.py` cannot resolve.)
 """
@@ -25,7 +25,7 @@ def agreement(pairs: list[tuple[float, float]]) -> dict:
     return {"spearman": rho, "mean_abs_gap": gap, "n": len(pairs)}
 
 
-def report_baseline(corpus_root: Path, year: str = "2024") -> str:
+def report_baseline(corpus_root: Path) -> str:
     """Human-readable report of current agreement per question + overall."""
     corpus_root = Path(corpus_root)
     data = json.loads((corpus_root / "comparison.json").read_text(encoding="utf-8"))
@@ -112,7 +112,7 @@ def optimize_weights(data: dict, base_weights: dict, passes: int = 6) -> tuple[d
     return weights, best
 
 
-def run_optimize(corpus_root: Path, year: str = "2024") -> str:
+def run_optimize(corpus_root: Path) -> str:
     """Optimise per-rule weights offline; write tuned weights; return a report."""
     from moses.config import WEIGHTS
 
@@ -156,7 +156,6 @@ def run_optimize(corpus_root: Path, year: str = "2024") -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--corpus", default="evals/corpus")
-    parser.add_argument("--year", default="2024")
     parser.add_argument(
         "--optimize",
         action="store_true",
@@ -164,9 +163,9 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
     if args.optimize:
-        print(run_optimize(Path(args.corpus), args.year))
+        print(run_optimize(Path(args.corpus)))
     else:
-        print(report_baseline(Path(args.corpus), args.year))
+        print(report_baseline(Path(args.corpus)))
     return 0
 
 

@@ -1,7 +1,6 @@
 {
-  "year": "2024",
   "questions": {
-    "q10": {
+    "2024_q10": {
       "online_1.py": {
         "loc": 125,
         "moses_score": 91.45,
@@ -171,7 +170,7 @@
         "judge_justification": "An unused TrailMap class, duplicated traversal logic (an inline part-1 walk plus a near-identical proc helper), a dead 'height >= 0' check, dict-as-set, and terse names make it cluttered and hard to follow."
       }
     },
-    "q12": {
+    "2024_q12": {
       "online_1.py": {
         "loc": 95,
         "moses_score": 75.37,
@@ -315,7 +314,7 @@
         "judge_justification": "Has a genuine Region abstraction and clear comments, but region discovery is convoluted and quadratic\u2014joining plots by scanning all existing regions while also doing DFS\u2014mixing two redundant traversals with leftover debug cruft."
       }
     },
-    "q13": {
+    "2024_q13": {
       "online_1.py": {
         "loc": 45,
         "moses_score": 80.11,
@@ -459,7 +458,7 @@
         "judge_justification": "Genuine domain modelling via a documented Machine class with well-named methods, but relies on float arithmetic with round-then-verify (fragile at part-2 magnitudes), opaque p1..p4 field names, and an awkward int(len/4)+1 loop bound."
       }
     },
-    "q14": {
+    "2024_q14": {
       "online_1.py": {
         "loc": 61,
         "moses_score": 74.2,
@@ -631,7 +630,7 @@
         "judge_justification": "Has a real Robot class and named helpers, but the over-engineered generalized quadrant_counts (fractional borderline arithmetic, max(0,x-1) fudging) is hard to follow and brittle, parsing is verbose with repeated splits, and dimensions are sprinkled as loose args."
       }
     },
-    "q15": {
+    "2024_q15": {
       "online_1.py": {
         "loc": 142,
         "moses_score": 62.9,
@@ -797,7 +796,7 @@
         "judge_justification": "Clear naming and a clean recursive can_move/move separation with explanatory comments, but parallel box sets and symmetric left/right branches add incidental state, plus top-level execution and an external import reduce self-containment."
       }
     },
-    "q16": {
+    "2024_q16": {
       "online_1.py": {
         "loc": 51,
         "moses_score": 92.75,
@@ -934,7 +933,7 @@
         "judge_justification": "Clear OO modelling and naming with good decomposition, but uses a FIFO list (pop(0)) rather than a priority queue and a hacky (start+end)%2 rotation-cost formula, making correctness fragile and over-modelled via the Step class."
       }
     },
-    "q17": {
+    "2024_q17": {
       "online_1.py": {
         "loc": 74,
         "moses_score": 79.19,
@@ -1102,7 +1101,7 @@
         "judge_justification": "Ambitious OOP modelling (Registers/Operand/Instruction/Program) but over-engineered and burdened by smells: float-based integer division, a recursive search mutating a shared set, module-level side effects, and an external dependency."
       }
     },
-    "q20": {
+    "2024_q20": {
       "online_1.py": {
         "loc": 75,
         "moses_score": 68.46,
@@ -1238,7 +1237,7 @@
         "judge_justification": "Strong domain modelling via a RaceTrack class with helpers and explicit parse-error raising, slightly weakened by an awkwardly placed HTML-tagged comment, reliance on dict insertion order, and a convoluted min-over-neighbours BFS."
       }
     },
-    "q21": {
+    "2024_q21": {
       "online_1.py": {
         "loc": 266,
         "moses_score": 66.18,
@@ -1401,7 +1400,7 @@
         "judge_justification": "Strong domain modelling with a PadType enum, descriptive names, an explanatory docstring, and scalable iterative memoization, marred only by some repetition, a hard external dependency, and generic Exception use."
       }
     },
-    "q22": {
+    "2024_q22": {
       "online_1.py": {
         "loc": 39,
         "moses_score": 79.7,
@@ -1538,7 +1537,7 @@
         "judge_justification": "Good domain modelling via explicit mix/prune/next_secret_number and descriptive names, but suffers from redundant intermediate variables, an awkward dict-of-sets keyed by index, hardcoded filenames, and module-level print side effects."
       }
     },
-    "q24": {
+    "2024_q24": {
       "online_1.py": {
         "loc": 182,
         "moses_score": 84.21,
@@ -1676,7 +1675,7 @@
         "judge_justification": "A genuine Wire/Gate/Circuit object model with an explanatory ASCII-diagram docstring and readable structural checks, undercut by terse single-letter parsing in go(), an external main import dependency, exception-based control flow, and hardcoded bit-range loops with acknowledged unhandled edge cases."
       }
     },
-    "q4": {
+    "2024_q4": {
       "online_1.py": {
         "loc": 39,
         "moses_score": 89.13,
@@ -1838,7 +1837,7 @@
         "judge_justification": "Over-engineered yet incomplete: a confusing transpose/flip in read_grid inverts coordinate semantics, per-direction hardcoded offset lists duplicate heavily, it imports from a nonexistent module, and main runs only part2 leaving part1 dead."
       }
     },
-    "q6": {
+    "2024_q6": {
       "online_1.py": {
         "loc": 43,
         "moses_score": 85.84,
@@ -1983,7 +1982,7 @@
         "judge_justification": "Rich, well-named domain model (Direction/Coordinates/Guard/Lab) with full dunder methods and good readability, but verges on over-engineered with an if/elif direction chain instead of deltas, confusing width/height naming, and generic Exception usage."
       }
     },
-    "q8": {
+    "2024_q8": {
       "online_1.py": {
         "loc": 112,
         "moses_score": 64.48,
@@ -2151,7 +2150,7 @@
         "judge_justification": "Has real domain types (Coordinates/Antenna) yet suffers from confusing resonance stepping recomputed from the origin, module-level execution side effects, an external read_input dependency, and an over-strict exception on single-antenna frequencies."
       }
     },
-    "q9": {
+    "2024_q9": {
       "online_1.py": {
         "loc": 108,
         "moses_score": 79.08,

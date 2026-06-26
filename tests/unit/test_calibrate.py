@@ -16,11 +16,10 @@ def test_agreement_perfect():
 
 def test_report_baseline_over_corpus(tmp_path):
     root = tmp_path / "corpus"
-    (root / "2024" / "q1").mkdir(parents=True)
+    (root / "2024_q1").mkdir(parents=True)
     merged = {
-        "year": "2024",
         "questions": {
-            "q1": {
+            "2024_q1": {
                 "good.py": {"moses_score": 85.0, "judge_pct": 88},
                 "bad.py": {"moses_score": 40.0, "judge_pct": 30},
             }
@@ -28,5 +27,5 @@ def test_report_baseline_over_corpus(tmp_path):
     }
     (root / "comparison.json").write_text(json.dumps(merged), encoding="utf-8")
     out = report_baseline(root)
-    assert "q1" in out
+    assert "2024_q1" in out
     assert "spearman" in out.lower()
