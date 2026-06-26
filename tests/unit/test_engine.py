@@ -29,8 +29,15 @@ def test_weighted_score_averages_enabled_measured_only():
         # not_measured never counts
         CommandmentResult(14, "d", 2, None, 100.0, "not_measured"),
     ]
-    # (2*50 + 4*100) / (2+4) = 500/6
-    assert abs(_weighted_score(results, config) - (500 / 6)) < 1e-9
+    # Weights come from the master config (weight_for), and each score is
+    # sharpened by gamma before the weighted mean.
+    from moses.engine import _sharpen
+
+    g = config.commandments.gamma
+    w11 = config.commandments.weight_for(11)
+    w13 = config.commandments.weight_for(13)
+    expected = (w11 * _sharpen(50.0, g) + w13 * _sharpen(100.0, g)) / (w11 + w13)
+    assert abs(_weighted_score(results, config) - expected) < 1e-9
 
 
 def test_disabling_does_not_pad_with_free_hundreds():

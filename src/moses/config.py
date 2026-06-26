@@ -8,41 +8,47 @@ from pathlib import Path
 import yaml
 
 # Integer Weights summing to 100 across all 31 Commandments.
+# Calibrated via the offline optimizer (see evals/calibrate.py); renormalized
+# from tuned floats to integers summing to 100 (largest-remainder rounding).
 WEIGHTS: dict[int, int] = {
-    1: 8,
-    2: 5,
+    1: 3,
+    2: 4,
     3: 2,
     4: 3,
-    5: 3,
+    5: 5,
     6: 3,
     7: 2,
-    8: 4,
-    9: 4,
+    8: 3,
+    9: 3,
     10: 2,
-    11: 2,
-    12: 6,
-    13: 4,
-    14: 2,
-    15: 2,
-    16: 6,
+    11: 3,
+    12: 10,
+    13: 3,
+    14: 1,
+    15: 1,
+    16: 12,
     17: 1,
     18: 2,
     19: 3,
-    20: 5,
+    20: 4,
     21: 2,
     22: 3,
     23: 2,
-    24: 3,
-    25: 2,
+    24: 4,
+    25: 3,
     26: 3,
-    27: 3,
-    28: 4,
-    29: 3,
-    30: 3,
-    31: 3,
+    27: 4,
+    28: 3,
+    29: 2,
+    30: 2,
+    31: 2,
 }
 
 assert sum(WEIGHTS.values()) == 100, f"Weights must sum to 100, got {sum(WEIGHTS.values())}"
+
+# Global score-sharpening exponent applied to each rule score before the
+# weighted mean (calibrated alongside WEIGHTS by the offline optimizer).
+DEFAULT_GAMMA: float = 0.75
 
 
 def _default_rule_configs() -> dict:
@@ -71,10 +77,11 @@ class CommandmentsConfig:
 
     configs: dict  # number -> that rule's RuleConfig
     weights: dict  # number -> relative importance (int)
+    gamma: float = DEFAULT_GAMMA  # global score-sharpening exponent
 
     @classmethod
     def default(cls) -> "CommandmentsConfig":
-        return cls(configs=_default_rule_configs(), weights=dict(WEIGHTS))
+        return cls(configs=_default_rule_configs(), weights=dict(WEIGHTS), gamma=DEFAULT_GAMMA)
 
     def config_for(self, number: int):
         return self.configs.get(number)
@@ -85,16 +92,22 @@ class CommandmentsConfig:
     def with_config(self, number: int, rule_config) -> "CommandmentsConfig":
         configs = dict(self.configs)
         configs[number] = rule_config
-        return CommandmentsConfig(configs=configs, weights=dict(self.weights))
+        return CommandmentsConfig(configs=configs, weights=dict(self.weights), gamma=self.gamma)
 
     def with_weight(self, number: int, weight: int) -> "CommandmentsConfig":
         weights = dict(self.weights)
         weights[number] = weight
-        return CommandmentsConfig(configs=dict(self.configs), weights=weights)
+        return CommandmentsConfig(configs=dict(self.configs), weights=weights, gamma=self.gamma)
+
+    def with_gamma(self, gamma: float) -> "CommandmentsConfig":
+        return CommandmentsConfig(
+            configs=dict(self.configs), weights=dict(self.weights), gamma=gamma
+        )
 
     def to_dict(self) -> dict:
         return {
             "weights": dict(self.weights),
+            "gamma": self.gamma,
             "configs": {
                 n: {k: _to_jsonable(v) for k, v in asdict(rc).items()}
                 for n, rc in self.configs.items()
@@ -125,7 +138,8 @@ class CommandmentsConfig:
         weights = {int(k): int(v) for k, v in data.get("weights", WEIGHTS).items()}
         if not weights:
             weights = dict(WEIGHTS)
-        return cls(configs=configs, weights=weights)
+        gamma = float(data.get("gamma", DEFAULT_GAMMA))
+        return cls(configs=configs, weights=weights, gamma=gamma)
 
 
 @dataclass

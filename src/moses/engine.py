@@ -39,8 +39,14 @@ def _git_commit(root) -> str | None:
     return None
 
 
+def _sharpen(s: float, g: float) -> float:
+    """Apply the global sharpening exponent γ to a single rule score."""
+    return 100.0 * (max(0.0, min(100.0, s)) / 100.0) ** g
+
+
 def _weighted_score(results: list[CommandmentResult], config: Config) -> float:
-    """Q = Σ (wᵢ · Sᵢ) / Σ wᵢ over enabled, measured rules only."""
+    """Q = Σ (wᵢ · sharpen(Sᵢ, γ)) / Σ wᵢ over enabled, measured rules only."""
+    gamma = config.commandments.gamma
     num = 0.0
     den = 0
     for r in results:
@@ -49,7 +55,7 @@ def _weighted_score(results: list[CommandmentResult], config: Config) -> float:
         if not config.is_enabled(r.number):
             continue
         w = config.commandments.weight_for(r.number)
-        num += w * r.score_contribution
+        num += w * _sharpen(r.score_contribution, gamma)
         den += w
     if den == 0:
         return 100.0

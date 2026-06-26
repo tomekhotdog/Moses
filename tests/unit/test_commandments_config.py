@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from moses.commandments import ALL_COMMANDMENTS
 from moses.commandments.c13_few_parameters import RuleConfig as C13
-from moses.config import WEIGHTS, CommandmentsConfig
+from moses.config import DEFAULT_GAMMA, WEIGHTS, CommandmentsConfig
 
 
 def test_default_covers_all_rules_and_weights():
@@ -12,6 +12,7 @@ def test_default_covers_all_rules_and_weights():
     for cmd in ALL_COMMANDMENTS:
         assert cmd.number in cc.configs
     assert cc.weights == WEIGHTS
+    assert cc.gamma == DEFAULT_GAMMA
 
 
 def test_config_for_and_weight_for():
@@ -43,6 +44,7 @@ def test_to_from_dict_roundtrip():
     assert back.weight_for(13) == 7
     assert back.configs == cc.configs   # incl. c25's frozenset field surviving JSON
     assert back.weights == cc.weights
+    assert back.gamma == cc.gamma
 
 
 def test_from_dict_skips_unknown_rule_numbers():
