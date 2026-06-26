@@ -37,6 +37,18 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.2** (n=5)
 
 Rank agreement (Spearman ρ, Moses vs Judge): **0.943** (n=6)
 
+## 2023_q1
+
+| Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
+|---|---|---|---|---|---|---|---|
+| synth_clean.py | 52 | 85.61 | A | 93 | -7.4 | #25:0, #27:0, #1:52 | Exemplary: precise docstrings and types, clean decomposition into small single-purpose functions, tasteful walrus use, anchored matching that expresses overlap handling clearly, and a proper ValueError on empty input. |
+| online_1.py | 28 | 92.37 | A | 74 | +18.4 | #27:0, #1:40, #2:100 | Compact and readable with a well-commented replace trick that elegantly preserves overlaps, though the cleverness needs that comment and an assert is weak error handling. |
+| online_2.py | 35 | 90.81 | A | 52 | +38.8 | #27:0, #25:43, #1:88 | Works but has two near-duplicate functions, shadows the builtin sum, an unexplained cryptic regex lookahead, a needless 'zero' entry, and no handling for empty lines. |
+| tomek.py | 46 | 84.88 | A | 48 | +36.9 | #25:0, #27:0, #1:66 | Has types and comments but mutates a module-global list across calls, over-engineers with find-all-then-sort instead of a simple scan, raises a bare Exception, and depends on a missing main module. |
+| synth_primitive.py | 49 | 85.44 | A | 24 | +61.4 | #24:9, #25:18, #14:36 | Deliberately primitive: a god function with manual index arithmetic, magic numbers, one- and two-letter names, integer flags, duplicated part1/part2, and silent zero on no digits. |
+
+Rank agreement (Spearman ρ, Moses vs Judge): **0.6** (n=5)
+
 ## 2023_q11
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
@@ -48,6 +60,18 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.943** (n=6)
 | synth_primitive.py | 84 | 52.45 | C | 31 | +21.5 | #16:0, #24:0, #12:4 | Functional but cryptic single-letter names, flag-based loops, magic numbers, and Part 2 copy-pasted wholesale from Part 1 make it hard and unpleasant to read. |
 
 Rank agreement (Spearman ρ, Moses vs Judge): **1.0** (n=5)
+
+## 2023_q2
+
+| Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
+|---|---|---|---|---|---|---|---|
+| synth_clean.py | 61 | 90.81 | A | 93 | -2.2 | #25:2, #1:30, #27:50 | Exemplary domain modelling with Reveal/Game abstractions exposing intent-revealing methods, named constants, full typing, a clear linear parse pipeline, and a docstring — easy and pleasant to read. |
+| online_2.py | 66 | 88.15 | A | 80 | +8.2 | #15:0, #25:9, #27:21 | Clean typed dataclass and enum modelling with a single shared parser and well-named code, marred only by the slightly clunky manual flag-and-break loop in part_one where part_two is more elegant. |
+| tomek.py | 70 | 92.21 | A | 66 | +26.2 | #25:0, #1:32, #15:55 | Genuine domain abstractions (Bag/Round/Game/Colour) but undermined by cramped single-letter attributes, verbose list(map(lambda)) idioms over comprehensions, and an assert used for input validation. |
+| online_1.py | 31 | 91.1 | A | 47 | +44.1 | #25:0, #21:50, #24:60 | Functionally compact but clever to a fault — string-replace tricks, map(str.split) chains, _sum/_set naming, dead one-liner comments, and duplicated parsing make it taxing to follow. |
+| synth_primitive.py | 60 | 73.96 | B | 35 | +39.0 | #14:0, #25:0, #12:10 | Crude procedural code with single-character names, inline magic limits, and parsing logic fully duplicated across p1/p2 with no abstraction, making it the least readable of the set. |
+
+Rank agreement (Spearman ρ, Moses vs Judge): **0.2** (n=5)
 
 ## 2023_q3
 
@@ -72,6 +96,19 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.8** (n=5)
 | online_1.py | 98 | 62.8 | C | 22 | +40.8 | #14:0, #16:0, #27:0 | Core logic is buried under pervasive debug prints, misleading names (do_overlap compares start to length, iter_map shadows a builtin), a function that silently returns None, dead branches, and a hardcoded asserted answer. |
 
 Rank agreement (Spearman ρ, Moses vs Judge): **1.0** (n=5)
+
+## 2023_q7
+
+| Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
+|---|---|---|---|---|---|---|---|
+| synth_clean.py | 81 | 91.02 | A | 94 | -3.0 | #25:0, #27:36, #1:58 | Exemplary: IntEnum types, an elegant shape-to-type lookup that replaces branching, a frozen dataclass, clear docstrings and type hints, and a clean classify/parse/sort/solve decomposition with linear flow. |
+| synth_mid.py | 52 | 90.58 | A | 81 | +9.6 | #25:0, #15:17, #1:37 | Clean, well-named functional solution with a clear comparator and tidy parse/winnings split; only minor friction from the repetitive size-tuple if-chain and bare integer hand-type magic numbers. |
+| online_2.py | 85 | 91.91 | A | 58 | +33.9 | #25:0, #14:38, #21:50 | Reasonable class structure and a test, but the full-house classification is a hard-to-parse tangle of unparenthesised and/or conditions and the winnings ranking uses convoluted index arithmetic with a misleading comment. |
+| online_1.py | 45 | 66.09 | B | 45 | +21.1 | #15:0, #16:0, #24:0 | Compact but over-clever: an opaque numeric scoring trick (10*max+2nd then max-le lookup), single-letter loop vars, O(n^2) counting, and duplicated comprehension pipelines across the two parts make it hard to follow. |
+| synth_primitive.py | 71 | 66.23 | B | 40 | +26.2 | #15:0, #16:0, #25:0 | Logic is sound and direct but readability is poor: cryptic single-letter names (t, h, c, v, o, s) throughout and wholesale duplication of the comparator and part1/part2 functions. |
+| tomek.py | 161 | 74.48 | B | 38 | +36.5 | #16:0, #25:0, #24:57 | Heavily over-engineered for the task: a 30-line if-chain card-type mapper, a CamelCard class with hashing ceremony and a stray copy-pasted comment, a verbose joker-upgrade table, and duplicated part1/part2 all inflate complexity needlessly. |
+
+Rank agreement (Spearman ρ, Moses vs Judge): **0.6** (n=6)
 
 ## 2024_q10
 
@@ -267,9 +304,12 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.4** (n=5)
 | 2022_q11 | 0.6 | 5 |
 | 2022_q2 | 0.2 | 5 |
 | 2022_q8 | 0.943 | 6 |
+| 2023_q1 | 0.6 | 5 |
 | 2023_q11 | 1.0 | 5 |
+| 2023_q2 | 0.2 | 5 |
 | 2023_q3 | 0.8 | 5 |
 | 2023_q5 | 1.0 | 5 |
+| 2023_q7 | 0.6 | 6 |
 | 2024_q10 | 0.086 | 6 |
 | 2024_q12 | 0.2 | 5 |
 | 2024_q13 | 0.7 | 5 |
