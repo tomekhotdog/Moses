@@ -1,5 +1,5 @@
 {
-  "_comment": "Calibration corpus splits by question id (dir name under evals/corpus/). Edit freely. train+validation are 2024 (same distribution; validation tunes); test is unseen years 2022/2023 (generalization check).",
+  "_comment": "Calibration corpus splits by question id (dir name under evals/corpus/). Edit freely. Mixed across years; test holds out unseen questions for generalization.",
   "train": [
     "2024_q4",
     "2024_q6",
@@ -11,18 +11,21 @@
     "2024_q14",
     "2024_q15",
     "2024_q16",
-    "2024_q17"
+    "2024_q17",
+    "2023_q2"
   ],
   "validation": [
     "2024_q20",
     "2024_q21",
     "2024_q22",
-    "2024_q24"
+    "2024_q24",
+    "2023_q7"
   ],
   "test": [
     "2022_q2",
     "2022_q8",
     "2022_q11",
+    "2023_q1",
     "2023_q3",
     "2023_q5",
     "2023_q11"
