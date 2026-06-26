@@ -1,5 +1,78 @@
 # Calibration corpus — Moses vs Judge
 
+## 2022_q11
+
+| Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
+|---|---|---|---|---|---|---|---|
+| synth_clean.py | 68 | 83.34 | A | 92 | -8.7 | #25:0, #27:16, #15:38 | Excellent readability with a focused Monkey dataclass, well-named constants, a single elegant simulation loop, clear docstrings, and the modulus computed unconditionally for simplicity—idiomatic and very pleasant to read. |
+| online_2.py | 72 | 75.76 | B | 78 | -2.2 | #15:0, #25:0, #24:26 | Clean, well-decomposed solution with a clear namedtuple model and a unified solve function, though it depends on several heavy external libraries (aocd, funcy, parse) and uses terse names like l1/iftrue and a separate inspect helper that add slight friction. |
+| tomek.py | 133 | 81.65 | A | 72 | +9.7 | #3:0, #25:0, #1:28 | Strong domain modelling with cohesive classes and validation, but it is over-engineered for the task with redundant lambda indirection (parse_operand returning closures), repetitive raise-on-substring parsing, and an external main-module dependency that add bulk without proportional clarity. |
+| synth_primitive.py | 50 | 82.42 | A | 48 | +34.4 | #15:0, #25:0, #24:54 | Straightforward and readable at the statement level but models monkeys as six parallel dictionaries with single-letter names and relies on eval, scattering one entity's data across structures that must be kept in sync. |
+| online_1.py | 110 | 44.16 | D | 7 | +37.2 | #16:0, #25:9, #17:100 | A single nested print statement of deeply layered lambdas, eval, and tuple-index side effects that is essentially unreadable and unmaintainable, sacrificing all clarity for obfuscated cleverness. |
+
+Rank agreement (Spearman ρ, Moses vs Judge): **0.6** (n=5)
+
+## 2022_q2
+
+| Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
+|---|---|---|---|---|---|---|---|
+| synth_clean.py | 81 | 78.62 | B | 93 | -14.4 | #16:0, #25:1, #1:43 | Exemplary: enums encode their scores as values, domain functions (outcome_against, shape_for_outcome, score_round) read as the rules themselves, parsing is robust, and parse/compute/IO are cleanly separated with full type hints. |
+| online_1.py | 79 | 84.03 | A | 80 | +4.0 | #21:0, #25:0, #27:21 | Clean Move enum with well-named domain methods and clear part split; held back by duplicated file-reading, a missing type hint on opp_move, and move_score reimplementing what enum values could carry. |
+| tomek.py | 98 | 79.09 | B | 72 | +7.1 | #16:0, #25:0, #1:47 | Strong domain types (Play, DecypherStrategy, Round) and good type hints, but over-engineered: parse_my_play bundles two strategies into one branchy function with an exhaustive nine-case match where a small map would do, and Round carries no behavior. |
+| online_2.py | 80 | 69.62 | B | 36 | +33.6 | #16:0, #25:0, #27:0 | Hard to read and outright broken: is_lose recurses on itself infinitely, scores via arithmetic on booleans, maintains two parallel inconsistent mapping schemes, and flips tuple argument order between functions. |
+| synth_primitive.py | 76 | 78.13 | B | 30 | +48.1 | #25:0, #12:12, #14:27 | Functionally correct but deliberately primitive—single-letter names throughout, nested if/elif chains, magic-string comparisons, and a self-admitted copy-paste of p1 logic into p2 with no abstraction. |
+
+Rank agreement (Spearman ρ, Moses vs Judge): **0.6** (n=5)
+
+## 2022_q8
+
+| Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
+|---|---|---|---|---|---|---|---|
+| synth_clean.py | 76 | 88.41 | A | 93 | -4.6 | #1:35, #21:50, #24:75 | Cleanly factored with a reusable `_ray` abstraction, consistent row/col naming, a module docstring, and tidy top-level functions; the most elegant and readable of the set. |
+| synth_mid.py | 48 | 82.8 | A | 84 | -1.2 | #1:27, #5:72, #24:73 | Compact and very readable with a shared `line_of_sight` generator and DIRECTIONS table eliminating duplication; loses a little only for the flat function-based design without a grid abstraction. |
+| tomek.py | 68 | 72.46 | B | 80 | -7.5 | #16:0, #25:12, #1:21 | Well-decomposed with an Enum-driven direction model and clear function names, but the underused Forest wrapper, threaded forest argument everywhere, and an external read_input dependency add mild ceremony. |
+| online_1.py | 99 | 86.53 | A | 72 | +14.5 | #16:0, #27:74, #1:82 | Clear domain model with descriptive names and docstrings, but redundant generator wrapping, a confusing x/y vs row/col axis muddle, and a hidden-trees-then-subtract detour add unnecessary friction. |
+| online_2.py | 55 | 69.32 | B | 38 | +31.3 | #16:0, #25:0, #27:0 | Four near-identical direction methods, a magic `i = -100` sentinel, a brittle `square grid` assumption, and a confusing dual-purpose return tuple make this hard to follow despite type hints. |
+| synth_primitive.py | 83 | 69.3 | B | 22 | +47.3 | #16:0, #12:2, #14:52 | One giant `go` function with eight nearly-identical inlined direction loops, single-letter names throughout, and zero decomposition makes this tedious and error-prone to read. |
+
+Rank agreement (Spearman ρ, Moses vs Judge): **0.829** (n=6)
+
+## 2023_q11
+
+| Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
+|---|---|---|---|---|---|---|---|
+| synth_clean.py | 66 | 88.57 | A | 93 | -4.4 | #25:9, #27:52, #1:55 | Excellent domain modelling with frozen dataclasses, clear names, named constants, docstrings, and clean immutable transformations that make the solution pleasant to read. |
+| online_2.py | 48 | 85.36 | A | 74 | +11.4 | #25:0, #1:37, #14:85 | Well-decomposed with good function boundaries and use of combinations, but cluttered by external decorators, hardcoded answer asserts, and slightly confusing x/y-vs-row/col naming. |
+| online_1.py | 14 | 81.82 | A | 68 | +13.8 | #25:0, #16:100, #17:100 | Terse and readable for its size with clean comprehensions, but no decomposition or error handling and the inline per-step `scale` accumulation loop is less clear than a direct distance computation. |
+| tomek.py | 58 | 77.88 | B | 47 | +30.9 | #16:0, #1:23, #25:31 | Typed and named reasonably but over-engineered with redundant Universe/UniversePair classes, fragile string-concatenation hashing, and a wasteful build-all-ordered-pairs-then-dedup approach duplicated across part1/part2. |
+| synth_primitive.py | 84 | 65.45 | B | 31 | +34.5 | #16:0, #24:0, #12:4 | Functional but cryptic single-letter names, flag-based loops, magic numbers, and Part 2 copy-pasted wholesale from Part 1 make it hard and unpleasant to read. |
+
+Rank agreement (Spearman ρ, Moses vs Judge): **1.0** (n=5)
+
+## 2023_q3
+
+| Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
+|---|---|---|---|---|---|---|---|
+| synth_clean.py | 94 | 91.55 | A | 90 | +1.5 | #15:50, #21:67, #1:72 | Well-chosen domain abstractions (Position, Number, Schematic), full typing, docstrings and cached queries make it the most readable and elegant of the set, only slightly heavy with per-cell frozensets. |
+| online_1.py | 81 | 74.9 | B | 74 | +0.9 | #15:0, #25:0, #14:2 | Clear single-pass parser with helpful comments and clean decomposition, weakened by an opaque positional tuple-of-three return and extraneous aocd/print decorators. |
+| tomek.py | 69 | 84.37 | A | 55 | +29.4 | #27:19, #1:29, #24:68 | Decent naming and explanatory comments but two inconsistent adjacency implementations, dense nested map/lambda expressions, and an attribute mismatch (x.raw_value vs value) make it confusing and brittle. |
+| online_2.py | 88 | 53.9 | C | 48 | +5.9 | #16:0, #25:77, #17:100 | Functional flat script marred by wholesale duplication of the parsing loop across parts, mid-file import, and an over-engineered random-UUID scheme to identify numbers where an index would suffice. |
+| synth_primitive.py | 69 | 65.63 | B | 38 | +27.6 | #14:0, #16:0, #25:0 | Correct but deliberately bare-bones: opaque positional tuple indexing (n[0], n[1]...), single-letter names throughout, and self-admitted duplicated neighbour math make it unpleasant to read. |
+
+Rank agreement (Spearman ρ, Moses vs Judge): **0.8** (n=5)
+
+## 2023_q5
+
+| Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
+|---|---|---|---|---|---|---|---|
+| synth_clean.py | 102 | 87.83 | A | 95 | -7.2 | #1:41, #21:50, #24:62 | Exemplary domain model with frozen dataclasses, consistent half-open intervals, full type hints, precise docstrings, and a clean interval-splitting algorithm that reads almost as prose. |
+| online_2.py | 79 | 88.46 | A | 82 | +6.5 | #25:24, #1:36, #24:85 | Elegant reuse of Python's built-in range as the interval type with tidy recursive splitting and good typing, slightly marred by two single-field Solution wrapper classes, mid-file imports, and a dense four-case overlap block. |
+| tomek.py | 119 | 83.34 | A | 68 | +15.3 | #25:16, #1:28, #24:36 | Solid OO domain model with descriptive names, but the map_range method is a tangle of overlapping conditionals and early returns, it carries an unused mappings_reversed field, and parsing is duplicated across the two parts. |
+| synth_primitive.py | 74 | 80.07 | A | 38 | +42.1 | #25:0, #14:4, #12:12 | Correct and compact but hard to read: one god function, cryptic abbreviations (prs, sd, mps, o1/o2), raw lists indexed by position, magic slices and flags, and no types or abstractions. |
+| online_1.py | 98 | 62.27 | C | 22 | +40.3 | #14:0, #16:0, #27:0 | Core logic is buried under pervasive debug prints, misleading names (do_overlap compares start to length, iter_map shadows a builtin), a function that silently returns None, dead branches, and a hardcoded asserted answer. |
+
+Rank agreement (Spearman ρ, Moses vs Judge): **0.9** (n=5)
+
 ## 2024_q10
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
@@ -191,6 +264,12 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.3** (n=5)
 
 | Question | Spearman ρ | n |
 |---|---|---|
+| 2022_q11 | 0.6 | 5 |
+| 2022_q2 | 0.6 | 5 |
+| 2022_q8 | 0.829 | 6 |
+| 2023_q11 | 1.0 | 5 |
+| 2023_q3 | 0.8 | 5 |
+| 2023_q5 | 0.9 | 5 |
 | 2024_q10 | -0.143 | 6 |
 | 2024_q12 | 0.0 | 5 |
 | 2024_q13 | 0.3 | 5 |
