@@ -27,6 +27,7 @@ from .c24_immutability import Immutability
 from .c25_magic_numbers import NoMagicNumbers
 from .c27_data_over_primitives import DataOverPrimitives
 from .c29_composition import Composition
+from .c30_pattern_parsimony import PatternParsimony
 from .c31_class_complexity import ClassComplexity
 
 ALL_COMMANDMENTS: list = [
@@ -51,6 +52,7 @@ ALL_COMMANDMENTS: list = [
     NoMagicNumbers(),
     DataOverPrimitives(),
     Composition(),
+    PatternParsimony(),
     ClassComplexity(),
 ]
 
