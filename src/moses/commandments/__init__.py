@@ -9,6 +9,7 @@ from __future__ import annotations
 from .c01_deep_modules import DeepModules
 from .c02_loose_coupling import LooseCoupling
 from .c03_pass_through import PassThrough
+from .c04_layers import Layers
 from .c05_pull_complexity_down import PullComplexityDown
 from .c06_define_errors_out import DefineErrorsOut
 from .c11_small_functions import SmallFunctions
@@ -34,6 +35,7 @@ ALL_COMMANDMENTS: list = [
     DeepModules(),
     LooseCoupling(),
     PassThrough(),
+    Layers(),
     PullComplexityDown(),
     DefineErrorsOut(),
     SmallFunctions(),
