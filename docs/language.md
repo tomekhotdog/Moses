@@ -33,6 +33,9 @@ use them consistently in code, docs, and reports.
 | **Comparison** | The single file (`evals/corpus/comparison.md`, backed by `comparison.json`) laying each solution's Moses Score beside its Judge score. |
 | **Calibration** | Tuning rule parameters (weights, curves, thresholds) until the Moses Score tracks the Judge score across the Corpus. (Phase 2.) |
 | **RuleConfig** | A single rule's configuration — the knobs that tweak *how* that heuristic scores (budgets, thresholds, curve slopes), as an explicit frozen dataclass passed into its `evaluate(codebase, config)`. Defaults live with the rule. |
+| **LoneAbstraction** | A nominal abstraction (ABC / `@abstractmethod` class) with ≤1 in-codebase subclass — YAGNI indirection. A C30 over-engineering signal. |
+| **TinyClass** | A class with ≤1 non-dunder method (excluding dataclasses/Enums/NamedTuples/Exceptions/Protocols). A C30 over-engineering signal. |
+| **DelegationWrapper** | A class that stores an injected object and forwards ≥3 public methods to it by the same name — a layer adding no abstraction. The C4 signal. |
 | **CommandmentsConfig** | The master scoring config: every rule's RuleConfig plus the Weights. The single object calibration tunes and serializes; carried on `Config.commandments`. |
 
 ## Status vocabulary
