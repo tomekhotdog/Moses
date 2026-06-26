@@ -1,0 +1,26 @@
+{
+  "online_1.py": {
+    "pct": 72,
+    "justification": "Clear domain model with descriptive names and docstrings, but redundant generator wrapping, a confusing x/y vs row/col axis muddle, and a hidden-trees-then-subtract detour add unnecessary friction."
+  },
+  "online_2.py": {
+    "pct": 38,
+    "justification": "Four near-identical direction methods, a magic `i = -100` sentinel, a brittle `square grid` assumption, and a confusing dual-purpose return tuple make this hard to follow despite type hints."
+  },
+  "synth_clean.py": {
+    "pct": 93,
+    "justification": "Cleanly factored with a reusable `_ray` abstraction, consistent row/col naming, a module docstring, and tidy top-level functions; the most elegant and readable of the set."
+  },
+  "synth_mid.py": {
+    "pct": 84,
+    "justification": "Compact and very readable with a shared `line_of_sight` generator and DIRECTIONS table eliminating duplication; loses a little only for the flat function-based design without a grid abstraction."
+  },
+  "synth_primitive.py": {
+    "pct": 22,
+    "justification": "One giant `go` function with eight nearly-identical inlined direction loops, single-letter names throughout, and zero decomposition makes this tedious and error-prone to read."
+  },
+  "tomek.py": {
+    "pct": 80,
+    "justification": "Well-decomposed with an Enum-driven direction model and clear function names, but the underused Forest wrapper, threaded forest argument everywhere, and an external read_input dependency add mild ceremony."
+  }
+}

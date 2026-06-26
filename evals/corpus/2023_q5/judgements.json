@@ -1,0 +1,22 @@
+{
+  "synth_clean.py": {
+    "pct": 95,
+    "justification": "Exemplary domain model with frozen dataclasses, consistent half-open intervals, full type hints, precise docstrings, and a clean interval-splitting algorithm that reads almost as prose."
+  },
+  "online_2.py": {
+    "pct": 82,
+    "justification": "Elegant reuse of Python's built-in range as the interval type with tidy recursive splitting and good typing, slightly marred by two single-field Solution wrapper classes, mid-file imports, and a dense four-case overlap block."
+  },
+  "tomek.py": {
+    "pct": 68,
+    "justification": "Solid OO domain model with descriptive names, but the map_range method is a tangle of overlapping conditionals and early returns, it carries an unused mappings_reversed field, and parsing is duplicated across the two parts."
+  },
+  "synth_primitive.py": {
+    "pct": 38,
+    "justification": "Correct and compact but hard to read: one god function, cryptic abbreviations (prs, sd, mps, o1/o2), raw lists indexed by position, magic slices and flags, and no types or abstractions."
+  },
+  "online_1.py": {
+    "pct": 22,
+    "justification": "Core logic is buried under pervasive debug prints, misleading names (do_overlap compares start to length, iter_map shadows a builtin), a function that silently returns None, dead branches, and a hardcoded asserted answer."
+  }
+}

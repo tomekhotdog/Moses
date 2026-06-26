@@ -1,0 +1,22 @@
+{
+  "online_1.py": {
+    "pct": 68,
+    "justification": "Terse and readable for its size with clean comprehensions, but no decomposition or error handling and the inline per-step `scale` accumulation loop is less clear than a direct distance computation."
+  },
+  "online_2.py": {
+    "pct": 74,
+    "justification": "Well-decomposed with good function boundaries and use of combinations, but cluttered by external decorators, hardcoded answer asserts, and slightly confusing x/y-vs-row/col naming."
+  },
+  "synth_clean.py": {
+    "pct": 93,
+    "justification": "Excellent domain modelling with frozen dataclasses, clear names, named constants, docstrings, and clean immutable transformations that make the solution pleasant to read."
+  },
+  "synth_primitive.py": {
+    "pct": 31,
+    "justification": "Functional but cryptic single-letter names, flag-based loops, magic numbers, and Part 2 copy-pasted wholesale from Part 1 make it hard and unpleasant to read."
+  },
+  "tomek.py": {
+    "pct": 47,
+    "justification": "Typed and named reasonably but over-engineered with redundant Universe/UniversePair classes, fragile string-concatenation hashing, and a wasteful build-all-ordered-pairs-then-dedup approach duplicated across part1/part2."
+  }
+}

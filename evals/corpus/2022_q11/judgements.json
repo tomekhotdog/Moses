@@ -1,0 +1,22 @@
+{
+  "online_1.py": {
+    "pct": 7,
+    "justification": "A single nested print statement of deeply layered lambdas, eval, and tuple-index side effects that is essentially unreadable and unmaintainable, sacrificing all clarity for obfuscated cleverness."
+  },
+  "online_2.py": {
+    "pct": 78,
+    "justification": "Clean, well-decomposed solution with a clear namedtuple model and a unified solve function, though it depends on several heavy external libraries (aocd, funcy, parse) and uses terse names like l1/iftrue and a separate inspect helper that add slight friction."
+  },
+  "synth_clean.py": {
+    "pct": 92,
+    "justification": "Excellent readability with a focused Monkey dataclass, well-named constants, a single elegant simulation loop, clear docstrings, and the modulus computed unconditionally for simplicity—idiomatic and very pleasant to read."
+  },
+  "synth_primitive.py": {
+    "pct": 48,
+    "justification": "Straightforward and readable at the statement level but models monkeys as six parallel dictionaries with single-letter names and relies on eval, scattering one entity's data across structures that must be kept in sync."
+  },
+  "tomek.py": {
+    "pct": 72,
+    "justification": "Strong domain modelling with cohesive classes and validation, but it is over-engineered for the task with redundant lambda indirection (parse_operand returning closures), repetitive raise-on-substring parsing, and an external main-module dependency that add bulk without proportional clarity."
+  }
+}

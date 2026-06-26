@@ -1,0 +1,22 @@
+{
+  "online_1.py": {
+    "pct": 80,
+    "justification": "Clean Move enum with well-named domain methods and clear part split; held back by duplicated file-reading, a missing type hint on opp_move, and move_score reimplementing what enum values could carry."
+  },
+  "online_2.py": {
+    "pct": 36,
+    "justification": "Hard to read and outright broken: is_lose recurses on itself infinitely, scores via arithmetic on booleans, maintains two parallel inconsistent mapping schemes, and flips tuple argument order between functions."
+  },
+  "synth_clean.py": {
+    "pct": 93,
+    "justification": "Exemplary: enums encode their scores as values, domain functions (outcome_against, shape_for_outcome, score_round) read as the rules themselves, parsing is robust, and parse/compute/IO are cleanly separated with full type hints."
+  },
+  "synth_primitive.py": {
+    "pct": 30,
+    "justification": "Functionally correct but deliberately primitive—single-letter names throughout, nested if/elif chains, magic-string comparisons, and a self-admitted copy-paste of p1 logic into p2 with no abstraction."
+  },
+  "tomek.py": {
+    "pct": 72,
+    "justification": "Strong domain types (Play, DecypherStrategy, Round) and good type hints, but over-engineered: parse_my_play bundles two strategies into one branchy function with an exhaustive nine-case match where a small map would do, and Round carries no behavior."
+  }
+}

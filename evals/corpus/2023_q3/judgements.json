@@ -1,0 +1,22 @@
+{
+  "synth_clean.py": {
+    "pct": 90,
+    "justification": "Well-chosen domain abstractions (Position, Number, Schematic), full typing, docstrings and cached queries make it the most readable and elegant of the set, only slightly heavy with per-cell frozensets."
+  },
+  "online_1.py": {
+    "pct": 74,
+    "justification": "Clear single-pass parser with helpful comments and clean decomposition, weakened by an opaque positional tuple-of-three return and extraneous aocd/print decorators."
+  },
+  "tomek.py": {
+    "pct": 55,
+    "justification": "Decent naming and explanatory comments but two inconsistent adjacency implementations, dense nested map/lambda expressions, and an attribute mismatch (x.raw_value vs value) make it confusing and brittle."
+  },
+  "online_2.py": {
+    "pct": 48,
+    "justification": "Functional flat script marred by wholesale duplication of the parsing loop across parts, mid-file import, and an over-engineered random-UUID scheme to identify numbers where an index would suffice."
+  },
+  "synth_primitive.py": {
+    "pct": 38,
+    "justification": "Correct but deliberately bare-bones: opaque positional tuple indexing (n[0], n[1]...), single-letter names throughout, and self-admitted duplicated neighbour math make it unpleasant to read."
+  }
+}
