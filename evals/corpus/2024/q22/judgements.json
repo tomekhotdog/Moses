@@ -1,22 +1,22 @@
 {
   "synth_clean.py": {
-    "justification": "Cleanest structure overall: named constants, full type hints with a Sequence alias, focused single-purpose functions, docstrings, and proper parse/main separation, marred only slightly by a clumsy type:ignore comment.",
-    "pct": 92
+    "pct": 92,
+    "justification": "Cleanest overall: named constants, full type hints with a Sequence alias, focused single-purpose functions, docstrings, and proper parse/main separation, marred only slightly by a clumsy type:ignore comment."
   },
   "online_1.py": {
-    "justification": "Idiomatic and well-typed with strong domain naming, an elegant deque(maxlen=4) sliding window, and clean setdefault first-occurrence logic, though it embeds magic numbers and lacks an entrypoint.",
-    "pct": 88
+    "pct": 88,
+    "justification": "Idiomatic and well-typed with strong domain naming, an elegant deque(maxlen=4) sliding window, and clean setdefault first-occurrence logic, though it embeds magic numbers and lacks an entrypoint."
   },
   "tomek.py": {
-    "justification": "Good domain modelling via explicit mix/prune/next_secret_number and descriptive names, but suffers from redundant intermediate variables, an awkward dict-of-sets keyed by index, hardcoded filenames, and module-level print side effects.",
-    "pct": 76
+    "pct": 76,
+    "justification": "Good domain modelling via explicit mix/prune/next_secret_number and descriptive names, but suffers from redundant intermediate variables, an awkward dict-of-sets keyed by index, hardcoded filenames, and module-level print side effects."
   },
   "online_2.py": {
-    "justification": "Reasonable logic but carries a large block of dead commented-out code, no type hints, duplicated evolution logic across both parts, and an untyped data parameter coupled to an external base class.",
-    "pct": 58
+    "pct": 58,
+    "justification": "Reasonable logic but carries a large block of dead commented-out code, no type hints, duplicated evolution logic across both parts, and an untyped data parameter coupled to an external base class."
   },
   "synth_primitive.py": {
-    "justification": "Functionally direct but offers no abstraction, single-letter names throughout, duplicated inline evolution code, and zero error handling or structure.",
-    "pct": 32
+    "pct": 45,
+    "justification": "A coherent MonkeyMarket class with a main entrypoint, but cramped single-letter names throughout, evolution logic duplicated inline across next/part1/part2, a manual max loop, and no type hints or error handling."
   }
 }

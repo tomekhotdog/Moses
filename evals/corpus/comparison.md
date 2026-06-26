@@ -5,25 +5,25 @@
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
 | synth_clean.py | 76 | 89.32 | A | 93 | -3.7 | #1:35, #21:50, #25:74 | Exemplary: docstrings, type aliases, named constants, a deep TopographicMap domain class, and clean DFS/recursion that read as a direct statement of the problem. |
-| synth_mid.py | 42 | 85.61 | A | 80 | +5.6 | #1:32, #25:52, #14:75 | Clear, well-decomposed functions (parse/neighbors/walk/solve) with sensible names and a single-pass recursion computing both parts; only lacks type hints, docstrings, and named height constants. |
-| online_2.py | 60 | 68.37 | B | 71 | -2.6 | #16:0, #15:17, #25:33 | Readable with full type hints and descriptive names, but the deque-as-stack with O(n) 'neighbor not in queue' membership conflates BFS/DFS concepts and the grid is parsed twice across the two parts. |
-| tomek.py | 90 | 86.43 | A | 55 | +31.4 | #25:33, #1:33, #15:62 | Reasonable naming but over-engineered with a Coordinates class, per-iteration lambda reassignment, a magic len==10 check, an external read_input dependency, and a convoluted breadth-by-trail-list traversal. |
+| synth_mid.py | 42 | 85.61 | A | 80 | +5.6 | #1:32, #25:52, #14:75 | Clear, well-decomposed functions (parse/neighbors/walk/solve) with sensible names and a single recursion computing both parts; only lacks type hints, docstrings, and named height constants. |
+| online_2.py | 60 | 68.37 | B | 70 | -1.6 | #16:0, #15:17, #25:33 | Readable with full type hints and descriptive names, but the deque-as-stack with O(n) 'neighbor not in queue' membership conflates BFS/DFS concepts and the grid is parsed twice across the two parts. |
+| tomek.py | 90 | 86.43 | A | 52 | +34.4 | #25:33, #1:33, #15:62 | An unused TrailMap class, duplicated traversal logic (an inline part-1 walk plus a near-identical proc helper), a dead 'height >= 0' check, dict-as-set, and terse names make it cluttered and hard to follow. |
+| synth_primitive.py | 65 | 70.06 | B | 48 | +22.1 | #14:0, #15:0, #16:0 | Over-engineered around a Coordinates class with an external read_input dependency, a 999 sentinel for a '.' case the problem never has, per-iteration lambda reassignment, a magic len==10 check, and a convoluted breadth-by-trail-list traversal that materializes every full path. |
 | online_1.py | 125 | 91.45 | A | 42 | +49.5 | #1:54, #25:68, #21:75 | Buried under accidental complexity: a threading decorator, dual recursion/loop implementations, mutable class-level defaults, an unnecessary opposite-direction filter, timing prints in the constructor, and noisy double-spaced formatting. |
-| synth_primitive.py | 28 | 89.8 | A | 30 | +59.8 | #25:29, #16:100, #17:100 | Compact and correct but offers almost no readability or modelling: single-letter names throughout (g/R/C/s/t/q/e/p), no functions, and no abstraction over the grid or traversal. |
 
-Rank agreement (Spearman ρ, Moses vs Judge): **-0.543** (n=6)
+Rank agreement (Spearman ρ, Moses vs Judge): **-0.143** (n=6)
 
 ## q12
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
 | synth_clean.py | 111 | 92.12 | A | 92 | +0.1 | #1:56, #21:67, #14:75 | Exemplary domain modelling with cohesive Point/Grid/Region abstractions, clean flood-fill decomposition, precise naming, type hints throughout, and corner-counting factored into a readable helper. |
-| online_1.py | 95 | 75.37 | B | 72 | +3.4 | #15:0, #16:0, #25:16 | Readable, well-named functional decomposition with small focused helpers, but recursive flood fill risks stack overflow and the corner logic is spread across several coupled predicate helpers (other_plots, double-corner) that are hard to follow. |
-| online_2.py | 135 | 70.54 | B | 60 | +10.5 | #16:0, #15:17, #1:38 | Reasonable class-based structure, but side-counting via grid rotation, string joins and split() is an obscure over-clever approach with terse names (_type, co) and duplicated boundary checks. |
-| tomek.py | 125 | 80.93 | A | 55 | +25.9 | #27:0, #15:23, #25:36 | Has a real Region abstraction and clear comments, but region discovery is convoluted and quadratic (joining plots by scanning all existing regions) when a simple flood fill suffices, mixing two redundant traversal mechanisms with debug cruft left in. |
-| synth_primitive.py | 46 | 100.0 | A | 38 | +62.0 | #16:100, #17:100, #18:100 | Correct and compact but a single monolithic nested loop with one-letter names (g, st, per, co, a, s) and zero abstraction, making perimeter and corner logic hard to read or reuse. |
+| online_2.py | 135 | 70.54 | B | 70 | +0.5 | #16:0, #15:17, #1:38 | Clear functional decomposition with a tidy Coordinate namedtuple and small helpers, but the Part 2 side-count rebuilds a sub-grid and re-runs flood fill, leaning on coupled corner predicates like is_not_double_corner that are hard to follow. |
+| online_1.py | 95 | 75.37 | B | 62 | +13.4 | #15:0, #16:0, #25:16 | Readable class-based helpers with reasonable names, but Part 2's side-counting via grid rotation and string join/split tricks is obscure and over-clever, and parse/region-finding logic is duplicated across part1 and part2. |
+| tomek.py | 125 | 80.93 | A | 55 | +25.9 | #27:0, #15:23, #25:36 | Has a genuine Region abstraction and clear comments, but region discovery is convoluted and quadratic—joining plots by scanning all existing regions while also doing DFS—mixing two redundant traversals with leftover debug cruft. |
+| synth_primitive.py | 69 | 83.8 | A | 48 | +35.8 | #15:0, #14:8, #12:24 | Correct and compact with a flood-fill class, but cryptic one/two-letter names (g, fld, st, per, co, ch, hh) and perimeter plus corner logic crammed into one monolithic run() method severely hurt readability. |
 
-Rank agreement (Spearman ρ, Moses vs Judge): **-0.3** (n=5)
+Rank agreement (Spearman ρ, Moses vs Judge): **0.0** (n=5)
 
 ## q13
 
@@ -33,9 +33,9 @@ Rank agreement (Spearman ρ, Moses vs Judge): **-0.3** (n=5)
 | online_2.py | 54 | 83.01 | A | 74 | +9.0 | #25:0, #1:45, #5:60 | Clear functional decomposition with a single regex parser and an adjustment-parameterized solver plus self-tests, but uses float division with int-equality checks instead of exact integer math and hardcodes a brittle Windows-style input path. |
 | tomek.py | 56 | 75.36 | B | 66 | +9.4 | #16:0, #25:0, #27:0 | Genuine domain modelling via a documented Machine class with well-named methods, but relies on float arithmetic with round-then-verify (fragile at part-2 magnitudes), opaque p1..p4 field names, and an awkward int(len/4)+1 loop bound. |
 | online_1.py | 45 | 80.11 | A | 48 | +32.1 | #16:0, #25:0, #24:14 | Functions correctly within its framework but suffers cryptic naming, float division with is_integer checks, large blocks of dead commented-out z3 code, magic literals, and parse logic duplicated verbatim across part1 and part2. |
-| synth_primitive.py | 26 | 42.86 | D | 30 | +12.9 | #16:0, #25:0, #17:100 | Algorithmically sound integer Cramer's rule, but deliberately golfed into single-character names, one-space indentation, semicolons, inline magic numbers, and no functions, docstrings, or abstraction whatsoever. |
+| synth_primitive.py | 67 | 83.38 | A | 42 | +41.4 | #16:0, #25:0, #14:36 | Correct integer Cramer's rule, but a hollow class wrapping an untyped flat-dict model (per its own comments), with one monolithic run() method that duplicates the entire part1/part2 logic and deeply nested if i>=0: if j>=0: branching. |
 
-Rank agreement (Spearman ρ, Moses vs Judge): **0.9** (n=5)
+Rank agreement (Spearman ρ, Moses vs Judge): **0.3** (n=5)
 
 ## q14
 
@@ -44,24 +44,24 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.9** (n=5)
 | synth_clean.py | 62 | 82.27 | A | 92 | -9.7 | #25:0, #15:17, #27:26 | Clean module-level docstrings, a frozen Robot dataclass with a focused position_after method, well-decomposed pure functions with type hints, and the part-2 heuristic abstracted into named helpers make this the most readable and well-structured solution. |
 | online_2.py | 67 | 89.15 | A | 78 | +11.2 | #25:0, #14:33, #27:74 | Strong domain modelling via NamedTuples (Robot/Velocity/Coordinate) and clean type-hinted parsing/printing, but it loses points for a hardcoded magic part-2 answer (seconds == 7568 / printing '7569') and an assert pinning a specific puzzle input. |
 | synth_mid.py | 50 | 87.61 | A | 68 | +19.6 | #15:0, #25:0, #24:76 | Correct and reasonably readable with a clear safety helper and honest comments, but uses bare lists for robots, global WIDTH/HEIGHT, and inlines the part-2 search in main without abstraction. |
+| synth_primitive.py | 55 | 90.62 | A | 64 | +26.6 | #25:0, #24:57, #14:58 | Coherent RobotSim class with readable parsing and honest comments, but tuple-index access (r[0]..r[3]), hardcoded grid/centre constants (101/103/50/51), verbose nested-if quadrant branching, and a monolithic run() that bundles both parts with no error handling keep it middling. |
 | online_1.py | 61 | 74.2 | B | 60 | +14.2 | #15:0, #16:0, #25:0 | Tuple-of-tuples modelling is workable and the quadrant indexing is neat, but parsing logic is duplicated verbatim across part1/part2, the test-input detection by len==12 is hacky, and the +width/+height velocity-offset trick is opaque. |
 | tomek.py | 83 | 82.51 | A | 52 | +30.5 | #25:0, #1:28, #15:44 | Has a real Robot class and named helpers, but the over-engineered generalized quadrant_counts (fractional borderline arithmetic, max(0,x-1) fudging) is hard to follow and brittle, parsing is verbose with repeated splits, and dimensions are sprinkled as loose args. |
-| synth_primitive.py | 33 | 85.71 | A | 18 | +67.7 | #25:0, #16:100, #17:100 | Functionally complete but deliberately minimized: single-letter names (a,b,c,e,r,l,f), one-space indentation, no functions, hardcoded grid constants, and zero abstraction or error handling make it nearly unmaintainable. |
 
-Rank agreement (Spearman ρ, Moses vs Judge): **0.086** (n=6)
+Rank agreement (Spearman ρ, Moses vs Judge): **0.143** (n=6)
 
 ## q15
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
 | synth_clean.py | 130 | 88.94 | A | 92 | -3.1 | #21:50, #27:56, #15:62 | Exemplary domain modelling with a deep Warehouse dataclass, named constants, type aliases, and a single unified push-cluster BFS that elegantly handles horizontal and vertical wide-box fan-out without branch duplication. |
-| tomek.py | 167 | 69.28 | B | 78 | -8.7 | #14:0, #16:0, #25:4 | Clear naming and a clean recursive can_move/move separation with explanatory comments, but parallel box sets and symmetric left/right branches add incidental state, plus top-level execution and an external dependency reduce self-containment. |
-| online_2.py | 149 | 59.72 | C | 72 | -12.3 | #15:0, #16:0, #27:0 | Readable, well-organized procedural solution with a deltas dict, sensible BFS cluster gathering, and a proper main guard, though part1/part2 share little and the grid gets no abstraction. |
+| tomek.py | 167 | 69.28 | B | 78 | -8.7 | #14:0, #16:0, #25:4 | Clear naming and a clean recursive can_move/move separation with explanatory comments, but parallel box sets and symmetric left/right branches add incidental state, plus top-level execution and an external import reduce self-containment. |
+| online_2.py | 149 | 59.72 | C | 71 | -11.3 | #15:0, #16:0, #27:0 | Readable procedural solution with a MOVES dict and recursive pushing, but it shadows the map builtin, near-duplicates parse/move for each part, and the per-move deepcopy rollback is a clumsy way to handle blocked moves. |
 | synth_mid.py | 97 | 80.85 | A | 70 | +10.8 | #15:0, #24:52, #12:56 | Tidy procedural solution with clean parsing and a clear vertical-push BFS, but it duplicates push logic across parts and leans on raw grid mutation with no domain modelling. |
 | online_1.py | 142 | 62.9 | C | 57 | +5.9 | #12:0, #14:0, #15:0 | Functional and broadly readable, but heavy pt1/pt2 duplication, a tangled part2 loop that conflates partner discovery with move-checking, a brittle multi-key sort hack, and a hardcoded input path drag it down. |
-| synth_primitive.py | 106 | 51.75 | C | 31 | +20.8 | #16:0, #25:62, #17:100 | Correct but minimal: a flat top-level script with single-letter names throughout, near-duplicated part1/part2 blocks, dead variables, and no functions or abstraction whatsoever. |
+| synth_primitive.py | 138 | 79.57 | B | 52 | +27.6 | #16:0, #14:33, #12:41 | Two near-duplicate Warehouse/WideWarehouse classes give some structure, but pervasive single-letter names (g, m, k, e, q, v), copy-pasted parsing and direction branches, and dead nr/nc variables keep it terse and hard to read. |
 
-Rank agreement (Spearman ρ, Moses vs Judge): **0.714** (n=6)
+Rank agreement (Spearman ρ, Moses vs Judge): **0.257** (n=6)
 
 ## q16
 
@@ -117,11 +117,11 @@ Rank agreement (Spearman ρ, Moses vs Judge): **-0.029** (n=6)
 
 | Solution | LOC | Moses | Grade | Judge | Gap | Weakest rules | Justification |
 |---|---|---|---|---|---|---|---|
-| synth_clean.py | 60 | 74.67 | B | 92 | -17.3 | #25:0, #27:0, #24:25 | Cleanest structure overall: named constants, full type hints with a Sequence alias, focused single-purpose functions, docstrings, and proper parse/main separation, marred only slightly by a clumsy type:ignore comment. |
+| synth_clean.py | 60 | 74.67 | B | 92 | -17.3 | #25:0, #27:0, #24:25 | Cleanest overall: named constants, full type hints with a Sequence alias, focused single-purpose functions, docstrings, and proper parse/main separation, marred only slightly by a clumsy type:ignore comment. |
 | online_1.py | 39 | 79.7 | B | 88 | -8.3 | #25:0, #27:0, #24:33 | Idiomatic and well-typed with strong domain naming, an elegant deque(maxlen=4) sliding window, and clean setdefault first-occurrence logic, though it embeds magic numbers and lacks an entrypoint. |
 | tomek.py | 54 | 75.83 | B | 76 | -0.2 | #25:0, #27:0, #1:27 | Good domain modelling via explicit mix/prune/next_secret_number and descriptive names, but suffers from redundant intermediate variables, an awkward dict-of-sets keyed by index, hardcoded filenames, and module-level print side effects. |
 | online_2.py | 49 | 78.04 | B | 58 | +20.0 | #15:0, #16:0, #25:0 | Reasonable logic but carries a large block of dead commented-out code, no type hints, duplicated evolution logic across both parts, and an untyped data parameter coupled to an external base class. |
-| synth_primitive.py | 35 | 85.71 | A | 32 | +53.7 | #25:0, #16:100, #17:100 | Functionally direct but offers no abstraction, single-letter names throughout, duplicated inline evolution code, and zero error handling or structure. |
+| synth_primitive.py | 57 | 85.53 | A | 45 | +40.5 | #15:0, #25:0, #24:23 | A coherent MonkeyMarket class with a main entrypoint, but cramped single-letter names throughout, evolution logic duplicated inline across next/part1/part2, a manual max loop, and no type hints or error handling. |
 
 Rank agreement (Spearman ρ, Moses vs Judge): **-0.7** (n=5)
 
@@ -191,11 +191,11 @@ Rank agreement (Spearman ρ, Moses vs Judge): **0.3** (n=5)
 
 | Question | Spearman ρ | n |
 |---|---|---|
-| q10 | -0.543 | 6 |
-| q12 | -0.3 | 5 |
-| q13 | 0.9 | 5 |
-| q14 | 0.086 | 6 |
-| q15 | 0.714 | 6 |
+| q10 | -0.143 | 6 |
+| q12 | 0.0 | 5 |
+| q13 | 0.3 | 5 |
+| q14 | 0.143 | 6 |
+| q15 | 0.257 | 6 |
 | q16 | 0.0 | 5 |
 | q17 | 0.029 | 6 |
 | q20 | 0.9 | 5 |

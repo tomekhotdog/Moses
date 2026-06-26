@@ -1,22 +1,22 @@
 {
   "synth_clean.py": {
-    "justification": "Exemplary domain modelling with cohesive Point/Grid/Region abstractions, clean flood-fill decomposition, precise naming, type hints throughout, and corner-counting factored into a readable helper.",
-    "pct": 92
-  },
-  "online_1.py": {
-    "justification": "Readable, well-named functional decomposition with small focused helpers, but recursive flood fill risks stack overflow and the corner logic is spread across several coupled predicate helpers (other_plots, double-corner) that are hard to follow.",
-    "pct": 72
+    "pct": 92,
+    "justification": "Exemplary domain modelling with cohesive Point/Grid/Region abstractions, clean flood-fill decomposition, precise naming, type hints throughout, and corner-counting factored into a readable helper."
   },
   "online_2.py": {
-    "justification": "Reasonable class-based structure, but side-counting via grid rotation, string joins and split() is an obscure over-clever approach with terse names (_type, co) and duplicated boundary checks.",
-    "pct": 60
+    "pct": 70,
+    "justification": "Clear functional decomposition with a tidy Coordinate namedtuple and small helpers, but the Part 2 side-count rebuilds a sub-grid and re-runs flood fill, leaning on coupled corner predicates like is_not_double_corner that are hard to follow."
+  },
+  "online_1.py": {
+    "pct": 62,
+    "justification": "Readable class-based helpers with reasonable names, but Part 2's side-counting via grid rotation and string join/split tricks is obscure and over-clever, and parse/region-finding logic is duplicated across part1 and part2."
   },
   "tomek.py": {
-    "justification": "Has a real Region abstraction and clear comments, but region discovery is convoluted and quadratic (joining plots by scanning all existing regions) when a simple flood fill suffices, mixing two redundant traversal mechanisms with debug cruft left in.",
-    "pct": 55
+    "pct": 55,
+    "justification": "Has a genuine Region abstraction and clear comments, but region discovery is convoluted and quadratic—joining plots by scanning all existing regions while also doing DFS—mixing two redundant traversals with leftover debug cruft."
   },
   "synth_primitive.py": {
-    "justification": "Correct and compact but a single monolithic nested loop with one-letter names (g, st, per, co, a, s) and zero abstraction, making perimeter and corner logic hard to read or reuse.",
-    "pct": 38
+    "pct": 48,
+    "justification": "Correct and compact with a flood-fill class, but cryptic one/two-letter names (g, fld, st, per, co, ch, hh) and perimeter plus corner logic crammed into one monolithic run() method severely hurt readability."
   }
 }

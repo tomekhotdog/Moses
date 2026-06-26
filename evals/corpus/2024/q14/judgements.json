@@ -1,26 +1,26 @@
 {
   "synth_clean.py": {
-    "justification": "Clean module-level docstrings, a frozen Robot dataclass with a focused position_after method, well-decomposed pure functions with type hints, and the part-2 heuristic abstracted into named helpers make this the most readable and well-structured solution.",
-    "pct": 92
+    "pct": 92,
+    "justification": "Clean module-level docstrings, a frozen Robot dataclass with a focused position_after method, well-decomposed pure functions with type hints, and the part-2 heuristic abstracted into named helpers make this the most readable and well-structured solution."
   },
   "online_2.py": {
-    "justification": "Strong domain modelling via NamedTuples (Robot/Velocity/Coordinate) and clean type-hinted parsing/printing, but it loses points for a hardcoded magic part-2 answer (seconds == 7568 / printing '7569') and an assert pinning a specific puzzle input.",
-    "pct": 78
+    "pct": 78,
+    "justification": "Strong domain modelling via NamedTuples (Robot/Velocity/Coordinate) and clean type-hinted parsing/printing, but it loses points for a hardcoded magic part-2 answer (seconds == 7568 / printing '7569') and an assert pinning a specific puzzle input."
   },
   "synth_mid.py": {
-    "justification": "Correct and reasonably readable with a clear safety helper and honest comments, but uses bare lists for robots, global WIDTH/HEIGHT, and inlines the part-2 search in main without abstraction.",
-    "pct": 68
-  },
-  "online_1.py": {
-    "justification": "Tuple-of-tuples modelling is workable and the quadrant indexing is neat, but parsing logic is duplicated verbatim across part1/part2, the test-input detection by len==12 is hacky, and the +width/+height velocity-offset trick is opaque.",
-    "pct": 60
-  },
-  "tomek.py": {
-    "justification": "Has a real Robot class and named helpers, but the over-engineered generalized quadrant_counts (fractional borderline arithmetic, max(0,x-1) fudging) is hard to follow and brittle, parsing is verbose with repeated splits, and dimensions are sprinkled as loose args.",
-    "pct": 52
+    "pct": 68,
+    "justification": "Correct and reasonably readable with a clear safety helper and honest comments, but uses bare lists for robots, global WIDTH/HEIGHT, and inlines the part-2 search in main without abstraction."
   },
   "synth_primitive.py": {
-    "justification": "Functionally complete but deliberately minimized: single-letter names (a,b,c,e,r,l,f), one-space indentation, no functions, hardcoded grid constants, and zero abstraction or error handling make it nearly unmaintainable.",
-    "pct": 18
+    "pct": 64,
+    "justification": "Coherent RobotSim class with readable parsing and honest comments, but tuple-index access (r[0]..r[3]), hardcoded grid/centre constants (101/103/50/51), verbose nested-if quadrant branching, and a monolithic run() that bundles both parts with no error handling keep it middling."
+  },
+  "online_1.py": {
+    "pct": 60,
+    "justification": "Tuple-of-tuples modelling is workable and the quadrant indexing is neat, but parsing logic is duplicated verbatim across part1/part2, the test-input detection by len==12 is hacky, and the +width/+height velocity-offset trick is opaque."
+  },
+  "tomek.py": {
+    "pct": 52,
+    "justification": "Has a real Robot class and named helpers, but the over-engineered generalized quadrant_counts (fractional borderline arithmetic, max(0,x-1) fudging) is hard to follow and brittle, parsing is verbose with repeated splits, and dimensions are sprinkled as loose args."
   }
 }

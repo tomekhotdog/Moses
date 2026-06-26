@@ -1,26 +1,26 @@
 {
   "synth_clean.py": {
-    "justification": "Exemplary: docstrings, type aliases, named constants, a deep TopographicMap domain class, and clean DFS/recursion that read as a direct statement of the problem.",
-    "pct": 93
+    "pct": 93,
+    "justification": "Exemplary: docstrings, type aliases, named constants, a deep TopographicMap domain class, and clean DFS/recursion that read as a direct statement of the problem."
   },
   "synth_mid.py": {
-    "justification": "Clear, well-decomposed functions (parse/neighbors/walk/solve) with sensible names and a single-pass recursion computing both parts; only lacks type hints, docstrings, and named height constants.",
-    "pct": 80
+    "pct": 80,
+    "justification": "Clear, well-decomposed functions (parse/neighbors/walk/solve) with sensible names and a single recursion computing both parts; only lacks type hints, docstrings, and named height constants."
   },
   "online_2.py": {
-    "justification": "Readable with full type hints and descriptive names, but the deque-as-stack with O(n) 'neighbor not in queue' membership conflates BFS/DFS concepts and the grid is parsed twice across the two parts.",
-    "pct": 71
+    "pct": 70,
+    "justification": "Readable with full type hints and descriptive names, but the deque-as-stack with O(n) 'neighbor not in queue' membership conflates BFS/DFS concepts and the grid is parsed twice across the two parts."
   },
   "tomek.py": {
-    "justification": "Reasonable naming but over-engineered with a Coordinates class, per-iteration lambda reassignment, a magic len==10 check, an external read_input dependency, and a convoluted breadth-by-trail-list traversal.",
-    "pct": 55
-  },
-  "online_1.py": {
-    "justification": "Buried under accidental complexity: a threading decorator, dual recursion/loop implementations, mutable class-level defaults, an unnecessary opposite-direction filter, timing prints in the constructor, and noisy double-spaced formatting.",
-    "pct": 42
+    "pct": 52,
+    "justification": "An unused TrailMap class, duplicated traversal logic (an inline part-1 walk plus a near-identical proc helper), a dead 'height >= 0' check, dict-as-set, and terse names make it cluttered and hard to follow."
   },
   "synth_primitive.py": {
-    "justification": "Compact and correct but offers almost no readability or modelling: single-letter names throughout (g/R/C/s/t/q/e/p), no functions, and no abstraction over the grid or traversal.",
-    "pct": 30
+    "pct": 48,
+    "justification": "Over-engineered around a Coordinates class with an external read_input dependency, a 999 sentinel for a '.' case the problem never has, per-iteration lambda reassignment, a magic len==10 check, and a convoluted breadth-by-trail-list traversal that materializes every full path."
+  },
+  "online_1.py": {
+    "pct": 42,
+    "justification": "Buried under accidental complexity: a threading decorator, dual recursion/loop implementations, mutable class-level defaults, an unnecessary opposite-direction filter, timing prints in the constructor, and noisy double-spaced formatting."
   }
 }

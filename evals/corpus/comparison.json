@@ -54,7 +54,7 @@
           "25": 33.33333333333333,
           "27": 44.44444444444445
         },
-        "judge_pct": 71,
+        "judge_pct": 70,
         "judge_justification": "Readable with full type hints and descriptive names, but the deque-as-stack with O(n) 'neighbor not in queue' membership conflates BFS/DFS concepts and the grid is parsed twice across the two parts."
       },
       "synth_clean.py": {
@@ -110,21 +110,35 @@
           "25": 52.38095238095239
         },
         "judge_pct": 80,
-        "judge_justification": "Clear, well-decomposed functions (parse/neighbors/walk/solve) with sensible names and a single-pass recursion computing both parts; only lacks type hints, docstrings, and named height constants."
+        "judge_justification": "Clear, well-decomposed functions (parse/neighbors/walk/solve) with sensible names and a single recursion computing both parts; only lacks type hints, docstrings, and named height constants."
       },
       "synth_primitive.py": {
-        "loc": 28,
-        "moses_score": 89.8,
-        "grade": "A",
+        "loc": 65,
+        "moses_score": 70.06,
+        "grade": "B",
         "commandments": {
-          "16": 100.0,
+          "1": 65.0,
+          "2": 100.0,
+          "3": 100.0,
+          "5": 86.66666666666666,
+          "6": 100.0,
+          "11": 100.0,
+          "12": 36.75,
+          "13": 100.0,
+          "14": 0.0,
+          "15": 0.0,
+          "16": 0.0,
           "17": 100.0,
           "18": 100.0,
           "22": 100.0,
-          "25": 28.57142857142857
+          "23": 83.2149076976663,
+          "24": 100.0,
+          "25": 38.46153846153847,
+          "29": 100.0,
+          "31": 100.0
         },
-        "judge_pct": 30,
-        "judge_justification": "Compact and correct but offers almost no readability or modelling: single-letter names throughout (g/R/C/s/t/q/e/p), no functions, and no abstraction over the grid or traversal."
+        "judge_pct": 48,
+        "judge_justification": "Over-engineered around a Coordinates class with an external read_input dependency, a 999 sentinel for a '.' case the problem never has, per-iteration lambda reassignment, a magic len==10 check, and a convoluted breadth-by-trail-list traversal that materializes every full path."
       },
       "tomek.py": {
         "loc": 90,
@@ -153,8 +167,8 @@
           "29": 100.0,
           "31": 100.0
         },
-        "judge_pct": 55,
-        "judge_justification": "Reasonable naming but over-engineered with a Coordinates class, per-iteration lambda reassignment, a magic len==10 check, an external read_input dependency, and a convoluted breadth-by-trail-list traversal."
+        "judge_pct": 52,
+        "judge_justification": "An unused TrailMap class, duplicated traversal logic (an inline part-1 walk plus a near-identical proc helper), a dead 'height >= 0' check, dict-as-set, and terse names make it cluttered and hard to follow."
       }
     },
     "q12": {
@@ -183,8 +197,8 @@
           "29": 100.0,
           "31": 100.0
         },
-        "judge_pct": 72,
-        "judge_justification": "Readable, well-named functional decomposition with small focused helpers, but recursive flood fill risks stack overflow and the corner logic is spread across several coupled predicate helpers (other_plots, double-corner) that are hard to follow."
+        "judge_pct": 62,
+        "judge_justification": "Readable class-based helpers with reasonable names, but Part 2's side-counting via grid rotation and string join/split tricks is obscure and over-clever, and parse/region-finding logic is duplicated across part1 and part2."
       },
       "online_2.py": {
         "loc": 135,
@@ -208,8 +222,8 @@
           "24": 100.0,
           "25": 40.74074074074075
         },
-        "judge_pct": 60,
-        "judge_justification": "Reasonable class-based structure, but side-counting via grid rotation, string joins and split() is an obscure over-clever approach with terse names (_type, co) and duplicated boundary checks."
+        "judge_pct": 70,
+        "judge_justification": "Clear functional decomposition with a tidy Coordinate namedtuple and small helpers, but the Part 2 side-count rebuilds a sub-grid and re-runs flood fill, leaning on coupled corner predicates like is_not_double_corner that are hard to follow."
       },
       "synth_clean.py": {
         "loc": 111,
@@ -242,18 +256,33 @@
         "judge_justification": "Exemplary domain modelling with cohesive Point/Grid/Region abstractions, clean flood-fill decomposition, precise naming, type hints throughout, and corner-counting factored into a readable helper."
       },
       "synth_primitive.py": {
-        "loc": 46,
-        "moses_score": 100.0,
+        "loc": 69,
+        "moses_score": 83.8,
         "grade": "A",
         "commandments": {
+          "1": 98.57142857142858,
+          "2": 100.0,
+          "3": 100.0,
+          "5": 100.0,
+          "6": 100.0,
+          "11": 100.0,
+          "12": 23.75,
+          "13": 100.0,
+          "14": 7.500000000000014,
+          "15": 0.0,
           "16": 100.0,
           "17": 100.0,
           "18": 100.0,
+          "21": 100.0,
           "22": 100.0,
-          "25": 100.0
+          "23": 97.8605496252555,
+          "24": 68.0,
+          "25": 100.0,
+          "29": 100.0,
+          "31": 72.5
         },
-        "judge_pct": 38,
-        "judge_justification": "Correct and compact but a single monolithic nested loop with one-letter names (g, st, per, co, a, s) and zero abstraction, making perimeter and corner logic hard to read or reuse."
+        "judge_pct": 48,
+        "judge_justification": "Correct and compact with a flood-fill class, but cryptic one/two-letter names (g, fld, st, per, co, ch, hh) and perimeter plus corner logic crammed into one monolithic run() method severely hurt readability."
       },
       "tomek.py": {
         "loc": 125,
@@ -283,7 +312,7 @@
           "31": 100.0
         },
         "judge_pct": 55,
-        "judge_justification": "Has a real Region abstraction and clear comments, but region discovery is convoluted and quadratic (joining plots by scanning all existing regions) when a simple flood fill suffices, mixing two redundant traversal mechanisms with debug cruft left in."
+        "judge_justification": "Has a genuine Region abstraction and clear comments, but region discovery is convoluted and quadratic\u2014joining plots by scanning all existing regions while also doing DFS\u2014mixing two redundant traversals with leftover debug cruft."
       }
     },
     "q13": {
@@ -371,18 +400,33 @@
         "judge_justification": "Exemplary: module docstring, a frozen Machine dataclass for clean domain modelling, named constants, integer-only Cramer's rule with divisibility checks avoiding float pitfalls, Optional return signalling unwinnable, and tidy decomposition into parse/solve/total/main."
       },
       "synth_primitive.py": {
-        "loc": 26,
-        "moses_score": 42.86,
-        "grade": "D",
+        "loc": 67,
+        "moses_score": 83.38,
+        "grade": "A",
         "commandments": {
+          "1": 100.0,
+          "2": 100.0,
+          "3": 100.0,
+          "5": 100.0,
+          "6": 100.0,
+          "11": 100.0,
+          "12": 77.25,
+          "13": 100.0,
+          "14": 36.25000000000003,
+          "15": 100.0,
           "16": 0.0,
           "17": 100.0,
           "18": 100.0,
+          "21": 100.0,
           "22": 100.0,
-          "25": 0.0
+          "23": 100.0,
+          "24": 100.0,
+          "25": 0.0,
+          "29": 100.0,
+          "31": 100.0
         },
-        "judge_pct": 30,
-        "judge_justification": "Algorithmically sound integer Cramer's rule, but deliberately golfed into single-character names, one-space indentation, semicolons, inline magic numbers, and no functions, docstrings, or abstraction whatsoever."
+        "judge_pct": 42,
+        "judge_justification": "Correct integer Cramer's rule, but a hollow class wrapping an untyped flat-dict model (per its own comments), with one monolithic run() method that duplicates the entire part1/part2 logic and deeply nested if i>=0: if j>=0: branching."
       },
       "tomek.py": {
         "loc": 56,
@@ -528,18 +572,33 @@
         "judge_justification": "Correct and reasonably readable with a clear safety helper and honest comments, but uses bare lists for robots, global WIDTH/HEIGHT, and inlines the part-2 search in main without abstraction."
       },
       "synth_primitive.py": {
-        "loc": 33,
-        "moses_score": 85.71,
+        "loc": 55,
+        "moses_score": 90.62,
         "grade": "A",
         "commandments": {
+          "1": 100.0,
+          "2": 100.0,
+          "3": 100.0,
+          "5": 100.0,
+          "6": 100.0,
+          "11": 100.0,
+          "12": 74.33333333333334,
+          "13": 100.0,
+          "14": 57.50000000000001,
+          "15": 100.0,
           "16": 100.0,
           "17": 100.0,
           "18": 100.0,
+          "21": 100.0,
           "22": 100.0,
-          "25": 0.0
+          "23": 83.71794871794872,
+          "24": 57.142857142857146,
+          "25": 0.0,
+          "29": 100.0,
+          "31": 100.0
         },
-        "judge_pct": 18,
-        "judge_justification": "Functionally complete but deliberately minimized: single-letter names (a,b,c,e,r,l,f), one-space indentation, no functions, hardcoded grid constants, and zero abstraction or error handling make it nearly unmaintainable."
+        "judge_pct": 64,
+        "judge_justification": "Coherent RobotSim class with readable parsing and honest comments, but tuple-index access (r[0]..r[3]), hardcoded grid/centre constants (101/103/50/51), verbose nested-if quadrant branching, and a monolithic run() that bundles both parts with no error handling keep it middling."
       },
       "tomek.py": {
         "loc": 83,
@@ -621,8 +680,8 @@
           "25": 46.308724832214764,
           "27": 0.0
         },
-        "judge_pct": 72,
-        "judge_justification": "Readable, well-organized procedural solution with a deltas dict, sensible BFS cluster gathering, and a proper main guard, though part1/part2 share little and the grid gets no abstraction."
+        "judge_pct": 71,
+        "judge_justification": "Readable procedural solution with a MOVES dict and recursive pushing, but it shadows the map builtin, near-duplicates parse/move for each part, and the per-move deepcopy rollback is a clumsy way to handle blocked moves."
       },
       "synth_clean.py": {
         "loc": 130,
@@ -680,18 +739,33 @@
         "judge_justification": "Tidy procedural solution with clean parsing and a clear vertical-push BFS, but it duplicates push logic across parts and leans on raw grid mutation with no domain modelling."
       },
       "synth_primitive.py": {
-        "loc": 106,
-        "moses_score": 51.75,
-        "grade": "C",
+        "loc": 138,
+        "moses_score": 79.57,
+        "grade": "B",
         "commandments": {
+          "1": 100.0,
+          "2": 100.0,
+          "3": 100.0,
+          "5": 100.0,
+          "6": 100.0,
+          "11": 100.0,
+          "12": 40.57142857142857,
+          "13": 100.0,
+          "14": 32.500000000000014,
+          "15": 100.0,
           "16": 0.0,
           "17": 100.0,
           "18": 100.0,
+          "21": 100.0,
           "22": 100.0,
-          "25": 62.264150943396224
+          "23": 98.50320372059502,
+          "24": 58.33333333333333,
+          "25": 71.01449275362319,
+          "29": 100.0,
+          "31": 90.0
         },
-        "judge_pct": 31,
-        "judge_justification": "Correct but minimal: a flat top-level script with single-letter names throughout, near-duplicated part1/part2 blocks, dead variables, and no functions or abstraction whatsoever."
+        "judge_pct": 52,
+        "judge_justification": "Two near-duplicate Warehouse/WideWarehouse classes give some structure, but pervasive single-letter names (g, m, k, e, q, v), copy-pasted parsing and direction branches, and dead nr/nc variables keep it terse and hard to read."
       },
       "tomek.py": {
         "loc": 167,
@@ -720,7 +794,7 @@
           "31": 100.0
         },
         "judge_pct": 78,
-        "judge_justification": "Clear naming and a clean recursive can_move/move separation with explanatory comments, but parallel box sets and symmetric left/right branches add incidental state, plus top-level execution and an external dependency reduce self-containment."
+        "judge_justification": "Clear naming and a clean recursive can_move/move separation with explanatory comments, but parallel box sets and symmetric left/right branches add incidental state, plus top-level execution and an external import reduce self-containment."
       }
     },
     "q16": {
@@ -1406,21 +1480,36 @@
           "27": 0.0
         },
         "judge_pct": 92,
-        "judge_justification": "Cleanest structure overall: named constants, full type hints with a Sequence alias, focused single-purpose functions, docstrings, and proper parse/main separation, marred only slightly by a clumsy type:ignore comment."
+        "judge_justification": "Cleanest overall: named constants, full type hints with a Sequence alias, focused single-purpose functions, docstrings, and proper parse/main separation, marred only slightly by a clumsy type:ignore comment."
       },
       "synth_primitive.py": {
-        "loc": 35,
-        "moses_score": 85.71,
+        "loc": 57,
+        "moses_score": 85.53,
         "grade": "A",
         "commandments": {
+          "1": 81.42857142857142,
+          "2": 100.0,
+          "3": 100.0,
+          "5": 100.0,
+          "6": 100.0,
+          "11": 100.0,
+          "12": 100.0,
+          "13": 100.0,
+          "14": 80.0,
+          "15": 0.0,
           "16": 100.0,
           "17": 100.0,
           "18": 100.0,
+          "21": 50.0,
           "22": 100.0,
-          "25": 0.0
+          "23": 96.5185691501481,
+          "24": 23.076923076923066,
+          "25": 0.0,
+          "29": 100.0,
+          "31": 100.0
         },
-        "judge_pct": 32,
-        "judge_justification": "Functionally direct but offers no abstraction, single-letter names throughout, duplicated inline evolution code, and zero error handling or structure."
+        "judge_pct": 45,
+        "judge_justification": "A coherent MonkeyMarket class with a main entrypoint, but cramped single-letter names throughout, evolution logic duplicated inline across next/part1/part2, a manual max loop, and no type hints or error handling."
       },
       "tomek.py": {
         "loc": 54,
