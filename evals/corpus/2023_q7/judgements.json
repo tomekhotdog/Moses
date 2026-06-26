@@ -1,0 +1,26 @@
+{
+  "synth_clean.py": {
+    "pct": 94,
+    "justification": "Exemplary: IntEnum types, an elegant shape-to-type lookup that replaces branching, a frozen dataclass, clear docstrings and type hints, and a clean classify/parse/sort/solve decomposition with linear flow."
+  },
+  "synth_mid.py": {
+    "pct": 81,
+    "justification": "Clean, well-named functional solution with a clear comparator and tidy parse/winnings split; only minor friction from the repetitive size-tuple if-chain and bare integer hand-type magic numbers."
+  },
+  "online_2.py": {
+    "pct": 58,
+    "justification": "Reasonable class structure and a test, but the full-house classification is a hard-to-parse tangle of unparenthesised and/or conditions and the winnings ranking uses convoluted index arithmetic with a misleading comment."
+  },
+  "online_1.py": {
+    "pct": 45,
+    "justification": "Compact but over-clever: an opaque numeric scoring trick (10*max+2nd then max-le lookup), single-letter loop vars, O(n^2) counting, and duplicated comprehension pipelines across the two parts make it hard to follow."
+  },
+  "synth_primitive.py": {
+    "pct": 40,
+    "justification": "Logic is sound and direct but readability is poor: cryptic single-letter names (t, h, c, v, o, s) throughout and wholesale duplication of the comparator and part1/part2 functions."
+  },
+  "tomek.py": {
+    "pct": 38,
+    "justification": "Heavily over-engineered for the task: a 30-line if-chain card-type mapper, a CamelCard class with hashing ceremony and a stray copy-pasted comment, a verbose joker-upgrade table, and duplicated part1/part2 all inflate complexity needlessly."
+  }
+}

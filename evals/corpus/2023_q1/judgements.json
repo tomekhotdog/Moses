@@ -1,0 +1,22 @@
+{
+  "synth_clean.py": {
+    "pct": 93,
+    "justification": "Exemplary: precise docstrings and types, clean decomposition into small single-purpose functions, tasteful walrus use, anchored matching that expresses overlap handling clearly, and a proper ValueError on empty input."
+  },
+  "online_1.py": {
+    "pct": 74,
+    "justification": "Compact and readable with a well-commented replace trick that elegantly preserves overlaps, though the cleverness needs that comment and an assert is weak error handling."
+  },
+  "online_2.py": {
+    "pct": 52,
+    "justification": "Works but has two near-duplicate functions, shadows the builtin sum, an unexplained cryptic regex lookahead, a needless 'zero' entry, and no handling for empty lines."
+  },
+  "tomek.py": {
+    "pct": 48,
+    "justification": "Has types and comments but mutates a module-global list across calls, over-engineers with find-all-then-sort instead of a simple scan, raises a bare Exception, and depends on a missing main module."
+  },
+  "synth_primitive.py": {
+    "pct": 24,
+    "justification": "Deliberately primitive: a god function with manual index arithmetic, magic numbers, one- and two-letter names, integer flags, duplicated part1/part2, and silent zero on no digits."
+  }
+}

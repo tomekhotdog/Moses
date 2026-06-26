@@ -1,0 +1,22 @@
+{
+  "synth_clean.py": {
+    "pct": 93,
+    "justification": "Exemplary domain modelling with Reveal/Game abstractions exposing intent-revealing methods, named constants, full typing, a clear linear parse pipeline, and a docstring — easy and pleasant to read."
+  },
+  "online_2.py": {
+    "pct": 80,
+    "justification": "Clean typed dataclass and enum modelling with a single shared parser and well-named code, marred only by the slightly clunky manual flag-and-break loop in part_one where part_two is more elegant."
+  },
+  "tomek.py": {
+    "pct": 66,
+    "justification": "Genuine domain abstractions (Bag/Round/Game/Colour) but undermined by cramped single-letter attributes, verbose list(map(lambda)) idioms over comprehensions, and an assert used for input validation."
+  },
+  "online_1.py": {
+    "pct": 47,
+    "justification": "Functionally compact but clever to a fault — string-replace tricks, map(str.split) chains, _sum/_set naming, dead one-liner comments, and duplicated parsing make it taxing to follow."
+  },
+  "synth_primitive.py": {
+    "pct": 35,
+    "justification": "Crude procedural code with single-character names, inline magic limits, and parsing logic fully duplicated across p1/p2 with no abstraction, making it the least readable of the set."
+  }
+}
