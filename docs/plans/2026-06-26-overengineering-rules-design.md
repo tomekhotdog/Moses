@@ -118,3 +118,29 @@ weights.
 - **Promoting to MVP + recalibration** — a separate step after validation.
 - Re-export-module detection for C4 (gutted by the `__init__.py` exclusion) and
   single-caller call-graph chains (fragile by-name) — rejected per research.
+
+## Validation results (2026-06-26)
+
+Scored the corpus with C4+C30 enabled (on top of MVP) and checked the known
+over-engineered solutions vs clean controls:
+
+| Solution | Judge | C30 | C4 | Note |
+|---|---|---|---|---|
+| 2024_q10/online_1 | 42 | **25** | 100 | over-eng (threading + dual impl) — C30 flags |
+| 2024_q21/online_1 | 35 | **0** | 100 | over-eng (animation cruft) — C30 flags |
+| 2023_q11/tomek | 47 | **0** | 100 | over-eng (Universe/Pair classes) — C30 flags |
+| 2022_q11/online_1 | 7 | not_measured | not_measured | functional lambda+eval blob (no classes — C30 out of scope) |
+| 2024_q10/synth_clean | 93 | 100 | 100 | clean control — not flagged |
+| 2024_q12/synth_clean | 92 | not_measured | 100 | clean control — not flagged |
+| 2023_q5/synth_clean | 95 | not_measured | 100 | clean control — not flagged |
+
+**Findings:**
+- **C30 is a strong, clean signal** — penalises class-based over-engineering (0–25)
+  while leaving clean code at 100/not_measured (no false positives). **Recommend
+  promoting C30 to MVP and re-calibrating** so its weight is set against the corpus.
+- **C4 fired on nothing** — AoC solutions contain no delegation-wrapper classes. It
+  is correct (no false positives) but inert on this corpus, and a near-always-100
+  rule would *dilute* the Score (more leniency). **Recommend keeping C4 out of MVP**
+  until we have codebases that actually contain wrappers.
+- **Gap:** C30 is class-scoped, so functional over-engineering (2022_q11's lambda
+  blob, judge 7) is invisible to it — that belongs to C12 (cognitive complexity).
