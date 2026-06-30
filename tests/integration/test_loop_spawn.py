@@ -33,9 +33,12 @@ def test_loop_spawn_builds_env_and_is_nonblocking(inited_repo, monkeypatch):
     captured = {}
 
     class FakePopen:
-        def __init__(self, args, cwd=None, env=None, stdout=None, stderr=None):
+        def __init__(self, args, cwd=None, env=None, stdin=None, stdout=None, stderr=None):
             captured["args"] = args
             captured["env"] = env
+            captured["stdin"] = stdin
+            captured["stdout"] = stdout
+            captured["stderr"] = stderr
             self.returncode = None
 
         def poll(self):
@@ -49,3 +52,7 @@ def test_loop_spawn_builds_env_and_is_nonblocking(inited_repo, monkeypatch):
     assert captured["env"]["MOSES_MAX_ITERATIONS"] == "7"
     assert captured["env"]["MOSES_ENGINE"] == "claude"
     assert "MOSES_BIN" in captured["env"]
+    # the harness must not share the terminal with the dashboard
+    assert captured["stdin"] == subprocess.DEVNULL
+    assert captured["stdout"] == subprocess.DEVNULL
+    assert captured["stderr"] == subprocess.DEVNULL

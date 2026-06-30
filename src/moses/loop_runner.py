@@ -216,8 +216,12 @@ def _ralph_path(paths: CampaignPaths) -> Path:
 
 
 def _loop_env(
-    paths: CampaignPaths, engine: str, max_iterations: int, max_hours: float, cooldown: int
-) -> dict:
+    paths: CampaignPaths,
+    engine: str,
+    max_iterations: int,
+    max_hours: float,
+    cooldown: int,
+) -> dict[str, str]:
     env = dict(os.environ)
     env.update(
         {
@@ -259,12 +263,17 @@ def loop_spawn(
     max_iterations: int = 10,
     max_hours: float = 0.0,
     cooldown: int = 5,
-) -> subprocess.Popen:
+) -> subprocess.Popen[bytes]:
     """Start the RALPH harness as a background process (non-blocking).
 
-    Returns the Popen handle; the caller supervises it and must terminate it on
-    exit. The harness writes its own loop.log, so stdout/stderr are discarded to
-    keep the terminal clean for the dashboard.
+    Returns the Popen handle; the caller owns its lifecycle and must, on exit,
+    call ``proc.terminate()`` and then ``proc.wait()`` (or ``proc.communicate()``)
+    to reap the child — even if the harness has already finished naturally, an
+    unreaped child lingers as a zombie for the caller's lifetime.
+
+    stdin/stdout/stderr are all redirected to ``DEVNULL``: the harness writes its
+    own loop.log, and detaching stdin keeps it from competing with the dashboard
+    for the terminal.
     """
     paths = _resolve_state(worktree, state_dir_name)
     _load_campaign(paths.campaign)
@@ -274,6 +283,7 @@ def loop_spawn(
         ["bash", str(ralph)],
         cwd=str(paths.worktree),
         env=env,
+        stdin=subprocess.DEVNULL,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
