@@ -14,6 +14,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from rich.markup import escape
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
@@ -49,6 +50,14 @@ def breakdown_text(s: CampaignState) -> str:
     for r in s.weakest_rules:
         lines.append(f"C{r.number:<2} {bar(r.score)} {r.score:5.1f}  {r.name[:20]}")
     return "\n".join(lines)
+
+
+def diff_text(diffstat: str) -> str:
+    """Render the last diffstat. Escapes git output so file paths containing
+    Rich-markup characters (e.g. ``foo[bar].py``) can never break rendering."""
+    if not diffstat:
+        return ""
+    return "[b]Last change[/b]\n" + escape(diffstat)
 
 
 class SummaryScreen(Screen):
@@ -121,17 +130,24 @@ class MosesLoopApp(App):
         self.set_interval(self._poll, self.refresh_state)
 
     def refresh_state(self) -> None:
-        s = read_state(self._state_dir)
-        self.query_one("#stats", Static).update(stats_text(s, self._max_iterations))
-        self._render_table(s)
-        self.query_one("#breakdown", Static).update(breakdown_text(s))
-        self.query_one("#diff", Static).update(
-            ("[b]Last change[/b]\n" + s.last_diffstat) if s.last_diffstat else ""
-        )
-        self._render_log()
-        if not self._finished and self._process is not None and self._process.poll() is not None:
-            self._finished = True
-            self.push_screen(SummaryScreen(s))
+        # The dashboard must survive any render hiccup: an exception here would
+        # kill the polling timer (and the whole app). Surface errors to the log
+        # pane instead of crashing — upholds "the TUI never crashes on the loop".
+        try:
+            s = read_state(self._state_dir)
+            self.query_one("#stats", Static).update(stats_text(s, self._max_iterations))
+            self._render_table(s)
+            self.query_one("#breakdown", Static).update(breakdown_text(s))
+            self.query_one("#diff", Static).update(diff_text(s.last_diffstat))
+            self._render_log()
+            if not self._finished and self._process is not None and self._process.poll() is not None:
+                self._finished = True
+                self.push_screen(SummaryScreen(s))
+        except Exception as exc:  # noqa: BLE001 — last-resort guard for the timer
+            try:
+                self.query_one("#log", Log).write_line(f"[dashboard] render error: {exc!r}")
+            except Exception:
+                pass
 
     def _render_table(self, s: CampaignState) -> None:
         table = self.query_one("#iterations", DataTable)

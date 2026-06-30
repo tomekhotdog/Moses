@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from moses.loop_tui import MosesLoopApp, bar, breakdown_text, stats_text
+from moses.loop_tui import MosesLoopApp, bar, breakdown_text, diff_text, stats_text
 from moses.loop_watch import read_state
 
 
@@ -51,6 +51,15 @@ def test_stats_text_waiting_when_no_campaign(tmp_path):
 def test_breakdown_text_lists_weakest(tmp_path):
     s = read_state(_fixture(tmp_path))
     assert "C16" in breakdown_text(s) and "DRY" in breakdown_text(s)
+
+
+def test_diff_text_escapes_markup():
+    # git output may contain Rich-markup chars (e.g. a path like foo[bar].py);
+    # they must be escaped so rendering can never raise on them.
+    out = diff_text("foo[bar].py | 2 +-")
+    assert "[b]Last change[/b]" in out
+    assert "\\[bar]" in out  # the path's bracket is escaped, not parsed
+    assert diff_text("") == ""
 
 
 async def test_app_mounts_and_renders(tmp_path):
