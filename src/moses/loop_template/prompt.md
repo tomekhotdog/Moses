@@ -12,9 +12,15 @@ behaviour.
    pass. Never delete a test to make it pass.
 2. **One concern per iteration.** Pick the single highest-value Commandment to
    address. Do not scatter unrelated edits.
-3. **No gaming the metric.** Do not delete public API, suppress rules, edit
-   Moses itself, or add files purely to dilute per-kLOC ratios. Improvements must
-   be genuine.
+3. **Never change what Moses measures.** You may refactor any source file —
+   including the commandment modules themselves — but you must NOT alter the
+   *functional definition* of any Commandment: the metric it computes, its
+   normalisation curve, its `RuleConfig` thresholds/slopes, the `WEIGHTS`, the
+   `MVP_COMMANDMENTS` set, or `gamma`. The scores Moses produces must be
+   identical before and after your change (the full test suite and the corpus
+   scores are the proof). Likewise do not suppress/disable/skip rules, delete
+   public API, weaken or delete tests, or add files purely to dilute per-kLOC
+   ratios. Refactor for genuine quality only.
 4. **Commit exactly once** at the end, with a message of the form
    `moses: <commandment> — <what you did>`.
 5. **Leave the tree clean.** No stray debug prints, no commented-out code (that
