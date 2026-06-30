@@ -112,6 +112,12 @@ class CampaignPaths:
     campaign: Path
 
 
+def default_worktree_path(target: str | Path) -> Path:
+    """The default sibling worktree dir for a target repo."""
+    target = Path(target).resolve()
+    return target.parent / f"{target.name}-moses-loop"
+
+
 def _resolve_state(worktree: str | Path, state_dir_name: str) -> CampaignPaths:
     wt = Path(worktree).resolve()
     state = wt / state_dir_name
@@ -161,7 +167,7 @@ def loop_init(
         worktree = (
             Path(worktree_path).resolve()
             if worktree_path
-            else target.parent / f"{target.name}-moses-loop"
+            else default_worktree_path(target)
         )
         if worktree.exists():
             raise LoopError(f"worktree path already exists: {worktree}")
@@ -202,23 +208,16 @@ def loop_init(
 # --------------------------------------------------------------------------- #
 
 
-def loop_run(
-    *,
-    worktree: str | Path,
-    state_dir_name: str = ".moses",
-    engine: str = "auto",
-    max_iterations: int = 10,
-    max_hours: float = 0.0,
-    cooldown: int = 5,
-) -> int:
-    """Execute the RALPH harness. Returns the harness exit code."""
-    paths = _resolve_state(worktree, state_dir_name)
-    _load_campaign(paths.campaign)  # fail fast if not initialised
-
+def _ralph_path(paths: CampaignPaths) -> Path:
     ralph = paths.state_dir / "ralph.sh"
     if not ralph.exists():
         raise LoopError(f"missing harness: {ralph}; re-run `moses loop init`")
+    return ralph
 
+
+def _loop_env(
+    paths: CampaignPaths, engine: str, max_iterations: int, max_hours: float, cooldown: int
+) -> dict:
     env = dict(os.environ)
     env.update(
         {
@@ -231,8 +230,53 @@ def loop_run(
             "MOSES_BIN": shutil.which("moses") or sys.executable,
         }
     )
+    return env
+
+
+def loop_run(
+    *,
+    worktree: str | Path,
+    state_dir_name: str = ".moses",
+    engine: str = "auto",
+    max_iterations: int = 10,
+    max_hours: float = 0.0,
+    cooldown: int = 5,
+) -> int:
+    """Execute the RALPH harness (blocking). Returns the harness exit code."""
+    paths = _resolve_state(worktree, state_dir_name)
+    _load_campaign(paths.campaign)  # fail fast if not initialised
+    ralph = _ralph_path(paths)
+    env = _loop_env(paths, engine, max_iterations, max_hours, cooldown)
     proc = subprocess.run(["bash", str(ralph)], cwd=str(paths.worktree), env=env)
     return proc.returncode
+
+
+def loop_spawn(
+    *,
+    worktree: str | Path,
+    state_dir_name: str = ".moses",
+    engine: str = "auto",
+    max_iterations: int = 10,
+    max_hours: float = 0.0,
+    cooldown: int = 5,
+) -> subprocess.Popen:
+    """Start the RALPH harness as a background process (non-blocking).
+
+    Returns the Popen handle; the caller supervises it and must terminate it on
+    exit. The harness writes its own loop.log, so stdout/stderr are discarded to
+    keep the terminal clean for the dashboard.
+    """
+    paths = _resolve_state(worktree, state_dir_name)
+    _load_campaign(paths.campaign)
+    ralph = _ralph_path(paths)
+    env = _loop_env(paths, engine, max_iterations, max_hours, cooldown)
+    return subprocess.Popen(
+        ["bash", str(ralph)],
+        cwd=str(paths.worktree),
+        env=env,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
 
 
 # --------------------------------------------------------------------------- #
