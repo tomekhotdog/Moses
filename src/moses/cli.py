@@ -9,6 +9,7 @@ Commands:
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -139,6 +140,72 @@ def loop_run_cmd(worktree, state_dir, engine, max_iterations, max_hours, cooldow
         cooldown=cooldown,
     )
     sys.exit(code)
+
+
+@loop.command("watch")
+@click.argument("target", required=False, type=click.Path(exists=True))
+@click.option("--worktree", "worktree", default=None, type=click.Path(),
+              help="Existing campaign worktree (skip auto-init).")
+@click.option("--target-path", default="src/", help="Path within the repo to judge.")
+@click.option("--in-place", is_flag=True, help="Auto-init onto the current branch.")
+@click.option("--state-dir", "state_dir", default=".moses")
+@click.option("--engine", default="auto", type=click.Choice(["auto", "claude", "codex"]))
+@click.option("--max-iterations", default=10, type=int)
+@click.option("--max-hours", default=0.0, type=float)
+@click.option("--cooldown", default=5, type=int)
+def loop_watch_cmd(target, worktree, target_path, in_place, state_dir, engine,
+                   max_iterations, max_hours, cooldown):
+    """Launch a campaign and watch it live in a terminal dashboard.
+
+    Pass TARGET to auto-init a campaign (worktree mode unless --in-place), or
+    --worktree to attach to an existing one.
+    """
+    from . import loop_runner
+    from .loop_runner import LoopError, default_worktree_path, loop_init, _resolve_state
+
+    if worktree is None:
+        if target is None:
+            raise SystemExit("provide TARGET (to auto-init) or --worktree (existing campaign)")
+        wt = target if in_place else default_worktree_path(target)
+        paths = _resolve_state(wt, state_dir)
+        if not paths.campaign.exists():
+            try:
+                click.echo(loop_init(
+                    target=target, target_path=target_path,
+                    state_dir_name=state_dir, in_place=in_place,
+                ))
+            except LoopError as exc:
+                raise SystemExit(str(exc))
+        worktree = str(paths.worktree)
+
+    paths = _resolve_state(worktree, state_dir)
+    if not paths.campaign.exists():
+        raise SystemExit(f"no campaign at {paths.campaign}; run `moses loop init` first")
+
+    try:
+        from .loop_tui import MosesLoopApp
+    except ImportError:
+        raise SystemExit("The loop dashboard needs Textual:\n  uv pip install 'moses[tui]'")
+
+    proc = loop_runner.loop_spawn(
+        worktree=worktree, state_dir_name=state_dir, engine=engine,
+        max_iterations=max_iterations, max_hours=max_hours, cooldown=cooldown,
+    )
+    try:
+        MosesLoopApp(state_dir=paths.state_dir, max_iterations=max_iterations,
+                     process=proc).run()
+    finally:
+        # Always reap the child to avoid a zombie — terminate first only if it is
+        # still running; then wait() regardless of whether it already exited.
+        if proc.poll() is None:
+            proc.terminate()
+            try:
+                proc.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                proc.wait()
+        else:
+            proc.wait()
 
 
 @loop.command("check")
