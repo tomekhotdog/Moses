@@ -60,4 +60,4 @@ async def test_app_mounts_and_renders(tmp_path):
         await pilot.pause()
         from textual.widgets import Static
         stats = app.query_one("#stats", Static)
-        assert "baseline" in str(stats.renderable)
+        assert "baseline" in str(stats.content)

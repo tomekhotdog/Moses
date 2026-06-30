@@ -22,15 +22,6 @@ from textual.widgets import DataTable, Footer, Header, Log, Static
 from .loop_watch import CampaignState, read_log, read_state
 
 
-class _Panel(Static):
-    """Static that re-exposes ``renderable`` (removed in Textual 8.x) as the
-    current content, so render output stays introspectable."""
-
-    @property
-    def renderable(self) -> object:
-        return self.content
-
-
 def bar(score: float, width: int = 20) -> str:
     filled = int(round(max(0.0, min(100.0, score)) / 100 * width))
     return "█" * filled + "·" * (width - filled)
@@ -113,7 +104,7 @@ class MosesLoopApp(App):
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
-        yield _Panel(id="stats")
+        yield Static(id="stats")
         with Horizontal(id="middle"):
             with Vertical(id="left"):
                 yield DataTable(id="iterations")
