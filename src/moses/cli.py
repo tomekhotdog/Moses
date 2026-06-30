@@ -148,11 +148,12 @@ def loop_run_cmd(worktree, state_dir, engine, max_iterations, max_hours, cooldow
               help="Existing campaign worktree (skip auto-init).")
 @click.option("--target-path", default="src/", help="Path within the repo to judge.")
 @click.option("--in-place", is_flag=True, help="Auto-init onto the current branch.")
-@click.option("--state-dir", "state_dir", default=".moses")
-@click.option("--engine", default="auto", type=click.Choice(["auto", "claude", "codex"]))
-@click.option("--max-iterations", default=10, type=int)
-@click.option("--max-hours", default=0.0, type=float)
-@click.option("--cooldown", default=5, type=int)
+@click.option("--state-dir", "state_dir", default=".moses", help="State dir name.")
+@click.option("--engine", default="auto", type=click.Choice(["auto", "claude", "codex"]),
+              help="Coding engine for each iteration.")
+@click.option("--max-iterations", default=10, type=int, help="Max iterations to run.")
+@click.option("--max-hours", default=0.0, type=float, help="Wall-clock budget (0 = unlimited).")
+@click.option("--cooldown", default=5, type=int, help="Seconds to sleep between iterations.")
 def loop_watch_cmd(target, worktree, target_path, in_place, state_dir, engine,
                    max_iterations, max_hours, cooldown):
     """Launch a campaign and watch it live in a terminal dashboard.
