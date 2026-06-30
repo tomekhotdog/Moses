@@ -101,3 +101,33 @@ def test_commandment_parsed_from_commit_subject_absent_without_git(tmp_path):
     sd = tmp_path / ".moses"
     _write(sd, _campaign())
     assert all(r.commandment == "—" for r in read_state(sd).rows)
+
+
+def test_truthy_non_dict_campaign_does_not_raise(tmp_path):
+    sd = tmp_path / ".moses"
+    sd.mkdir()
+    (sd / "campaign.json").write_text("[1, 2, 3]", encoding="utf-8")
+    s = read_state(sd)  # must not raise
+    assert s.exists is False
+
+
+def test_non_dict_verdict_does_not_raise(tmp_path):
+    sd = tmp_path / ".moses"
+    _write(sd, _campaign())
+    (sd / "verdict.json").write_text("[1, 2, 3]", encoding="utf-8")
+    s = read_state(sd)  # must not raise via _weakest_rules
+    assert s.weakest_rules == ()
+
+
+def test_partial_iteration_missing_score_after(tmp_path):
+    sd = tmp_path / ".moses"
+    campaign = _campaign()
+    campaign["iterations"].append({
+        "iteration": 3, "score_before": 84.0, "score_after": None,
+        "violations_before": 90, "violations_after": None, "commit": None,
+    })
+    _write(sd, campaign)
+    s = read_state(sd)  # must not raise on a mid-append iteration
+    assert s.scores == (80.0, 82.0, 84.0)  # None score_after skipped
+    assert s.summary.iterations == 3
+    assert s.summary.improving == 2  # only the two complete improving iters

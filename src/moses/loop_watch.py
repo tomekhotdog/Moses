@@ -16,6 +16,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 _BLOCKS = "▁▂▃▄▅▆▇█"
+# matches "C25", "C4" — the Commandment a commit subject targets
 _CMD_RE = re.compile(r"\bC(\d+)\b")
 
 
@@ -35,7 +36,7 @@ def sparkline(values: list[float]) -> str:
 
 @dataclass(frozen=True)
 class RuleScore:
-    number: int
+    number: int | None
     name: str
     score: float
 
@@ -116,15 +117,23 @@ class CampaignState:
 
 def _read_json(path: Path) -> dict | None:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return None
+    return data if isinstance(data, dict) else None
+
+
+def _mtime(p: Path) -> float:
+    try:
+        return p.stat().st_mtime
+    except OSError:
+        return 0.0
 
 
 def _git(args: list[str], cwd: Path) -> str:
     try:
         proc = subprocess.run(
-            ["git", *args], cwd=str(cwd), capture_output=True, text=True, timeout=5
+            ["git", *args], cwd=cwd, capture_output=True, text=True, timeout=5
         )
         return proc.stdout if proc.returncode == 0 else ""
     except (OSError, subprocess.SubprocessError):
@@ -132,12 +141,19 @@ def _git(args: list[str], cwd: Path) -> str:
 
 
 def _commit_subjects(commits: list[str | None], worktree: Path) -> dict[str, str]:
-    """Map each commit -> its subject line. Robust to missing commits / no repo."""
+    """Map each commit -> its subject line in a single git call.
+
+    Robust to missing commits / no repo: a failed git call yields no subjects.
+    """
     subjects: dict[str, str] = {}
-    for c in [c for c in commits if c]:
-        out = _git(["show", "-s", "--format=%s", c], worktree).strip()
-        if out:
-            subjects[c] = out.splitlines()[0]
+    hashes = [c for c in commits if c]
+    if not hashes:
+        return subjects
+    out = _git(["log", "--no-walk", "--format=%H%x09%s", *hashes], worktree)
+    for line in out.splitlines():
+        h, _, subj = line.partition("\t")
+        if h and subj:
+            subjects[h.strip()] = subj.strip()
     return subjects
 
 
@@ -156,7 +172,7 @@ def _weakest_rules(state_dir: Path, k: int = 6) -> tuple[RuleScore, ...]:
     existing = [p for p in candidates if p.exists()]
     if not existing:
         return ()
-    latest = max(existing, key=lambda p: p.stat().st_mtime)
+    latest = max(existing, key=_mtime)
     verdict = _read_json(latest)
     if not verdict:
         return ()
@@ -172,7 +188,7 @@ def _weakest_rules(state_dir: Path, k: int = 6) -> tuple[RuleScore, ...]:
 def read_state(state_dir: str | Path) -> CampaignState:
     """Snapshot the campaign at ``state_dir``. Never raises on malformed input."""
     state_dir = Path(state_dir)
-    worktree = state_dir.parent
+    worktree = state_dir.parent  # the state dir is always .moses/ inside the campaign worktree
     log_tail = read_log(state_dir)[-200:]
     campaign = _read_json(state_dir / "campaign.json")
     if not campaign:
