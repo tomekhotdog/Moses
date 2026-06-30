@@ -99,6 +99,7 @@ moses judge <path> [--config f] [--enable N] [--disable N] [--exclude glob]
 moses prompt <N>                       # curated refactoring brief for Commandment N
 moses loop init <repo> [--in-place] [--target-path src/] [--branch b]
 moses loop run  --worktree <wt> [--engine auto|claude|codex] [--max-iterations N]
+moses loop watch <repo> [--in-place] [--max-iterations N]   # launch + live Textual dashboard
 moses loop check  --worktree <wt>      # validate campaign.json
 moses loop status --worktree <wt>      # terse progress summary
 moses --version

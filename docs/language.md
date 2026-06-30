@@ -37,6 +37,7 @@ use them consistently in code, docs, and reports.
 | **TinyClass** | A class with ≤1 non-dunder method (excluding dataclasses/Enums/NamedTuples/Exceptions/Protocols). A C30 over-engineering signal. |
 | **DelegationWrapper** | A class that stores an injected object and forwards ≥3 public methods to it by the same name — a layer adding no abstraction. The C4 signal. |
 | **CommandmentsConfig** | The master scoring config: every rule's RuleConfig plus the Weights. The single object calibration tunes and serializes; carried on `Config.commandments`. |
+| **Dashboard** | The live Textual view of a running campaign (`moses loop watch`); a read-only renderer of `campaign.json` / `loop.log`. Distinct from the headless `moses loop run`. |
 
 ## Status vocabulary
 

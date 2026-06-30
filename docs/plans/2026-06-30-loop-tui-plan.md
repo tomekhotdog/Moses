@@ -55,7 +55,7 @@ git commit -m "build(tui): add optional textual extra + async test mode"
 
 ---
 
-### Task 2: `CampaignState` — the pure campaign reader
+### Task 2: `CampaignState` — the pure campaign reader  ✅ DONE (c908350, hardened 355aff2)
 
 **Depends on:** none
 
@@ -427,7 +427,7 @@ git commit -m "feat(loop): CampaignState reader for live dashboard"
 
 ---
 
-### Task 3: Non-blocking launcher (`loop_spawn`) + shared env
+### Task 3: Non-blocking launcher (`loop_spawn`) + shared env  ✅ DONE (000c20c, hardened 23313f7)
 
 **Depends on:** none (can run parallel with Task 2)
 
@@ -599,7 +599,7 @@ git commit -m "feat(loop): non-blocking loop_spawn + shared env helper"
 
 ---
 
-### Task 4: `MosesLoopApp` — the Textual dashboard
+### Task 4: `MosesLoopApp` — the Textual dashboard  ✅ DONE (bc9db3c; _Panel removed 9cc379c; hardened ea07cf9)
 
 **Depends on:** Task 1 (textual), Task 2 (CampaignState)
 
@@ -845,7 +845,7 @@ git commit -m "feat(loop): Textual dashboard app (MosesLoopApp)"
 
 ---
 
-### Task 5: `moses loop watch` CLI command
+### Task 5: `moses loop watch` CLI command  ✅ DONE (51d4f66; help text beb2438)
 
 **Depends on:** Task 2, Task 3, Task 4
 

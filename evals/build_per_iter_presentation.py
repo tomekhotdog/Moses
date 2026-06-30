@@ -16,20 +16,7 @@ import argparse
 import json
 from pathlib import Path
 
-_BLOCKS = "▁▂▃▄▅▆▇█"
-
-
-def sparkline(values: list[float]) -> str:
-    if not values:
-        return ""
-    lo, hi = min(values), max(values)
-    if hi - lo < 1e-9:
-        return _BLOCKS[0] * len(values)
-    out = []
-    for v in values:
-        idx = int((v - lo) / (hi - lo) * (len(_BLOCKS) - 1))
-        out.append(_BLOCKS[idx])
-    return "".join(out)
+from moses.loop_watch import sparkline  # single source of truth
 
 
 def build(campaign: dict) -> str:
