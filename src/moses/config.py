@@ -11,7 +11,7 @@ import yaml
 # Calibrated via the offline optimizer (see evals/calibrate.py); renormalized
 # from tuned floats to integers summing to 100 (largest-remainder rounding).
 WEIGHTS: dict[int, int] = {
-    1: 3,
+    1: 2,
     2: 4,
     3: 2,
     4: 3,
@@ -22,11 +22,11 @@ WEIGHTS: dict[int, int] = {
     9: 3,
     10: 2,
     11: 3,
-    12: 10,
+    12: 16,
     13: 3,
     14: 1,
     15: 1,
-    16: 12,
+    16: 5,
     17: 1,
     18: 2,
     19: 3,
@@ -37,10 +37,10 @@ WEIGHTS: dict[int, int] = {
     24: 4,
     25: 3,
     26: 3,
-    27: 4,
+    27: 1,
     28: 3,
     29: 2,
-    30: 2,
+    30: 7,
     31: 2,
 }
 
@@ -60,8 +60,10 @@ def _default_rule_configs() -> dict:
 
 
 # The MVP enabled-set. Mutation (#20) is in the set but only runs under --deep.
+# C30 (pattern parsimony) was promoted after corpus validation showed it cleanly
+# flags class-based over-engineering with no false positives. C4/C8 stay out.
 MVP_COMMANDMENTS: set[int] = {
-    1, 2, 3, 5, 6, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 27, 29, 31,
+    1, 2, 3, 5, 6, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 27, 29, 30, 31,
 }
 
 

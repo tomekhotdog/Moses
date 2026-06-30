@@ -144,3 +144,24 @@ over-engineered solutions vs clean controls:
   until we have codebases that actually contain wrappers.
 - **Gap:** C30 is class-scoped, so functional over-engineering (2022_q11's lambda
   blob, judge 7) is invisible to it — that belongs to C12 (cognitive complexity).
+
+## Recalibration after promoting C30 to MVP (2026-06-30)
+
+Added C30 to `MVP_COMMANDMENTS`, re-scored the corpus, re-ran the split-aware
+optimizer, and applied the tuned gamma + renormalized integer weights to
+`config.py`. C4 stayed out of MVP (inert on this corpus).
+
+Mean per-question Spearman (Moses vs Judge):
+
+| Split | pre-C30 tuned | C30-in-MVP tuned | applied (int weights) |
+|---|---|---|---|
+| train | 0.507 | 0.651 | 0.637 |
+| validation | 0.343 | 0.583 | 0.583 |
+| test | 0.778 | 0.804 | 0.804 |
+
+Validation rose the most (0.34 → 0.58) — the gain generalizes, it is not train
+overfitting. Optimizer moves applied: C30 2→7, C12 10→16 (up); C16 12→5, C27 4→1,
+C1 3→2 (down); gamma stayed 0.75. Integer renormalization (largest-remainder, no
+rule zeroed) costs only ~0.014 on train, 0 on val/test. Self-host 83.2 (A); C30
+measured at 100 on Moses's own code (no false positive). Full suite green
+(171 passed, 1 skipped).

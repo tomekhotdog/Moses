@@ -3,8 +3,8 @@
     "2022_q11": {
       "online_1.py": {
         "loc": 110,
-        "moses_score": 30.94,
-        "grade": "E",
+        "moses_score": 46.4,
+        "grade": "D",
         "commandments": {
           "16": 0.0,
           "17": 100.0,
@@ -15,7 +15,7 @@
       },
       "online_2.py": {
         "loc": 72,
-        "moses_score": 83.15,
+        "moses_score": 84.89,
         "grade": "A",
         "commandments": {
           "1": 51.42857142857143,
@@ -39,7 +39,7 @@
       },
       "synth_clean.py": {
         "loc": 68,
-        "moses_score": 87.91,
+        "moses_score": 91.07,
         "grade": "A",
         "commandments": {
           "1": 42.5,
@@ -67,7 +67,7 @@
       },
       "synth_primitive.py": {
         "loc": 50,
-        "moses_score": 87.9,
+        "moses_score": 87.68,
         "grade": "A",
         "commandments": {
           "1": 71.42857142857143,
@@ -90,7 +90,7 @@
       },
       "tomek.py": {
         "loc": 133,
-        "moses_score": 86.7,
+        "moses_score": 82.39,
         "grade": "A",
         "commandments": {
           "1": 28.297872340425535,
@@ -113,6 +113,7 @@
           "25": 0.0,
           "27": 33.333333333333336,
           "29": 100.0,
+          "30": 10.0,
           "31": 100.0
         }
       }
@@ -120,7 +121,7 @@
     "2022_q2": {
       "online_1.py": {
         "loc": 79,
-        "moses_score": 85.97,
+        "moses_score": 88.43,
         "grade": "A",
         "commandments": {
           "1": 65.83333333333333,
@@ -148,8 +149,8 @@
       },
       "online_2.py": {
         "loc": 80,
-        "moses_score": 65.05,
-        "grade": "B",
+        "moses_score": 81.13,
+        "grade": "A",
         "commandments": {
           "1": 47.05882352941177,
           "3": 100.0,
@@ -171,8 +172,8 @@
       },
       "synth_clean.py": {
         "loc": 81,
-        "moses_score": 75.07,
-        "grade": "B",
+        "moses_score": 84.93,
+        "grade": "A",
         "commandments": {
           "1": 42.631578947368425,
           "2": 100.0,
@@ -199,7 +200,7 @@
       },
       "synth_primitive.py": {
         "loc": 76,
-        "moses_score": 75.88,
+        "moses_score": 66.48,
         "grade": "B",
         "commandments": {
           "1": 100.0,
@@ -222,7 +223,7 @@
       },
       "tomek.py": {
         "loc": 98,
-        "moses_score": 74.96,
+        "moses_score": 76.95,
         "grade": "B",
         "commandments": {
           "1": 46.66666666666667,
@@ -244,6 +245,7 @@
           "25": 0.0,
           "27": 78.4313725490196,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       }
@@ -251,7 +253,7 @@
     "2022_q8": {
       "online_1.py": {
         "loc": 99,
-        "moses_score": 81.11,
+        "moses_score": 92.08,
         "grade": "A",
         "commandments": {
           "1": 82.5,
@@ -274,13 +276,14 @@
           "25": 100.0,
           "27": 74.07407407407408,
           "29": 100.0,
+          "30": 100.0,
           "31": 82.5
         }
       },
       "online_2.py": {
         "loc": 55,
-        "moses_score": 66.03,
-        "grade": "B",
+        "moses_score": 82.33,
+        "grade": "A",
         "commandments": {
           "1": 32.35294117647059,
           "2": 100.0,
@@ -301,12 +304,13 @@
           "25": 0.0,
           "27": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 92.5
         }
       },
       "synth_clean.py": {
         "loc": 76,
-        "moses_score": 94.5,
+        "moses_score": 96.05,
         "grade": "A",
         "commandments": {
           "1": 34.54545454545455,
@@ -329,12 +333,13 @@
           "25": 100.0,
           "27": 78.94736842105263,
           "29": 100.0,
+          "30": 100.0,
           "31": 95.0
         }
       },
       "synth_mid.py": {
         "loc": 48,
-        "moses_score": 92.29,
+        "moses_score": 93.14,
         "grade": "A",
         "commandments": {
           "1": 26.666666666666664,
@@ -357,7 +362,7 @@
       },
       "synth_primitive.py": {
         "loc": 83,
-        "moses_score": 57.26,
+        "moses_score": 57.98,
         "grade": "C",
         "commandments": {
           "1": 100.0,
@@ -380,7 +385,7 @@
       },
       "tomek.py": {
         "loc": 68,
-        "moses_score": 70.76,
+        "moses_score": 74.1,
         "grade": "B",
         "commandments": {
           "1": 20.606060606060606,
@@ -401,6 +406,7 @@
           "25": 11.764705882352942,
           "27": 57.4712643678161,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       }
@@ -408,7 +414,7 @@
     "2023_q1": {
       "online_1.py": {
         "loc": 28,
-        "moses_score": 92.37,
+        "moses_score": 97.31,
         "grade": "A",
         "commandments": {
           "1": 40.0,
@@ -431,12 +437,13 @@
           "25": 100.0,
           "27": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "online_2.py": {
         "loc": 35,
-        "moses_score": 90.81,
+        "moses_score": 95.44,
         "grade": "A",
         "commandments": {
           "1": 87.5,
@@ -460,7 +467,7 @@
       },
       "synth_clean.py": {
         "loc": 52,
-        "moses_score": 85.61,
+        "moses_score": 90.29,
         "grade": "A",
         "commandments": {
           "1": 52.0,
@@ -484,7 +491,7 @@
       },
       "synth_primitive.py": {
         "loc": 49,
-        "moses_score": 85.44,
+        "moses_score": 84.72,
         "grade": "A",
         "commandments": {
           "1": 54.44444444444444,
@@ -507,7 +514,7 @@
       },
       "tomek.py": {
         "loc": 46,
-        "moses_score": 84.88,
+        "moses_score": 89.29,
         "grade": "A",
         "commandments": {
           "1": 65.71428571428571,
@@ -533,8 +540,8 @@
     "2023_q11": {
       "online_1.py": {
         "loc": 14,
-        "moses_score": 83.33,
-        "grade": "A",
+        "moses_score": 72.73,
+        "grade": "B",
         "commandments": {
           "16": 100.0,
           "17": 100.0,
@@ -544,7 +551,7 @@
       },
       "online_2.py": {
         "loc": 48,
-        "moses_score": 91.65,
+        "moses_score": 92.29,
         "grade": "A",
         "commandments": {
           "1": 36.92307692307693,
@@ -567,7 +574,7 @@
       },
       "synth_clean.py": {
         "loc": 66,
-        "moses_score": 91.8,
+        "moses_score": 93.46,
         "grade": "A",
         "commandments": {
           "1": 55.0,
@@ -595,7 +602,7 @@
       },
       "synth_primitive.py": {
         "loc": 84,
-        "moses_score": 52.45,
+        "moses_score": 53.59,
         "grade": "C",
         "commandments": {
           "1": 100.0,
@@ -618,7 +625,7 @@
       },
       "tomek.py": {
         "loc": 58,
-        "moses_score": 76.23,
+        "moses_score": 78.74,
         "grade": "B",
         "commandments": {
           "1": 23.2,
@@ -640,6 +647,7 @@
           "25": 31.034482758620697,
           "27": 71.42857142857143,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       }
@@ -647,7 +655,7 @@
     "2023_q2": {
       "online_1.py": {
         "loc": 31,
-        "moses_score": 91.1,
+        "moses_score": 92.01,
         "grade": "A",
         "commandments": {
           "1": 77.5,
@@ -668,12 +676,13 @@
           "24": 60.0,
           "25": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "online_2.py": {
         "loc": 66,
-        "moses_score": 88.15,
+        "moses_score": 89.59,
         "grade": "A",
         "commandments": {
           "1": 100.0,
@@ -699,7 +708,7 @@
       },
       "synth_clean.py": {
         "loc": 61,
-        "moses_score": 90.81,
+        "moses_score": 92.82,
         "grade": "A",
         "commandments": {
           "1": 30.5,
@@ -727,8 +736,8 @@
       },
       "synth_primitive.py": {
         "loc": 60,
-        "moses_score": 73.96,
-        "grade": "B",
+        "moses_score": 64.3,
+        "grade": "C",
         "commandments": {
           "1": 100.0,
           "3": 100.0,
@@ -750,7 +759,7 @@
       },
       "tomek.py": {
         "loc": 70,
-        "moses_score": 92.21,
+        "moses_score": 84.26,
         "grade": "A",
         "commandments": {
           "1": 31.818181818181817,
@@ -773,6 +782,7 @@
           "25": 0.0,
           "27": 83.33333333333334,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       }
@@ -780,7 +790,7 @@
     "2023_q3": {
       "online_1.py": {
         "loc": 81,
-        "moses_score": 75.82,
+        "moses_score": 67.08,
         "grade": "B",
         "commandments": {
           "1": 100.0,
@@ -803,8 +813,8 @@
       },
       "online_2.py": {
         "loc": 88,
-        "moses_score": 40.35,
-        "grade": "D",
+        "moses_score": 60.52,
+        "grade": "C",
         "commandments": {
           "16": 0.0,
           "17": 100.0,
@@ -815,7 +825,7 @@
       },
       "synth_clean.py": {
         "loc": 94,
-        "moses_score": 95.79,
+        "moses_score": 96.37,
         "grade": "A",
         "commandments": {
           "1": 72.3076923076923,
@@ -843,7 +853,7 @@
       },
       "synth_primitive.py": {
         "loc": 69,
-        "moses_score": 55.15,
+        "moses_score": 58.22,
         "grade": "C",
         "commandments": {
           "1": 98.57142857142858,
@@ -866,7 +876,7 @@
       },
       "tomek.py": {
         "loc": 69,
-        "moses_score": 90.12,
+        "moses_score": 84.65,
         "grade": "A",
         "commandments": {
           "1": 28.75,
@@ -889,6 +899,7 @@
           "25": 71.01449275362319,
           "27": 18.51851851851852,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       }
@@ -896,8 +907,8 @@
     "2023_q5": {
       "online_1.py": {
         "loc": 98,
-        "moses_score": 62.8,
-        "grade": "C",
+        "moses_score": 76.67,
+        "grade": "B",
         "commandments": {
           "1": 28.0,
           "3": 100.0,
@@ -920,7 +931,7 @@
       },
       "online_2.py": {
         "loc": 79,
-        "moses_score": 93.36,
+        "moses_score": 85.03,
         "grade": "A",
         "commandments": {
           "1": 35.90909090909091,
@@ -943,12 +954,13 @@
           "25": 24.050632911392412,
           "27": 92.5925925925926,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       },
       "synth_clean.py": {
         "loc": 102,
-        "moses_score": 93.68,
+        "moses_score": 94.91,
         "grade": "A",
         "commandments": {
           "1": 40.8,
@@ -976,7 +988,7 @@
       },
       "synth_primitive.py": {
         "loc": 74,
-        "moses_score": 77.79,
+        "moses_score": 68.47,
         "grade": "B",
         "commandments": {
           "1": 100.0,
@@ -999,7 +1011,7 @@
       },
       "tomek.py": {
         "loc": 119,
-        "moses_score": 89.21,
+        "moses_score": 88.79,
         "grade": "A",
         "commandments": {
           "1": 28.333333333333336,
@@ -1022,6 +1034,7 @@
           "25": 15.966386554621849,
           "27": 60.606060606060616,
           "29": 100.0,
+          "30": 62.5,
           "31": 100.0
         }
       }
@@ -1029,7 +1042,7 @@
     "2023_q7": {
       "online_1.py": {
         "loc": 45,
-        "moses_score": 66.09,
+        "moses_score": 79.54,
         "grade": "B",
         "commandments": {
           "1": 45.0,
@@ -1050,12 +1063,13 @@
           "24": 0.0,
           "25": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "online_2.py": {
         "loc": 85,
-        "moses_score": 91.91,
+        "moses_score": 92.62,
         "grade": "A",
         "commandments": {
           "1": 85.0,
@@ -1077,12 +1091,13 @@
           "24": 78.94736842105263,
           "25": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 95.0
         }
       },
       "synth_clean.py": {
         "loc": 81,
-        "moses_score": 91.02,
+        "moses_score": 93.26,
         "grade": "A",
         "commandments": {
           "1": 57.857142857142854,
@@ -1110,7 +1125,7 @@
       },
       "synth_mid.py": {
         "loc": 52,
-        "moses_score": 90.58,
+        "moses_score": 91.18,
         "grade": "A",
         "commandments": {
           "1": 37.142857142857146,
@@ -1133,7 +1148,7 @@
       },
       "synth_primitive.py": {
         "loc": 71,
-        "moses_score": 66.23,
+        "moses_score": 76.74,
         "grade": "B",
         "commandments": {
           "1": 54.61538461538461,
@@ -1156,7 +1171,7 @@
       },
       "tomek.py": {
         "loc": 161,
-        "moses_score": 74.48,
+        "moses_score": 75.64,
         "grade": "B",
         "commandments": {
           "1": 59.629629629629626,
@@ -1178,6 +1193,7 @@
           "25": 0.0,
           "27": 100.0,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       }
@@ -1185,7 +1201,7 @@
     "2024_q10": {
       "online_1.py": {
         "loc": 125,
-        "moses_score": 96.0,
+        "moses_score": 90.58,
         "grade": "A",
         "commandments": {
           "1": 54.34782608695652,
@@ -1207,13 +1223,14 @@
           "24": 100.0,
           "25": 68.0,
           "29": 100.0,
+          "30": 25.0,
           "31": 93.75
         }
       },
       "online_2.py": {
         "loc": 60,
-        "moses_score": 69.28,
-        "grade": "B",
+        "moses_score": 81.86,
+        "grade": "A",
         "commandments": {
           "1": 40.0,
           "3": 100.0,
@@ -1236,7 +1253,7 @@
       },
       "synth_clean.py": {
         "loc": 76,
-        "moses_score": 95.36,
+        "moses_score": 96.23,
         "grade": "A",
         "commandments": {
           "1": 34.54545454545455,
@@ -1259,12 +1276,13 @@
           "25": 73.68421052631578,
           "27": 100.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "synth_mid.py": {
         "loc": 42,
-        "moses_score": 93.79,
+        "moses_score": 94.59,
         "grade": "A",
         "commandments": {
           "1": 32.30769230769231,
@@ -1287,8 +1305,8 @@
       },
       "synth_primitive.py": {
         "loc": 65,
-        "moses_score": 66.05,
-        "grade": "B",
+        "moses_score": 64.36,
+        "grade": "C",
         "commandments": {
           "1": 65.0,
           "2": 100.0,
@@ -1308,12 +1326,13 @@
           "24": 100.0,
           "25": 38.46153846153847,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       },
       "tomek.py": {
         "loc": 90,
-        "moses_score": 93.2,
+        "moses_score": 84.83,
         "grade": "A",
         "commandments": {
           "1": 33.333333333333336,
@@ -1336,6 +1355,7 @@
           "25": 33.33333333333333,
           "27": 95.23809523809524,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       }
@@ -1343,8 +1363,8 @@
     "2024_q12": {
       "online_1.py": {
         "loc": 95,
-        "moses_score": 70.04,
-        "grade": "B",
+        "moses_score": 81.32,
+        "grade": "A",
         "commandments": {
           "1": 67.85714285714286,
           "2": 100.0,
@@ -1364,13 +1384,14 @@
           "24": 75.0,
           "25": 15.78947368421052,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "online_2.py": {
         "loc": 135,
-        "moses_score": 71.1,
-        "grade": "B",
+        "moses_score": 83.5,
+        "grade": "A",
         "commandments": {
           "1": 37.5,
           "3": 100.0,
@@ -1392,7 +1413,7 @@
       },
       "synth_clean.py": {
         "loc": 111,
-        "moses_score": 96.81,
+        "moses_score": 97.5,
         "grade": "A",
         "commandments": {
           "1": 55.5,
@@ -1420,7 +1441,7 @@
       },
       "synth_primitive.py": {
         "loc": 69,
-        "moses_score": 85.36,
+        "moses_score": 80.96,
         "grade": "A",
         "commandments": {
           "1": 98.57142857142858,
@@ -1442,12 +1463,13 @@
           "24": 68.0,
           "25": 100.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 72.5
         }
       },
       "tomek.py": {
         "loc": 125,
-        "moses_score": 86.7,
+        "moses_score": 91.78,
         "grade": "A",
         "commandments": {
           "1": 40.32258064516129,
@@ -1470,6 +1492,7 @@
           "25": 36.0,
           "27": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       }
@@ -1477,8 +1500,8 @@
     "2024_q13": {
       "online_1.py": {
         "loc": 45,
-        "moses_score": 69.33,
-        "grade": "B",
+        "moses_score": 81.88,
+        "grade": "A",
         "commandments": {
           "1": 100.0,
           "2": 100.0,
@@ -1498,12 +1521,13 @@
           "24": 14.285714285714292,
           "25": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "online_2.py": {
         "loc": 54,
-        "moses_score": 88.66,
+        "moses_score": 89.06,
         "grade": "A",
         "commandments": {
           "1": 45.0,
@@ -1526,7 +1550,7 @@
       },
       "synth_clean.py": {
         "loc": 75,
-        "moses_score": 95.09,
+        "moses_score": 96.4,
         "grade": "A",
         "commandments": {
           "1": 57.69230769230769,
@@ -1554,8 +1578,8 @@
       },
       "synth_primitive.py": {
         "loc": 67,
-        "moses_score": 74.57,
-        "grade": "B",
+        "moses_score": 84.45,
+        "grade": "A",
         "commandments": {
           "1": 100.0,
           "2": 100.0,
@@ -1576,13 +1600,14 @@
           "24": 100.0,
           "25": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "tomek.py": {
         "loc": 56,
-        "moses_score": 71.18,
-        "grade": "B",
+        "moses_score": 86.26,
+        "grade": "A",
         "commandments": {
           "1": 31.11111111111111,
           "2": 100.0,
@@ -1604,6 +1629,7 @@
           "25": 0.0,
           "27": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       }
@@ -1611,8 +1637,8 @@
     "2024_q14": {
       "online_1.py": {
         "loc": 61,
-        "moses_score": 64.97,
-        "grade": "C",
+        "moses_score": 75.95,
+        "grade": "B",
         "commandments": {
           "1": 100.0,
           "2": 100.0,
@@ -1632,12 +1658,13 @@
           "24": 21.73913043478261,
           "25": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "online_2.py": {
         "loc": 67,
-        "moses_score": 90.69,
+        "moses_score": 89.71,
         "grade": "A",
         "commandments": {
           "1": 83.75,
@@ -1663,7 +1690,7 @@
       },
       "synth_clean.py": {
         "loc": 62,
-        "moses_score": 87.7,
+        "moses_score": 90.38,
         "grade": "A",
         "commandments": {
           "1": 38.75,
@@ -1691,7 +1718,7 @@
       },
       "synth_mid.py": {
         "loc": 50,
-        "moses_score": 90.58,
+        "moses_score": 90.09,
         "grade": "A",
         "commandments": {
           "1": 83.33333333333334,
@@ -1714,8 +1741,8 @@
       },
       "synth_primitive.py": {
         "loc": 55,
-        "moses_score": 89.77,
-        "grade": "A",
+        "moses_score": 79.24,
+        "grade": "B",
         "commandments": {
           "1": 100.0,
           "2": 100.0,
@@ -1736,12 +1763,13 @@
           "24": 57.142857142857146,
           "25": 0.0,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       },
       "tomek.py": {
         "loc": 83,
-        "moses_score": 88.83,
+        "moses_score": 81.95,
         "grade": "A",
         "commandments": {
           "1": 27.666666666666664,
@@ -1764,6 +1792,7 @@
           "25": 0.0,
           "27": 55.55555555555555,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       }
@@ -1771,7 +1800,7 @@
     "2024_q15": {
       "online_1.py": {
         "loc": 142,
-        "moses_score": 52.7,
+        "moses_score": 52.8,
         "grade": "C",
         "commandments": {
           "1": 100.0,
@@ -1794,7 +1823,7 @@
       },
       "online_2.py": {
         "loc": 149,
-        "moses_score": 53.07,
+        "moses_score": 58.93,
         "grade": "C",
         "commandments": {
           "1": 82.77777777777779,
@@ -1818,7 +1847,7 @@
       },
       "synth_clean.py": {
         "loc": 130,
-        "moses_score": 93.57,
+        "moses_score": 95.01,
         "grade": "A",
         "commandments": {
           "1": 72.22222222222223,
@@ -1846,7 +1875,7 @@
       },
       "synth_mid.py": {
         "loc": 97,
-        "moses_score": 85.4,
+        "moses_score": 81.33,
         "grade": "A",
         "commandments": {
           "1": 80.83333333333334,
@@ -1869,7 +1898,7 @@
       },
       "synth_primitive.py": {
         "loc": 138,
-        "moses_score": 71.07,
+        "moses_score": 78.6,
         "grade": "B",
         "commandments": {
           "1": 100.0,
@@ -1891,12 +1920,13 @@
           "24": 58.33333333333333,
           "25": 71.01449275362319,
           "29": 100.0,
+          "30": 100.0,
           "31": 90.0
         }
       },
       "tomek.py": {
         "loc": 167,
-        "moses_score": 66.31,
+        "moses_score": 66.61,
         "grade": "B",
         "commandments": {
           "1": 46.38888888888889,
@@ -1918,6 +1948,7 @@
           "25": 4.191616766467078,
           "27": 55.55555555555555,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       }
@@ -1925,7 +1956,7 @@
     "2024_q16": {
       "online_1.py": {
         "loc": 51,
-        "moses_score": 93.57,
+        "moses_score": 93.55,
         "grade": "A",
         "commandments": {
           "1": 85.0,
@@ -1948,7 +1979,7 @@
       },
       "online_2.py": {
         "loc": 118,
-        "moses_score": 76.75,
+        "moses_score": 68.53,
         "grade": "B",
         "commandments": {
           "1": 100.0,
@@ -1971,7 +2002,7 @@
       },
       "synth_clean.py": {
         "loc": 115,
-        "moses_score": 93.5,
+        "moses_score": 93.59,
         "grade": "A",
         "commandments": {
           "1": 52.27272727272727,
@@ -1999,7 +2030,7 @@
       },
       "synth_primitive.py": {
         "loc": 73,
-        "moses_score": 53.06,
+        "moses_score": 53.17,
         "grade": "C",
         "commandments": {
           "1": 100.0,
@@ -2022,7 +2053,7 @@
       },
       "tomek.py": {
         "loc": 127,
-        "moses_score": 92.8,
+        "moses_score": 84.3,
         "grade": "A",
         "commandments": {
           "1": 32.56410256410256,
@@ -2045,6 +2076,7 @@
           "25": 21.259842519685037,
           "27": 100.0,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       }
@@ -2052,7 +2084,7 @@
     "2024_q17": {
       "online_1.py": {
         "loc": 74,
-        "moses_score": 78.86,
+        "moses_score": 75.37,
         "grade": "B",
         "commandments": {
           "1": 82.22222222222221,
@@ -2073,12 +2105,13 @@
           "24": 42.85714285714286,
           "25": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "online_2.py": {
         "loc": 60,
-        "moses_score": 84.12,
+        "moses_score": 88.75,
         "grade": "A",
         "commandments": {
           "1": 75.0,
@@ -2101,12 +2134,13 @@
           "25": 0.0,
           "27": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "synth_clean.py": {
         "loc": 94,
-        "moses_score": 84.77,
+        "moses_score": 84.27,
         "grade": "A",
         "commandments": {
           "1": 67.14285714285714,
@@ -2132,7 +2166,7 @@
       },
       "synth_mid.py": {
         "loc": 67,
-        "moses_score": 77.45,
+        "moses_score": 73.14,
         "grade": "B",
         "commandments": {
           "1": 35.26315789473684,
@@ -2155,7 +2189,7 @@
       },
       "synth_primitive.py": {
         "loc": 61,
-        "moses_score": 74.71,
+        "moses_score": 66.5,
         "grade": "B",
         "commandments": {
           "1": 67.77777777777777,
@@ -2178,8 +2212,8 @@
       },
       "tomek.py": {
         "loc": 119,
-        "moses_score": 76.31,
-        "grade": "B",
+        "moses_score": 80.52,
+        "grade": "A",
         "commandments": {
           "1": 33.05555555555556,
           "2": 100.0,
@@ -2201,6 +2235,7 @@
           "25": 0.0,
           "27": 100.0,
           "29": 100.0,
+          "30": 25.0,
           "31": 100.0
         }
       }
@@ -2208,7 +2243,7 @@
     "2024_q20": {
       "online_1.py": {
         "loc": 75,
-        "moses_score": 66.34,
+        "moses_score": 78.27,
         "grade": "B",
         "commandments": {
           "1": 41.66666666666667,
@@ -2229,12 +2264,13 @@
           "24": 90.2439024390244,
           "25": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 72.5
         }
       },
       "online_2.py": {
         "loc": 98,
-        "moses_score": 82.42,
+        "moses_score": 80.78,
         "grade": "A",
         "commandments": {
           "1": 54.44444444444444,
@@ -2257,7 +2293,7 @@
       },
       "synth_clean.py": {
         "loc": 75,
-        "moses_score": 88.87,
+        "moses_score": 90.39,
         "grade": "A",
         "commandments": {
           "1": 57.69230769230769,
@@ -2281,7 +2317,7 @@
       },
       "synth_primitive.py": {
         "loc": 54,
-        "moses_score": 49.15,
+        "moses_score": 49.11,
         "grade": "D",
         "commandments": {
           "1": 100.0,
@@ -2304,7 +2340,7 @@
       },
       "tomek.py": {
         "loc": 84,
-        "moses_score": 85.18,
+        "moses_score": 90.31,
         "grade": "A",
         "commandments": {
           "1": 40.0,
@@ -2327,6 +2363,7 @@
           "25": 4.761904761904773,
           "27": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       }
@@ -2334,8 +2371,8 @@
     "2024_q21": {
       "online_1.py": {
         "loc": 266,
-        "moses_score": 64.34,
-        "grade": "C",
+        "moses_score": 65.7,
+        "grade": "B",
         "commandments": {
           "1": 43.60655737704918,
           "2": 100.0,
@@ -2356,13 +2393,14 @@
           "24": 58.62068965517241,
           "25": 0.0,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       },
       "online_2.py": {
         "loc": 86,
-        "moses_score": 70.65,
-        "grade": "B",
+        "moses_score": 83.7,
+        "grade": "A",
         "commandments": {
           "1": 45.26315789473684,
           "2": 100.0,
@@ -2382,13 +2420,14 @@
           "24": 41.666666666666664,
           "25": 53.48837209302325,
           "29": 100.0,
+          "30": 100.0,
           "31": 60.0
         }
       },
       "synth_clean.py": {
         "loc": 83,
-        "moses_score": 68.44,
-        "grade": "B",
+        "moses_score": 82.24,
+        "grade": "A",
         "commandments": {
           "1": 39.523809523809526,
           "3": 100.0,
@@ -2411,7 +2450,7 @@
       },
       "synth_mid.py": {
         "loc": 65,
-        "moses_score": 65.49,
+        "moses_score": 75.54,
         "grade": "B",
         "commandments": {
           "1": 59.09090909090909,
@@ -2434,7 +2473,7 @@
       },
       "synth_primitive.py": {
         "loc": 68,
-        "moses_score": 78.72,
+        "moses_score": 71.63,
         "grade": "B",
         "commandments": {
           "1": 97.14285714285714,
@@ -2457,8 +2496,8 @@
       },
       "tomek.py": {
         "loc": 128,
-        "moses_score": 72.28,
-        "grade": "B",
+        "moses_score": 82.06,
+        "grade": "A",
         "commandments": {
           "1": 34.5945945945946,
           "2": 100.0,
@@ -2485,7 +2524,7 @@
     "2024_q22": {
       "online_1.py": {
         "loc": 39,
-        "moses_score": 82.56,
+        "moses_score": 86.78,
         "grade": "A",
         "commandments": {
           "1": 65.0,
@@ -2509,8 +2548,8 @@
       },
       "online_2.py": {
         "loc": 49,
-        "moses_score": 69.55,
-        "grade": "B",
+        "moses_score": 81.28,
+        "grade": "A",
         "commandments": {
           "1": 100.0,
           "2": 100.0,
@@ -2530,12 +2569,13 @@
           "24": 60.0,
           "25": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "synth_clean.py": {
         "loc": 60,
-        "moses_score": 81.03,
+        "moses_score": 85.5,
         "grade": "A",
         "commandments": {
           "1": 40.0,
@@ -2559,7 +2599,7 @@
       },
       "synth_primitive.py": {
         "loc": 57,
-        "moses_score": 88.07,
+        "moses_score": 89.08,
         "grade": "A",
         "commandments": {
           "1": 81.42857142857142,
@@ -2581,12 +2621,13 @@
           "24": 23.076923076923066,
           "25": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "tomek.py": {
         "loc": 54,
-        "moses_score": 83.25,
+        "moses_score": 88.14,
         "grade": "A",
         "commandments": {
           "1": 27.0,
@@ -2612,7 +2653,7 @@
     "2024_q24": {
       "online_1.py": {
         "loc": 182,
-        "moses_score": 86.52,
+        "moses_score": 83.81,
         "grade": "A",
         "commandments": {
           "1": 100.0,
@@ -2636,7 +2677,7 @@
       },
       "online_2.py": {
         "loc": 93,
-        "moses_score": 88.06,
+        "moses_score": 88.0,
         "grade": "A",
         "commandments": {
           "1": 51.66666666666667,
@@ -2659,7 +2700,7 @@
       },
       "synth_clean.py": {
         "loc": 109,
-        "moses_score": 91.53,
+        "moses_score": 94.82,
         "grade": "A",
         "commandments": {
           "1": 54.5,
@@ -2687,8 +2728,8 @@
       },
       "synth_primitive.py": {
         "loc": 36,
-        "moses_score": 72.29,
-        "grade": "B",
+        "moses_score": 60.58,
+        "grade": "C",
         "commandments": {
           "1": 100.0,
           "3": 100.0,
@@ -2710,7 +2751,7 @@
       },
       "tomek.py": {
         "loc": 145,
-        "moses_score": 91.33,
+        "moses_score": 90.29,
         "grade": "A",
         "commandments": {
           "1": 45.3125,
@@ -2733,6 +2774,7 @@
           "25": 17.241379310344826,
           "27": 41.66666666666667,
           "29": 100.0,
+          "30": 50.0,
           "31": 100.0
         }
       }
@@ -2740,7 +2782,7 @@
     "2024_q4": {
       "online_1.py": {
         "loc": 39,
-        "moses_score": 92.99,
+        "moses_score": 93.37,
         "grade": "A",
         "commandments": {
           "1": 55.71428571428571,
@@ -2763,7 +2805,7 @@
       },
       "online_2.py": {
         "loc": 37,
-        "moses_score": 87.54,
+        "moses_score": 85.94,
         "grade": "A",
         "commandments": {
           "1": 61.66666666666667,
@@ -2784,12 +2826,13 @@
           "24": 76.47058823529412,
           "25": 100.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "synth_clean.py": {
         "loc": 65,
-        "moses_score": 95.33,
+        "moses_score": 96.33,
         "grade": "A",
         "commandments": {
           "1": 25.0,
@@ -2812,12 +2855,13 @@
           "25": 100.0,
           "27": 100.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "synth_mid.py": {
         "loc": 40,
-        "moses_score": 93.52,
+        "moses_score": 93.32,
         "grade": "A",
         "commandments": {
           "1": 36.36363636363636,
@@ -2840,8 +2884,8 @@
       },
       "synth_primitive.py": {
         "loc": 37,
-        "moses_score": 74.79,
-        "grade": "B",
+        "moses_score": 63.17,
+        "grade": "C",
         "commandments": {
           "1": 100.0,
           "3": 100.0,
@@ -2863,8 +2907,8 @@
       },
       "tomek.py": {
         "loc": 79,
-        "moses_score": 64.94,
-        "grade": "C",
+        "moses_score": 76.19,
+        "grade": "B",
         "commandments": {
           "1": 23.93939393939394,
           "2": 100.0,
@@ -2890,8 +2934,8 @@
     "2024_q6": {
       "online_1.py": {
         "loc": 43,
-        "moses_score": 86.58,
-        "grade": "A",
+        "moses_score": 77.55,
+        "grade": "B",
         "commandments": {
           "1": 100.0,
           "2": 100.0,
@@ -2913,12 +2957,13 @@
           "25": 0.0,
           "27": 55.55555555555555,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       },
       "online_2.py": {
         "loc": 55,
-        "moses_score": 92.62,
+        "moses_score": 93.06,
         "grade": "A",
         "commandments": {
           "1": 55.0,
@@ -2939,12 +2984,13 @@
           "24": 85.18518518518519,
           "25": 63.63636363636363,
           "29": 100.0,
+          "30": 100.0,
           "31": 97.5
         }
       },
       "synth_clean.py": {
         "loc": 87,
-        "moses_score": 95.25,
+        "moses_score": 96.24,
         "grade": "A",
         "commandments": {
           "1": 36.25,
@@ -2967,12 +3013,13 @@
           "25": 100.0,
           "27": 95.23809523809524,
           "29": 100.0,
+          "30": 100.0,
           "31": 100.0
         }
       },
       "synth_primitive.py": {
         "loc": 77,
-        "moses_score": 44.48,
+        "moses_score": 44.28,
         "grade": "D",
         "commandments": {
           "1": 100.0,
@@ -2995,7 +3042,7 @@
       },
       "tomek.py": {
         "loc": 155,
-        "moses_score": 93.07,
+        "moses_score": 84.4,
         "grade": "A",
         "commandments": {
           "1": 45.588235294117645,
@@ -3018,6 +3065,7 @@
           "25": 61.29032258064516,
           "27": 100.0,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       }
@@ -3025,8 +3073,8 @@
     "2024_q8": {
       "online_1.py": {
         "loc": 112,
-        "moses_score": 57.27,
-        "grade": "C",
+        "moses_score": 65.22,
+        "grade": "B",
         "commandments": {
           "1": 93.33333333333334,
           "2": 100.0,
@@ -3046,13 +3094,14 @@
           "24": 70.0,
           "25": 10.714285714285722,
           "29": 100.0,
+          "30": 100.0,
           "31": 57.5
         }
       },
       "online_2.py": {
         "loc": 40,
-        "moses_score": 63.59,
-        "grade": "C",
+        "moses_score": 68.81,
+        "grade": "B",
         "commandments": {
           "1": 100.0,
           "2": 100.0,
@@ -3072,12 +3121,13 @@
           "24": 85.71428571428572,
           "25": 100.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 85.0
         }
       },
       "synth_clean.py": {
         "loc": 72,
-        "moses_score": 91.54,
+        "moses_score": 91.91,
         "grade": "A",
         "commandments": {
           "1": 28.799999999999997,
@@ -3105,7 +3155,7 @@
       },
       "synth_mid.py": {
         "loc": 36,
-        "moses_score": 88.59,
+        "moses_score": 87.25,
         "grade": "A",
         "commandments": {
           "1": 45.0,
@@ -3128,7 +3178,7 @@
       },
       "synth_primitive.py": {
         "loc": 43,
-        "moses_score": 79.92,
+        "moses_score": 68.49,
         "grade": "B",
         "commandments": {
           "1": 100.0,
@@ -3151,7 +3201,7 @@
       },
       "tomek.py": {
         "loc": 96,
-        "moses_score": 94.77,
+        "moses_score": 86.26,
         "grade": "A",
         "commandments": {
           "1": 30.0,
@@ -3174,6 +3224,7 @@
           "25": 79.16666666666667,
           "27": 100.0,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       }
@@ -3181,7 +3232,7 @@
     "2024_q9": {
       "online_1.py": {
         "loc": 108,
-        "moses_score": 77.86,
+        "moses_score": 76.65,
         "grade": "B",
         "commandments": {
           "1": 100.0,
@@ -3203,12 +3254,13 @@
           "25": 81.48148148148148,
           "27": 0.0,
           "29": 100.0,
+          "30": 100.0,
           "31": 85.0
         }
       },
       "online_2.py": {
         "loc": 68,
-        "moses_score": 90.15,
+        "moses_score": 82.95,
         "grade": "A",
         "commandments": {
           "1": 100.0,
@@ -3231,12 +3283,13 @@
           "25": 0.0,
           "27": 27.777777777777775,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       },
       "synth_clean.py": {
         "loc": 88,
-        "moses_score": 91.18,
+        "moses_score": 94.72,
         "grade": "A",
         "commandments": {
           "1": 67.6923076923077,
@@ -3262,8 +3315,8 @@
       },
       "synth_primitive.py": {
         "loc": 70,
-        "moses_score": 70.66,
-        "grade": "B",
+        "moses_score": 58.89,
+        "grade": "C",
         "commandments": {
           "1": 100.0,
           "3": 100.0,
@@ -3285,7 +3338,7 @@
       },
       "tomek.py": {
         "loc": 105,
-        "moses_score": 95.49,
+        "moses_score": 86.16,
         "grade": "A",
         "commandments": {
           "1": 70.0,
@@ -3307,6 +3360,7 @@
           "25": 61.904761904761905,
           "27": 100.0,
           "29": 100.0,
+          "30": 0.0,
           "31": 100.0
         }
       }
