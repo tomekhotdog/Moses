@@ -17,7 +17,8 @@ dependencies = [
 [project.optional-dependencies]
 dup = ["pygount"]
 mutation = ["mutmut"]
-dev = ["pytest", "pytest-cov"]
+tui = ["textual>=8.0"]
+dev = ["pytest", "pytest-cov", "pytest-asyncio"]
 
 [project.scripts]
 moses = "moses.cli:main"
@@ -37,6 +38,7 @@ packages = ["src/moses"]
 testpaths = ["tests"]
 pythonpath = ["src", "."]
 addopts = "-q"
+asyncio_mode = "auto"
 
 [dependency-groups]
 dev = ["pytest", "pytest-cov"]
