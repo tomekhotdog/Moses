@@ -991,7 +991,7 @@ git commit -m "feat(cli): moses loop watch — launch + live dashboard"
 
 ---
 
-### Task 6: Behaviour preservation, docs, and offline-reporter dedup
+### Task 6: Behaviour preservation, docs, and offline-reporter dedup  ✅ DONE (716e283)
 
 **Depends on:** Task 2, Task 5
 
@@ -1050,6 +1050,12 @@ uv run python evals/build_per_iter_presentation.py ../Moses-moses-loop/.moses/ca
 Confirm with the user before launching (autonomous commits + claude subprocesses).
 
 ## Review
-- [ ] Code review requested
-- [ ] All feedback addressed
-- [ ] Final verification passed
+- [x] Code review requested — two-stage (spec + quality) per task; findings fixed
+- [x] All feedback addressed — reader hardened (non-dict JSON, stat TOCTOU, batched git); spawn detaches stdin + documents reap; `_Panel` test-shim removed; dashboard refresh made exception-safe + diff markup escaped
+- [x] Final verification passed — full suite 192 passed / 1 skipped; core imports need no textual; missing-textual path errors cleanly; real `loop init`→`read_state`→dashboard-mount e2e green on a throwaway repo
+
+## Post-plan self-run (gated) — NOT yet run
+
+`uv run moses loop watch . --target-path src/moses --max-iterations 10`
+Auto-inits a `Moses-moses-loop` worktree, spawns the RALPH harness (engine=claude),
+renders live. Requires explicit user go-ahead (autonomous commits + claude subprocesses).
