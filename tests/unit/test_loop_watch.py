@@ -176,3 +176,13 @@ def test_malformed_status_tolerated(tmp_path):
     _write(sd, _campaign())
     (sd / "status.json").write_text("{bad", encoding="utf-8")
     assert read_state(sd).current is None  # must not raise
+
+
+def test_baseline_rules_tolerates_garbage_values(tmp_path):
+    # a non-numeric baseline score must not break the reader's never-raise contract
+    sd = tmp_path / ".moses"
+    campaign = _campaign()
+    campaign["baseline"]["commandments"] = {"16": "oops", "12": 90.0}
+    _write(sd, campaign)
+    s = read_state(sd)  # must not raise
+    assert s.baseline_rules == {12: 90.0}  # bad entry skipped, good one kept

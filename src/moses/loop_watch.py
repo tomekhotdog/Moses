@@ -179,6 +179,21 @@ def read_log(state_dir: str | Path) -> tuple[str, ...]:
     return tuple(text.splitlines())
 
 
+def _coerce_rule_map(raw: object) -> dict[int, float]:
+    """Best-effort ``{rule_number: score}`` from a stored map. Never raises:
+    entries with non-numeric keys or values are skipped (upholds the reader's
+    'never raises on malformed input' contract)."""
+    out: dict[int, float] = {}
+    if not isinstance(raw, dict):
+        return out
+    for k, v in raw.items():
+        try:
+            out[int(k)] = float(v)
+        except (TypeError, ValueError):
+            continue
+    return out
+
+
 def _measured_rules(state_dir: Path) -> tuple[RuleScore, ...]:
     """All measured rules from the most recent verdict snapshot, weakest-first."""
     candidates = [state_dir / "after.json", state_dir / "verdict.json"]
@@ -269,9 +284,7 @@ def read_state(state_dir: str | Path) -> CampaignState:
     if last_commit:
         diffstat = _git(["show", "--stat", "--format=", last_commit], worktree).strip()
 
-    baseline_rules = {
-        int(k): float(v) for k, v in (baseline.get("commandments") or {}).items()
-    }
+    baseline_rules = _coerce_rule_map(baseline.get("commandments"))
 
     return CampaignState(
         exists=True,
