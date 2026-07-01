@@ -10,7 +10,7 @@ Tests: `uv run pytest`. Commit to `main`. Behaviour preservation: old campaigns 
 
 ---
 
-### Task A: Harness writes `status.json`; baseline captures per-rule scores
+### Task A: Harness writes `status.json`; baseline captures per-rule scores  ✅ DONE (a97cf37; guarded 853d74e)
 **Depends on:** none
 
 **Files:** Modify `src/moses/loop_template/ralph.sh`, `src/moses/loop_runner.py`; Test: extend `tests/integration/test_loop_harness.py`.
@@ -91,7 +91,7 @@ git commit -m "feat(loop): harness emits status.json per phase; baseline capture
 
 ---
 
-### Task B: `loop_watch` reads status.json, all-rules, and baseline per-rule
+### Task B: `loop_watch` reads status.json, all-rules, and baseline per-rule  ✅ DONE (20db732; hardened 5a1baaa)
 **Depends on:** Task A
 
 **Files:** Modify `src/moses/loop_watch.py`; Test: extend `tests/unit/test_loop_watch.py`.
@@ -220,7 +220,7 @@ git commit -m "feat(loop): reader exposes current iteration, all rules, baseline
 
 ---
 
-### Task C: dashboard current-iteration panel, per-rule movement, richer diff
+### Task C: dashboard current-iteration panel, per-rule movement, richer diff  ✅ DONE (4295954)
 **Depends on:** Task B
 
 **Files:** Modify `src/moses/loop_tui.py`; Test: extend `tests/unit/test_loop_tui.py`.

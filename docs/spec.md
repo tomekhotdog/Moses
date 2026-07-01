@@ -125,6 +125,15 @@ iteration records the commit, Score before/after, and violation delta. Moses
 guarantees **honest, monotonic improvement** — the harness reverts any change
 that regresses the Score or increases violations rather than recording it.
 
+Alongside `campaign.json`, the harness writes `status.json` — the *live* phase of
+the in-flight iteration (`judging → engine → verifying → committing/reverting →
+cooldown`, then `done`), atomically replaced at each transition. It is transient
+UI state (not part of the audit trail); the live **Dashboard** (`moses loop
+watch`) polls it to show what the loop is doing right now. The baseline snapshot
+also records each rule's score (`baseline.commandments`) so the Dashboard can show
+per-rule movement against it. Both are additive: campaigns without them render
+fine (the reader is tolerant of missing/partial state).
+
 ## Calibration corpus (evals/)
 
 Moses' rule parameters are hand-set. The **calibration corpus** exists to ground
