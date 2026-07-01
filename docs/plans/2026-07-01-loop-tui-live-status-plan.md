@@ -342,7 +342,7 @@ git commit -m "feat(loop): dashboard shows live current-iteration, per-rule move
 
 ---
 
-### Task D: behaviour preservation + docs
+### Task D: behaviour preservation + docs  ✅ DONE (d7711b8)
 **Depends on:** Task C
 
 **Files:** `docs/spec.md`, `docs/plans/2026-07-01-loop-tui-live-status-plan.md` (mark done).
@@ -360,6 +360,6 @@ git commit -m "docs: document status.json; mark live-status plan complete"
 ```
 
 ## Review
-- [ ] Code review requested (spec + quality per task)
-- [ ] All feedback addressed
-- [ ] Final verification passed
+- [x] Code review requested (spec + quality per task; Tasks A/B reviewed by subagent, C reviewed inline after reviewer infra failures)
+- [x] All feedback addressed — status-write guarded against set -e (A); baseline_rules parsing made tolerant (B); render kept exception-safe (C)
+- [x] Final verification passed — 202 passed, 1 skipped; live end-to-end render confirmed (current panel, Δ breakdown, target marker); old campaigns render without the new state
