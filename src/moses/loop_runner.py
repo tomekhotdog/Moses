@@ -95,6 +95,7 @@ def _score_of(target: Path, target_path: str, deep: bool = False) -> dict:
         "score": round(verdict.score, 2),
         "grade": verdict.grade,
         "violations": violations,
+        "commandments": {str(c.number): round(c.score_contribution, 2) for c in measured},
         "commit": _head_commit(target),
         "timestamp": _now(),
     }

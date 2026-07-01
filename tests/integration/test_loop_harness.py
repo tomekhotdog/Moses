@@ -8,6 +8,7 @@ before iteration 1. Uses ``engine=none`` so no coding engine is required.
 
 from __future__ import annotations
 
+import json
 import subprocess
 from pathlib import Path
 
@@ -40,3 +41,14 @@ def test_harness_enters_loop_with_default_unlimited_hours(inited_repo):
     assert "iteration 1/1" in log, log
     assert "time budget reached" not in log, log
     assert code == 0
+
+
+def test_harness_writes_status_and_baseline_per_rule(inited_repo):
+    loop_run(worktree=inited_repo, engine="none",
+             max_iterations=1, max_hours=0.0, cooldown=0)
+    state = Path(inited_repo) / ".moses"
+    status = json.loads((state / "status.json").read_text())
+    assert status["phase"] == "done"
+    campaign = json.loads((state / "campaign.json").read_text())
+    base_rules = campaign["baseline"]["commandments"]
+    assert isinstance(base_rules, dict) and base_rules  # per-rule scores captured

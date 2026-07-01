@@ -41,12 +41,33 @@ LOG="${STATE_DIR}/loop.log"
 VERDICT="${STATE_DIR}/verdict.json"
 AFTER="${STATE_DIR}/after.json"
 CHECKER="${STATE_DIR}/check_invariants.py"
+STATUS="${STATE_DIR}/status.json"
 
 START_EPOCH="$(date +%s)"
 
 log() { printf '[%s] %s\n' "$(date -u +%H:%M:%S)" "$*" | tee -a "${LOG}" >&2; }
 
 die() { log "FATAL: $*"; exit 1; }
+
+write_status() {
+  # $1=phase  $2=before_score(optional)  $3=before_violations(optional)
+  python3 - "${STATUS}" "${iteration}" "${MAX_ITERATIONS}" "$1" "${2:-}" "${3:-}" <<'PY'
+import json, os, sys, time
+path, it, mx, phase, score, viol = sys.argv[1:7]
+data = {
+    "iteration": int(it) if it else 0,
+    "max_iterations": int(mx) if mx else 0,
+    "phase": phase,
+    "before_score": float(score) if score else None,
+    "before_violations": int(viol) if viol else None,
+    "started_at": int(time.time()),
+}
+tmp = path + ".tmp"
+with open(tmp, "w") as f:
+    json.dump(data, f)
+os.replace(tmp, path)
+PY
+}
 
 # --------------------------------------------------------------------------- #
 # Pre-flight
@@ -129,6 +150,7 @@ while [ "${iteration}" -lt "${MAX_ITERATIONS}" ]; do
   if time_exceeded; then log "time budget reached; stopping"; break; fi
   iteration=$(( iteration + 1 ))
   log "=== iteration ${iteration}/${MAX_ITERATIONS} ==="
+  write_status judging
 
   # 1. Baseline verdict for this iteration.
   judge_into "${VERDICT}"
@@ -137,13 +159,16 @@ while [ "${iteration}" -lt "${MAX_ITERATIONS}" ]; do
   before_viol="$(viol_of "${VERDICT}")"
   before_commit="$(git rev-parse HEAD)"
   log "before: score=${before_score} violations=${before_viol} @ ${before_commit:0:8}"
+  write_status engine "${before_score}" "${before_viol}"
 
   # 2. Let the engine attempt one improvement.
   run_engine
+  write_status verifying "${before_score}" "${before_viol}"
 
   # 3. Did anything change?
   if git diff --quiet && git diff --cached --quiet; then
     log "no changes this iteration; cooling down"
+    write_status cooldown "${before_score}" "${before_viol}"
     sleep "${COOLDOWN}"
     continue
   fi
@@ -159,6 +184,7 @@ while [ "${iteration}" -lt "${MAX_ITERATIONS}" ]; do
   else
     regressed="true"
     log "REGRESSION: score ${before_score} -> ${after_score}, violations ${before_viol} -> ${after_viol}; reverting"
+    write_status reverting "${before_score}" "${before_viol}"
     git reset --hard "${before_commit}" >>"${LOG}" 2>&1 || true
     git clean -fd >>"${LOG}" 2>&1 || true
     sleep "${COOLDOWN}"
@@ -185,10 +211,12 @@ while [ "${iteration}" -lt "${MAX_ITERATIONS}" ]; do
     >>"${LOG}" 2>&1 || log "warning: failed to record iteration ${iteration}"
 
   log "committed @ ${after_commit:0:8}"
+  write_status cooldown "${before_score}" "${before_viol}"
   sleep "${COOLDOWN}"
 done
 
 # Final validation of the whole campaign.
+write_status done
 python3 "${CHECKER}" validate --campaign "${CAMPAIGN}" --repo "${WORKTREE}"
 status=$?
 log "campaign complete: ${iteration} iteration(s), check_invariants exit=${status}"
