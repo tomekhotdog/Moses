@@ -5,8 +5,15 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from moses.loop_tui import MosesLoopApp, bar, breakdown_text, diff_text, stats_text
-from moses.loop_watch import read_state
+from moses.loop_tui import (
+    MosesLoopApp,
+    bar,
+    breakdown_text,
+    current_text,
+    diff_text,
+    stats_text,
+)
+from moses.loop_watch import CurrentIteration, read_state
 
 
 def _fixture(tmp_path: Path) -> Path:
@@ -51,6 +58,34 @@ def test_stats_text_waiting_when_no_campaign(tmp_path):
 def test_breakdown_text_lists_weakest(tmp_path):
     s = read_state(_fixture(tmp_path))
     assert "C16" in breakdown_text(s) and "DRY" in breakdown_text(s)
+
+
+def test_current_text_idle_when_none():
+    assert "idle" in current_text(None, "", 0, 0).lower()
+
+
+def test_current_text_shows_phase_and_target():
+    cur = CurrentIteration(iteration=4, max_iterations=10, phase="engine",
+                           before_score=84.0, before_violations=61, started_at=1)
+    out = current_text(cur, "C14 Shallow nesting", 23, 3)
+    assert "4/10" in out and "engine" in out and "C14" in out and "23" in out
+
+
+def test_breakdown_shows_delta_and_target(tmp_path):
+    sd = tmp_path / ".moses"
+    campaign = json.loads((_fixture(tmp_path) / "campaign.json").read_text())
+    campaign["baseline"]["commandments"] = {"16": 0.0, "12": 100.0}
+    verdict = {"commandments": [
+        {"number": 16, "name": "DRY", "score_contribution": 10.0, "status": "measured"},
+        {"number": 12, "name": "Cog", "score_contribution": 100.0, "status": "measured"},
+    ]}
+    (sd / "campaign.json").write_text(json.dumps(campaign), encoding="utf-8")
+    (sd / "verdict.json").write_text(json.dumps(verdict), encoding="utf-8")
+    s = read_state(sd)
+    out = breakdown_text(s)
+    assert "C16" in out and "C12" in out
+    assert "+10.0" in out       # 10.0 now vs 0.0 baseline
+    assert "◀" in out           # target marker on the weakest (C16)
 
 
 def test_diff_text_escapes_markup():

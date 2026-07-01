@@ -12,20 +12,37 @@ Render logic is split into pure module functions (`stats_text`, `breakdown_text`
 
 from __future__ import annotations
 
+import time
 from pathlib import Path
 
 from rich.markup import escape
 from textual.app import App, ComposeResult
-from textual.containers import Horizontal, Vertical
+from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.screen import Screen
 from textual.widgets import DataTable, Footer, Header, Log, Static
 
-from .loop_watch import CampaignState, read_log, read_state
+from .loop_watch import CampaignState, CurrentIteration, read_log, read_state
+
+_SPINNER = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
 
 
 def bar(score: float, width: int = 20) -> str:
     filled = int(round(max(0.0, min(100.0, score)) / 100 * width))
     return "█" * filled + "·" * (width - filled)
+
+
+def current_text(current: CurrentIteration | None, target: str, elapsed_s: float, frame: int) -> str:
+    """The in-flight iteration line: spinner, phase, elapsed, target, before-score."""
+    if current is None:
+        return "idle between iterations…"
+    spin = _SPINNER[frame % len(_SPINNER)]
+    mm, ss = divmod(max(0, int(elapsed_s)), 60)
+    before = "—" if current.before_score is None else current.before_score
+    return (
+        f"[b]Iteration {current.iteration}/{current.max_iterations}[/b]  "
+        f"{spin} {current.phase}   {mm:02d}:{ss:02d}\n"
+        f"target: {target or '—'}    before: {before}"
+    )
 
 
 def stats_text(s: CampaignState, max_iterations: int) -> str:
@@ -44,20 +61,28 @@ def stats_text(s: CampaignState, max_iterations: int) -> str:
 
 
 def breakdown_text(s: CampaignState) -> str:
-    if not s.weakest_rules:
+    """Every measured rule with its score, Δ-vs-baseline, and a ◀ on the target
+    (the current weakest rule the loop is most likely to attack next)."""
+    if not s.all_rules:
         return "no verdict yet…"
-    lines = ["[b]Weakest commandments[/b]", ""]
-    for r in s.weakest_rules:
-        lines.append(f"C{r.number:<2} {bar(r.score)} {r.score:5.1f}  {r.name[:20]}")
+    target_n = s.all_rules[0].number
+    lines = ["[b]Commandments  (score · Δ base)[/b]", ""]
+    for r in s.all_rules:
+        base = s.baseline_rules.get(r.number)
+        delta = "   - " if base is None else f"{r.score - base:+5.1f}"
+        marker = " ◀" if r.number == target_n else ""
+        lines.append(f"C{r.number:<2} {bar(r.score, 10)} {r.score:5.1f} {delta}  {r.name[:16]}{marker}")
     return "\n".join(lines)
 
 
-def diff_text(diffstat: str) -> str:
-    """Render the last diffstat. Escapes git output so file paths containing
-    Rich-markup characters (e.g. ``foo[bar].py``) can never break rendering."""
+def diff_text(diffstat: str, subject: str = "") -> str:
+    """Render the last change: the commit subject (its intent) over the diffstat.
+    Escapes git output so file paths containing Rich-markup characters (e.g.
+    ``foo[bar].py``) can never break rendering."""
     if not diffstat:
         return ""
-    return "[b]Last change[/b]\n" + escape(diffstat)
+    head = f"[b]{escape(subject)}[/b]\n" if subject else "[b]Last change[/b]\n"
+    return head + escape(diffstat)
 
 
 class SummaryScreen(Screen):
@@ -88,6 +113,7 @@ class SummaryScreen(Screen):
 class MosesLoopApp(App):
     CSS = """
     #stats { height: 4; padding: 0 1; border-bottom: solid $accent; }
+    #current { height: 3; padding: 0 1; border-bottom: solid $accent; }
     #middle { height: 1fr; }
     #left { width: 2fr; }
     #right { width: 1fr; border-left: solid $accent; }
@@ -110,15 +136,17 @@ class MosesLoopApp(App):
         self._poll = poll
         self._log_seen = 0
         self._finished = False
+        self._frame = 0
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
         yield Static(id="stats")
+        yield Static(id="current")
         with Horizontal(id="middle"):
             with Vertical(id="left"):
                 yield DataTable(id="iterations")
                 yield Static(id="diff")
-            with Vertical(id="right"):
+            with VerticalScroll(id="right"):
                 yield Static(id="breakdown")
         yield Log(id="log", highlight=False)
         yield Footer()
@@ -135,10 +163,15 @@ class MosesLoopApp(App):
         # pane instead of crashing — upholds "the TUI never crashes on the loop".
         try:
             s = read_state(self._state_dir)
+            self._frame += 1
+            target = s.all_rules[0].name if s.all_rules else ""
+            elapsed = (time.time() - s.current.started_at) if (s.current and s.current.started_at) else 0
             self.query_one("#stats", Static).update(stats_text(s, self._max_iterations))
+            self.query_one("#current", Static).update(current_text(s.current, target, elapsed, self._frame))
             self._render_table(s)
             self.query_one("#breakdown", Static).update(breakdown_text(s))
-            self.query_one("#diff", Static).update(diff_text(s.last_diffstat))
+            last_subject = s.rows[-1].subject if s.rows else ""
+            self.query_one("#diff", Static).update(diff_text(s.last_diffstat, last_subject))
             self._render_log()
             if not self._finished and self._process is not None and self._process.poll() is not None:
                 self._finished = True
