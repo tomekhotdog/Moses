@@ -131,3 +131,48 @@ def test_partial_iteration_missing_score_after(tmp_path):
     assert s.scores == (80.0, 82.0, 84.0)  # None score_after skipped
     assert s.summary.iterations == 3
     assert s.summary.improving == 2  # only the two complete improving iters
+
+
+def test_current_iteration_from_status(tmp_path):
+    sd = tmp_path / ".moses"
+    _write(sd, _campaign())
+    (sd / "status.json").write_text(json.dumps({
+        "iteration": 2, "max_iterations": 10, "phase": "engine",
+        "before_score": 82.0, "before_violations": 94, "started_at": 1719800000,
+    }), encoding="utf-8")
+    cur = read_state(sd).current
+    assert cur is not None and cur.iteration == 2 and cur.phase == "engine"
+    assert cur.before_score == 82.0
+
+
+def test_current_none_when_done_or_missing(tmp_path):
+    sd = tmp_path / ".moses"
+    _write(sd, _campaign())
+    assert read_state(sd).current is None  # no status.json
+    (sd / "status.json").write_text(json.dumps({"iteration": 1, "max_iterations": 1,
+        "phase": "done", "before_score": None, "before_violations": None,
+        "started_at": 1}), encoding="utf-8")
+    assert read_state(sd).current is None  # phase == done
+
+
+def test_all_rules_and_baseline_rules(tmp_path):
+    sd = tmp_path / ".moses"
+    campaign = _campaign()
+    campaign["baseline"]["commandments"] = {"16": 0.0, "12": 90.0, "11": 100.0}
+    verdict = {"commandments": [
+        {"number": 16, "name": "DRY", "score_contribution": 10.0, "status": "measured"},
+        {"number": 12, "name": "Cog", "score_contribution": 100.0, "status": "measured"},
+        {"number": 11, "name": "Small", "score_contribution": 100.0, "status": "measured"},
+    ]}
+    _write(sd, campaign, verdict=verdict)
+    s = read_state(sd)
+    assert len(s.all_rules) == 3  # not truncated to 6
+    assert s.all_rules[0].number == 16  # weakest first
+    assert s.baseline_rules == {16: 0.0, 12: 90.0, 11: 100.0}
+
+
+def test_malformed_status_tolerated(tmp_path):
+    sd = tmp_path / ".moses"
+    _write(sd, _campaign())
+    (sd / "status.json").write_text("{bad", encoding="utf-8")
+    assert read_state(sd).current is None  # must not raise

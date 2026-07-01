@@ -42,6 +42,16 @@ class RuleScore:
 
 
 @dataclass(frozen=True)
+class CurrentIteration:
+    iteration: int
+    max_iterations: int
+    phase: str
+    before_score: float | None
+    before_violations: int | None
+    started_at: int | None
+
+
+@dataclass(frozen=True)
 class IterationRow:
     iteration: int
     score_before: float | None
@@ -78,6 +88,9 @@ class CampaignState:
     rows: tuple[IterationRow, ...]
     scores: tuple[float, ...]
     weakest_rules: tuple[RuleScore, ...]
+    all_rules: tuple[RuleScore, ...]
+    baseline_rules: dict[int, float]
+    current: "CurrentIteration | None"
     log_tail: tuple[str, ...]
     last_diffstat: str
 
@@ -166,8 +179,8 @@ def read_log(state_dir: str | Path) -> tuple[str, ...]:
     return tuple(text.splitlines())
 
 
-def _weakest_rules(state_dir: Path, k: int = 6) -> tuple[RuleScore, ...]:
-    """Lowest-scoring measured rules from the most recent verdict snapshot."""
+def _measured_rules(state_dir: Path) -> tuple[RuleScore, ...]:
+    """All measured rules from the most recent verdict snapshot, weakest-first."""
     candidates = [state_dir / "after.json", state_dir / "verdict.json"]
     existing = [p for p in candidates if p.exists()]
     if not existing:
@@ -182,7 +195,22 @@ def _weakest_rules(state_dir: Path, k: int = 6) -> tuple[RuleScore, ...]:
         if c.get("status") == "measured"
     ]
     measured.sort(key=lambda r: r.score)
-    return tuple(measured[:k])
+    return tuple(measured)
+
+
+def _current_iteration(state_dir: Path) -> "CurrentIteration | None":
+    """The in-flight iteration from status.json, or None when absent/done."""
+    data = _read_json(state_dir / "status.json")
+    if not data or data.get("phase") == "done":
+        return None
+    return CurrentIteration(
+        iteration=data.get("iteration", 0),
+        max_iterations=data.get("max_iterations", 0),
+        phase=data.get("phase", ""),
+        before_score=data.get("before_score"),
+        before_violations=data.get("before_violations"),
+        started_at=data.get("started_at"),
+    )
 
 
 def read_state(state_dir: str | Path) -> CampaignState:
@@ -190,13 +218,17 @@ def read_state(state_dir: str | Path) -> CampaignState:
     state_dir = Path(state_dir)
     worktree = state_dir.parent  # the state dir is always .moses/ inside the campaign worktree
     log_tail = read_log(state_dir)[-200:]
+    all_rules = _measured_rules(state_dir)
+    weakest = all_rules[:6]
+    current = _current_iteration(state_dir)
     campaign = _read_json(state_dir / "campaign.json")
     if not campaign:
         return CampaignState(
             exists=False, target_path="", branch=None,
             baseline_score=None, baseline_grade=None,
             best_score=None, best_grade=None,
-            rows=(), scores=(), weakest_rules=_weakest_rules(state_dir),
+            rows=(), scores=(), weakest_rules=weakest,
+            all_rules=all_rules, baseline_rules={}, current=current,
             log_tail=log_tail, last_diffstat="",
         )
 
@@ -237,6 +269,10 @@ def read_state(state_dir: str | Path) -> CampaignState:
     if last_commit:
         diffstat = _git(["show", "--stat", "--format=", last_commit], worktree).strip()
 
+    baseline_rules = {
+        int(k): float(v) for k, v in (baseline.get("commandments") or {}).items()
+    }
+
     return CampaignState(
         exists=True,
         target_path=campaign.get("target_path", "src/"),
@@ -247,7 +283,10 @@ def read_state(state_dir: str | Path) -> CampaignState:
         best_grade=best.get("grade"),
         rows=tuple(rows),
         scores=tuple(scores),
-        weakest_rules=_weakest_rules(state_dir),
+        weakest_rules=weakest,
+        all_rules=all_rules,
+        baseline_rules=baseline_rules,
+        current=current,
         log_tail=log_tail,
         last_diffstat=diffstat,
     )
