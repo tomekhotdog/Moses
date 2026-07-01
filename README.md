@@ -2,7 +2,7 @@
 
 ![Moses](Moses.png)
 
-**Judge your Python codebase against 31 design Commandments. Score 0–100, get a Grade A–F, and run autonomous improvements via the RALPH loop.**
+**Judge your Python codebase against 31 design Commandments. Score 0–100, get a Grade A–F, and run autonomous improvements via the RALPH loop — watched live in a terminal dashboard.**
 
 ## What is Moses?
 
@@ -36,19 +36,22 @@ uv run moses judge src/
 moses judge <path> [--json out.json] [--html out.html] [--deep]
 moses prompt <N>                    # curated brief for Commandment N
 moses loop init <repo> [--in-place] # start an improvement campaign
-moses loop run --worktree <wt>      # run autonomous improvements
+moses loop run --worktree <wt>      # run autonomous improvements (headless)
+moses loop watch <repo> [--in-place] [--max-iterations N]  # launch + live TUI dashboard
 moses loop check --worktree <wt>    # validate campaign audit trail
 moses loop status --worktree <wt>   # progress summary
 ```
+
+The dashboard needs the optional `tui` extra: `uv sync --extra tui` (or `pip install 'moses[tui]'`).
 
 Exit codes: `0` for grades A/B/C, `1` for D/E, `2` for F.
 
 ## The 31 Commandments
 
-| # | Name | Weight | Status |
-|----|------|--------|--------|
-| 1–6, 11–18, 20–25, 29, 31 | _Implemented (21 rules)_ | _67/100_ | ✅ |
-| 4, 7–10, 19, 26–28, 30 | _Planned_ | _33/100_ | 📋 |
+| # | Status |
+|----|--------|
+| 1–6, 11–18, 20–25, 27, 29, 30, 31 | ✅ Implemented (24 rules; 23 in the MVP scoring set, C4 implemented but held out) |
+| 7–10, 19, 26, 28 | 📋 Planned |
 
 See [`docs/commandments.md`](docs/commandments.md) for details. Per-rule briefs in [`docs/commandments/NN-*.md`](docs/commandments/).
 
@@ -70,6 +73,38 @@ The harness:
 
 Honest, monotonic improvement only — regressions are reverted, never recorded.
 
+### Live dashboard
+
+`moses loop watch` launches a campaign and renders it live (Textual). `moses loop
+run` remains the headless path; the dashboard is a read-only view over the same
+`campaign.json`/`loop.log`, so the two never diverge.
+
+```
+┌ Moses Loop ─────────────────────────────── 08:41 ┐
+│ baseline 82.3 A     best 84.9 A     iter 4/10     │
+│ Score ▁▃▄▆▇   82.3 → 84.9  (+2.6)                 │
+├────────────────────────────┬─────────────────────┤
+│ #  Cmd  Before After ΔViol  │ Weakest commandments │
+│ 1  C25  82.3   83.1   -6  ✓ │ C16 ██········  0.0   │
+│ 2  C16  83.1   83.1    0  ⟲ │ C25 ████······ 22.4  │
+│ 3  C18  83.1   84.0   -3  ✓ │ C18 ██████···· 55.0  │
+│ 4  C14  84.0 … running ⠋     │ C14 ███████··· 72.5  │
+│                             │ C21 ████████·· 80.1  │
+│ Last change                 │ C27 █████████· 90.0  │
+│ c14 flatten guard clauses   │                      │
+│  engine.py | 8 +---         │                      │
+├─────────────────────────────┴─────────────────────┤
+│ 08:41:02 before: score=84.0 violations=61          │
+│ 08:41:19 improved: 84.0 -> 84.9, viol 61 -> 58     │
+│ 08:41:20 committed @ 9a3f1c2                        │
+├────────────────────────────────────────────────────┤
+│  q Quit    ↑↓ Scroll log                            │
+└────────────────────────────────────────────────────┘
+```
+
+Keys: `q` quit (terminates the harness), `↑/↓` scroll the log. On completion a
+summary screen shows total gain, improved/reverted counts, and the trajectory.
+
 ## Architecture
 
 ```
@@ -79,14 +114,16 @@ src/moses/
   ├── loader.py              # load codebase, ignore vendored/test dirs
   ├── config.py              # weights, enabled-set, deep mode
   ├── cli.py                 # judge/prompt/loop commands
-  ├── loop_runner.py         # loop_init/run/check/status
+  ├── loop_runner.py         # loop_init/run/spawn/check/status
+  ├── loop_watch.py          # pure CampaignState reader for the dashboard
+  ├── loop_tui.py            # Textual live dashboard (moses loop watch)
   ├── models.py              # SourceFile, Codebase, Verdict, etc.
   ├── report/                # terminal + HTML rendering
   ├── loop_template/         # prompt.md, ralph.sh, check_invariants.py
   └── data/                  # commandment_prompts.yaml
 tests/
-  ├── unit/                  # 60 unit tests
-  └── integration/           # 11 CLI + loop smoke tests
+  ├── unit/                  # rule, engine, config, reader + TUI tests
+  └── integration/           # CLI, loop, harness, watch, spawn tests
 docs/
   ├── spec.md                # architecture & design
   ├── commandments.md        # rule reference
@@ -120,18 +157,18 @@ Score = Σ (wᵢ · Sᵢ) / Σ wᵢ    for enabled, measured rules only
 Moses judges itself:
 
 ```bash
-moses judge . --exclude 'tests/fixtures/*'
-# Score 79.6/100  Grade B
+moses judge src/moses
+# Score 83.2/100  Grade A
 ```
 
 ## Tests
 
 ```bash
 uv run pytest
-# 71 passed, 1 skipped
+# 193 passed, 1 skipped
 ```
 
-Unit tests cover cheap rules, heavier structural rules, engine, config, and models. Integration tests cover CLI (judge, prompt, JSON/HTML output) and loop (init, status, check, invariant validation).
+Unit tests cover cheap rules, heavier structural rules, engine, config, models, and the dashboard reader/render helpers. Integration tests cover CLI (judge, prompt, JSON/HTML output) and the loop (init, run, spawn, watch, harness, status, check, invariant validation).
 
 ## Design Principles
 
@@ -155,4 +192,4 @@ Built as a code quality oracle inspired by Ousterhout, Martin, McConnell, and th
 
 ---
 
-**Status:** MVP complete. 21 of 31 rules implemented. Self-hosted at Grade B. Ready for improvement campaigns.
+**Status:** MVP complete. 24 of 31 rules implemented (23 in the scoring set). Self-hosted at Grade A (83.2). Autonomous campaigns with a live terminal dashboard.
