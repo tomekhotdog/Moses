@@ -51,7 +51,9 @@ die() { log "FATAL: $*"; exit 1; }
 
 write_status() {
   # $1=phase  $2=before_score(optional)  $3=before_violations(optional)
-  python3 - "${STATUS}" "${iteration}" "${MAX_ITERATIONS}" "$1" "${2:-}" "${3:-}" <<'PY'
+  # A status-write failure (disk full, state dir gone) must never abort the
+  # campaign — this is cosmetic; `|| true` keeps set -e from killing the run.
+  python3 - "${STATUS}" "${iteration}" "${MAX_ITERATIONS}" "$1" "${2:-}" "${3:-}" <<'PY' || true
 import json, os, sys, time
 path, it, mx, phase, score, viol = sys.argv[1:7]
 data = {
