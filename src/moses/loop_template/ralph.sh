@@ -90,11 +90,12 @@ PY
 }
 
 time_exceeded() {
-  [ "${MAX_HOURS}" = "0" ] && return 1
   local now budget_s elapsed
+  budget_s="$(python3 -c "print(int(float('${MAX_HOURS}')*3600))")"
+  # A budget of 0 (from "0", "0.0", any zero form) means "no time limit".
+  [ "${budget_s}" -le 0 ] && return 1
   now="$(date +%s)"
   elapsed=$(( now - START_EPOCH ))
-  budget_s="$(python3 -c "print(int(float('${MAX_HOURS}')*3600))")"
   [ "${elapsed}" -ge "${budget_s}" ]
 }
 
